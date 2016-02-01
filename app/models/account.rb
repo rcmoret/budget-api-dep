@@ -1,5 +1,5 @@
 class Account < ActiveRecord::Base
-  has_many :transactions, class_name: 'Base::Transaction'
+  has_many :transactions
 
   def to_hash
     {
@@ -12,6 +12,14 @@ class Account < ActiveRecord::Base
   end
 
   def balance
-    transactions.sum(:amount)
+    Transaction.unscoped.where(account_id: id).sum(:amount)
+  end
+
+  def transaction_collection(**query_opts)
+    if query_opts.empty?
+      transactions.in_month
+    else
+      transactions.query_with(query_opts)
+    end
   end
 end

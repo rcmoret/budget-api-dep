@@ -12,6 +12,16 @@ class AccountTemplate
     @account.to_hash.to_json
   end
 
+  def transactions_collection(**query_opts)
+    return not_found if @account.nil?
+    transaction_template = TransactionTemplate.new(@account, query_opts)
+    {
+      account: @account.to_hash,
+      metadata: transaction_template.metadata,
+      transactions: transaction_template.collection
+    }.to_json
+  end
+
   private
 
   def not_found

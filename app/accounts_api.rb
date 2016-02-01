@@ -13,6 +13,10 @@ class AccountsApi < Sinatra::Base
     @template.show
   end
 
+  get '/:id/transactions' do
+    @template.transactions_collection
+  end
+
   def set_account!
     if env['PATH_INFO'].match(/^\/(\d+)/)
       id = env['PATH_INFO'].match(/^\/(\d+)/)
