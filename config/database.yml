@@ -2,3 +2,8 @@ development:
   adapter: postgresql
   database: checkbook_development
   pool: 5
+
+test:
+  adapter: postgresql
+  database: checkbook_test
+  pool: 5
