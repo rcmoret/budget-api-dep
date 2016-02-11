@@ -1,10 +1,7 @@
-require 'bundler/setup'
-Bundler.require(:development, :test)
-require './config/environments'
-Dir['./app/models/*.rb'].each { |f| require f }
-
-# Dir['./app/templates/*.rb'].each { |f| require f }
-# Dir['./app/*_api.rb'].each { |f| require f }
+require 'rake'
+Bundler.require(:test)
+load ENV['PWD'] + '/Rakefile'
+Rake::Task['app:setup'].invoke
 
 RSpec.configure do |config|
   config.include(Shoulda::Matchers::ActiveModel, type: :model)
@@ -26,3 +23,6 @@ RSpec.configure do |config|
 
   # Kernel.srand config.seed
 end
+
+FactoryGirl.definition_file_paths = %w{./spec/factories}
+FactoryGirl.find_definitions

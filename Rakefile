@@ -5,20 +5,25 @@ task :console => 'app:console'
 
 namespace :app do
   desc 'Start application in development'
-  task :start do
-    exec 'rackup -o 0.0.0.0'
+  task :start => :setup do
+    Rack::Server.start(config: './server.ru', Host: '0.0.0.0')
   end
   desc 'Start application console'
-  task :console do
+  task :console => :setup do
     require 'irb'
     require 'irb/completion'
+    ARGV.clear
+    IRB.start
+  end
+  desc 'require all gems, app files, configs'
+  task :setup do
+    ENV['RACK_ENV'] ||= 'development'
     require 'bundler/setup'
     Bundler.require(:development)
     require './config/environments'
     Dir['./app/*_api.rb'].each { |f| require f }
     Dir['./app/models/*.rb'].each { |f| require f }
     Dir['./app/templates/*.rb'].each { |f| require f }
-    ARGV.clear
-    IRB.start
+    Dir['.lib/*.rb'].each { |f| require f }
   end
 end
