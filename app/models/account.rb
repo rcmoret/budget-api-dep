@@ -1,5 +1,6 @@
 class Account < ActiveRecord::Base
-  has_many :transactions
+  has_many :transactions, class_name: 'View::Transaction'
+  has_many :primary_transactions, class_name: 'Primary::Transaction'
 
   def to_hash
     {
@@ -12,7 +13,7 @@ class Account < ActiveRecord::Base
   end
 
   def balance
-    Transaction.unscoped.where(account_id: id).sum(:amount)
+    transactions.sum(:amount)
   end
 
   def transaction_collection(**query_opts)

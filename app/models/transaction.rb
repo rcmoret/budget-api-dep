@@ -1,31 +1,39 @@
 require_relative '../../lib/budget_month'
 
-class Transaction < ActiveRecord::Base
-  belongs_to :account
-  has_many :subtransactions, class_name: 'Subtransaction', foreign_key: :primary_transaction_id
+module View
+  class Transaction < ActiveRecord::Base
+    self.table_name = 'transaction_view'
+    belongs_to :account
 
-  default_scope do
-    where(primary_transaction_id: nil).includes(:subtransactions)
-  end
-
-  class << self
-    def in_month(*args)
-      budget_month = BudgetMonth.new(*args)
-      between(budget_month.first_day, budget_month.last_day, include_pending = true)
+    def readonly?
+      true
     end
 
-    def between(first_date, last_date, include_pending = false)
-      if include_pending
-        where{ (clearance_date.in(first_date..last_date) | clearance_date.eq(nil)) }
-      else
-        where(clearance_date: (first_date..last_date))
-      end
+  end
+end
+
+module Base
+  class Transaction < ActiveRecord::Base; end
+end
+
+module Primary
+  class Transaction < Base::Transaction
+    belongs_to :account
+    has_many :subtransactions, foreign_key: :primary_transaction_id, dependent: :destroy
+    has_one :view, class_name: 'View::Transaction', foreign_key: :id
+    accepts_nested_attributes_for :subtransactions
+    default_scope do
+      where(primary_transaction_id: nil).includes(:subtransactions)
     end
   end
+end
 
-  def receipt_url
-    receipt
+module Sub
+  class Transaction < Base::Transaction
+    belongs_to :primary_transaction
+    has_one :transaction_view, through: :primary_transaction
   end
+end
 
   def to_hash
     {

@@ -24,6 +24,6 @@ namespace :app do
     Dir['./app/*_api.rb'].each { |f| require f }
     Dir['./app/models/*.rb'].each { |f| require f }
     Dir['./app/templates/*.rb'].each { |f| require f }
-    Dir['.lib/*.rb'].each { |f| require f }
+    Dir['./lib/*.rb'].each { |f| require f }
   end
 end

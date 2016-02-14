@@ -1,3 +1,4 @@
+ENV['RACK_ENV'] = 'test'
 require 'rake'
 Bundler.require(:test)
 load ENV['PWD'] + '/Rakefile'
@@ -22,7 +23,7 @@ RSpec.configure do |config|
   config.profile_examples = 10
 
   # Kernel.srand config.seed
+  # ActiveRecord::Base.connection
+  FactoryGirl.definition_file_paths = %w{./spec/factories}
+  FactoryGirl.find_definitions
 end
-
-FactoryGirl.definition_file_paths = %w{./spec/factories}
-FactoryGirl.find_definitions
