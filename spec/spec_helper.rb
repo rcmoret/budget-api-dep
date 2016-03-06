@@ -4,6 +4,8 @@ Bundler.require(:test)
 load ENV['PWD'] + '/Rakefile'
 Rake::Task['app:setup'].invoke
 
+DatabaseCleaner.strategy = :truncation
+
 RSpec.configure do |config|
   config.include(Shoulda::Matchers::ActiveModel, type: :model)
   config.include(Shoulda::Matchers::ActiveRecord, type: :model)

@@ -14,6 +14,7 @@ group :debug do
 end
 
 group :test do
+  gem 'database_cleaner'
   gem 'factory_girl'
   gem 'rspec'
   gem 'rack-test'
