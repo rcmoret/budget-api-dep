@@ -44,10 +44,22 @@ RSpec.describe Primary::Transaction, type: :model do
     let!(:next_months) do
       FactoryGirl.create_list(:transaction, 2, clearance_date: 2.days.from_now, account: account)
     end
+    let(:pending) do
+      FactoryGirl.create_list(:transaction, 2, clearance_date: nil, account: account)
+    end
     let(:dates) { [2.months.ago, Date.today] }
-    subject { Primary::Transaction.between(*dates) }
-    it { should include(old_transactions) }
-    it { should include(this_months) }
+    context 'pending false (default)' do
+      subject { Primary::Transaction.between(*dates) }
+      it { should include(old_transactions) }
+      it { should include(this_months) }
+      it { should_not include(pending) }
+    end
+    context 'pending true' do
+      subject { Primary::Transaction.between(*dates, include_pending: true) }
+      it { should include(old_transactions) }
+      it { should include(this_months) }
+      it { should include(pending) }
+    end
   end
 end
 
