@@ -9,10 +9,10 @@ RSpec.describe Account, type: :model do
     let(:transactions) { double(primary_transactions.map(&:view)) }
     before do
       allow(account).to receive(:transactions).and_return(transactions)
-      allow(transactions).to receive(:sum).with(:amount).and_return(0)
     end
-    it 'should return a number' do
-      expect(account.balance).to be 0
+    it 'should call sum(:amount) on the transactions' do
+      expect(transactions).to receive(:sum).with(:amount)
+      account.balance
     end
   end
   describe '.to_hash' do
