@@ -28,6 +28,8 @@ end
 
 RSpec.describe Primary::Transaction, type: :model do
   it { should belong_to(:account) }
+  it { should belong_to(:monthly_amount) }
+  it { should have_one(:budget_item) }
   it { should have_many(:subtransactions) }
   it { should have_one(:view) }
   it { should accept_nested_attributes_for(:subtransactions) }
@@ -65,4 +67,6 @@ end
 RSpec.describe Sub::Transaction, type: :model do
   it { should belong_to(:primary_transaction) }
   it { should have_one(:view) }
+  it { should belong_to(:monthly_amount) }
+  it { should have_one(:budget_item) }
 end

@@ -14,10 +14,17 @@ module View
   end
 end
 
-module Primary
+module Base
   class Transaction < ActiveRecord::Base
     include Transactions::Queries
     include Transactions::Base
+    belongs_to :monthly_amount
+    has_one :budget_item, through: :monthly_amount
+  end
+end
+
+module Primary
+  class Transaction < Base::Transaction
     has_many :subtransactions, class_name: 'Sub::Transaction', foreign_key: :primary_transaction_id,
                                dependent: :destroy
     has_one :view, class_name: 'View::Transaction', foreign_key: :id
@@ -29,8 +36,7 @@ module Primary
 end
 
 module Sub
-  class Transaction < ActiveRecord::Base
-    include Transactions::Base
+  class Transaction < Base::Transaction
     belongs_to :primary_transaction, class_name: 'Primary::Transaction'
     has_one :view, through: :primary_transaction
     default_scope do
@@ -38,5 +44,3 @@ module Sub
     end
   end
 end
-
-
