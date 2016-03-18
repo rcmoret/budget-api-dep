@@ -26,7 +26,6 @@ RSpec.describe View::Transaction, type: :model do
   end
 end
 
-
 RSpec.describe Primary::Transaction, type: :model do
   it { should belong_to(:account) }
   it { should have_many(:subtransactions) }
