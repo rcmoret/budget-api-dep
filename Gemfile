@@ -19,4 +19,5 @@ group :test do
   gem 'rspec'
   gem 'rack-test'
   gem 'shoulda-matchers', '~> 3.1'
+  gem 'timecop'
 end

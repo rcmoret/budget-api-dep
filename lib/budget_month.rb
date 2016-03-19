@@ -1,27 +1,16 @@
 class BudgetMonth
-  def initialize method = nil, **options
-    date = determine(options)
-    @date = method && date.respond_to?(method) ? date.send(method) : date
-  end
-
-  def current_month
-    Date.new(budget_year, budget_month, 1)
-  end
-
-  def budget_year
-    @date.year
-  end
-
-  def budget_month
-    @date.mon
+  attr_accessor :month
+  def initialize method = :to_date, **options
+    @date = determine(options).send(method)
+    @month = Date.new(@date.year, @date.mon, 1)
   end
 
   def first_day
-    Date.new(budget_year, budget_month, 1)
+    Date.new(@month.year, @month.month, 1)
   end
 
   def last_day
-    Date.new(budget_year, budget_month, -1)
+    Date.new(@month.year, @month.month, -1)
   end
 
   def days_remaining
@@ -29,32 +18,31 @@ class BudgetMonth
   end
 
   def puts_current_month
-    current_month.strftime('%B')
+    @month.strftime('%B')
   end
 
   def current?
-    budget_year == today.year && budget_month == today.month
+    @month.year == today.year && @month.month == today.month
   end
 
   def piped
-    current_month.strftime('%m|%Y')
+    @month.strftime('%m|%Y')
   end
 
   private
-  def determine(options)
-    case
-    when options.empty?
-      Date.today
-    when options[:date]
-      raise ArgumentError unless options[:date].is_a?(Date)
-      options[:date]
-    when options[:month]
-      raise ArgumentError.new('Invalid Date hash') unless (1..12).include?(options[:month].to_i)
-      year = options[:year] || Date.today.year
-      date = Date.new(year.to_i, options[:month].to_i, 1)
-    else
-      today
-    end
+
+  def budget_year
+    @month.year
+  end
+
+  def budget_month
+    @month.mon
+  end
+
+  def determine(date: nil, month: nil, year: nil)
+    return today if date.nil? && month.nil?
+    return date if date.is_a?(Date)
+    Date.new((year || today.year).to_i, month.to_i, 1)
   end
 
   def today
