@@ -7,6 +7,7 @@ group :development do
   gem 'pg'
   gem 'sinatra-activerecord'
   gem 'squeel'
+  gem 'standalone_migrations'
 end
 
 group :debug do

@@ -1,7 +1,10 @@
 require 'rake'
+require 'standalone_migrations'
 
 task :default => 'app:start'
 task :console => 'app:console'
+
+StandaloneMigrations::Tasks.load_tasks
 
 namespace :app do
   desc 'Start application in development'
