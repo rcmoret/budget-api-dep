@@ -1,5 +1,7 @@
 require 'rake'
 require 'standalone_migrations'
+require './lib/colorize'
+Dir.glob('lib/tasks/*.rake').each { |r| load r }
 
 task :default => 'app:start'
 task :console => 'app:console'
