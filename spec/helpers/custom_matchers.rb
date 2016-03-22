@@ -1,6 +1,5 @@
 module Helpers
   module CustomMatchers
-
     RSpec::Matchers.define :include do |expected|
       match do |actual|
         if expected.respond_to?(:each)

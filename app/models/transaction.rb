@@ -18,8 +18,8 @@ module Base
   class Transaction < ActiveRecord::Base
     include Transactions::Queries
     include Transactions::Base
-    belongs_to :monthly_amount
-    has_one :budget_item, through: :monthly_amount
+    belongs_to :budgeted_amount, foreign_key: :monthly_amount_id
+    has_one :budget_item, through: :budgeted_amount
   end
 end
 
