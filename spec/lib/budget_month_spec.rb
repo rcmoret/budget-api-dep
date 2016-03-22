@@ -34,7 +34,12 @@ RSpec.describe BudgetMonth do
       end
     end
   end
-  describe 'public methods' do
+  describe 'class methods' do
+    subject { BudgetMonth }
+    it { expect(subject.piped).to eq '03|2099' }
+    it { expect(subject.piped(date: first_of_april)).to eq '04|2099' }
+  end
+  describe 'public instance methods' do
     let(:last_of_march) { Date.new(2099, 3, 31) }
     before { Timecop.travel(last_of_march) }
     subject { BudgetMonth.new }
@@ -57,6 +62,5 @@ RSpec.describe BudgetMonth do
     describe 'piped' do
       it { expect(subject.piped).to eq '03|2099' }
     end
-
   end
 end

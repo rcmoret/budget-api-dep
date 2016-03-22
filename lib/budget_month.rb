@@ -29,6 +29,10 @@ class BudgetMonth
     @month.strftime('%m|%Y')
   end
 
+  def self.piped(*args)
+    new(*args).piped
+  end
+
   private
 
   def budget_year
