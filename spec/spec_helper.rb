@@ -1,11 +1,11 @@
 ENV['RACK_ENV'] = 'test'
 require 'rake'
+require 'database_cleaner'
 Bundler.require(:test)
 load ENV['PWD'] + '/Rakefile'
 require './spec/helpers/custom_matchers'
 Rake::Task['app:setup'].invoke
 
-DatabaseCleaner.strategy = :truncation
 
 RSpec.configure do |config|
   config.include(Shoulda::Matchers::ActiveModel, type: :model)
@@ -30,4 +30,11 @@ RSpec.configure do |config|
   # ActiveRecord::Base.connection
   FactoryGirl.definition_file_paths = %w{./spec/factories}
   FactoryGirl.find_definitions
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.clean
+  end
+  config.around(:each) do |example|
+    DatabaseCleaner.cleaning { example.run }
+  end
 end
