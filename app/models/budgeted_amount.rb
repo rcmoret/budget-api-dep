@@ -2,7 +2,12 @@ class BudgetedAmount < ActiveRecord::Base
   self.table_name = 'monthly_amounts'
   belongs_to :budget_item
   has_many :transactions, class_name: 'Base::Transaction', foreign_key: :monthly_amount_id
-  scope :current, -> { where(month: BudgetMonth.new.piped) }
+  scope :current, -> { where(month: BudgetMonth.piped) }
+
+  def self.remaining
+    MonthlyAmount.remaining + WeeklyAmount.remaining
+  end
+
 end
 
 class MonthlyAmount < BudgetedAmount
