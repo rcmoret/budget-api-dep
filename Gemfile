@@ -10,13 +10,10 @@ group :development do
   gem 'standalone_migrations'
 end
 
-group :debug do
-  gem 'pry'
-end
-
 group :test do
   gem 'database_cleaner'
   gem 'factory_girl'
+  gem 'pry'
   gem 'rspec'
   gem 'rack-test'
   gem 'shoulda-matchers'
