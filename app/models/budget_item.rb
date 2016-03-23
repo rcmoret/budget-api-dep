@@ -6,4 +6,8 @@ class BudgetItem < ActiveRecord::Base
   scope :weekly,   -> { where(monthly: false) }
   scope :expenses, -> { where(expense: true) }
   scope :revenues, -> { where(expense: false) }
+
+  def revenue?
+    !expense?
+  end
 end

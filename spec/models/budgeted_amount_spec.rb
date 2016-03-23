@@ -5,6 +5,8 @@ RSpec.describe BudgetedAmount, type: :model do
   it { should have_many(:transactions) }
   it { should validate_presence_of(:budget_item) }
   it { should delegate_method(:default_amount).to(:budget_item) }
+  it { should delegate_method(:expense?).to(:budget_item) }
+  it { should delegate_method(:revenue?).to(:budget_item) }
 
   describe '#current' do
     before { Timecop.travel(2022, 12, 10) }

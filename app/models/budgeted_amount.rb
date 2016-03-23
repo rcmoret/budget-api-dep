@@ -4,7 +4,7 @@ class BudgetedAmount < ActiveRecord::Base
 
   belongs_to :budget_item
   validates :budget_item, presence: true
-  delegate :default_amount, to: :budget_item
+  delegate :default_amount, :expense?, :revenue?, to: :budget_item
 
   before_validation :set_month!, if: 'month.nil?'
   after_create :set_default_amount!, if: 'amount.nil?'
