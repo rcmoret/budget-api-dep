@@ -24,19 +24,35 @@ RSpec.describe BudgetedAmount, type: :model do
   end
 
   describe 'after_create callbacks' do
-    let(:default_amount) { 200 }
-    let(:item) { FactoryGirl.create(:budget_item, default_amount: default_amount) }
-    let(:budgeted_amount) do
-      FactoryGirl.create(:budgeted_amount, amount: amount, budget_item: item)
+    describe '.set_default_amount!' do
+      let(:default_amount) { 200 }
+      let(:item) { FactoryGirl.create(:budget_item, default_amount: default_amount) }
+      let(:budgeted_amount) do
+        FactoryGirl.create(:budgeted_amount, amount: amount, budget_item: item)
+      end
+      subject { budgeted_amount.amount }
+      context 'amount is nil' do
+        let(:amount) { nil }
+        it { should eq default_amount }
+      end
+      context 'amount is specified' do
+        let(:amount) { 400 }
+        it { should eq amount }
+      end
     end
-    subject { budgeted_amount.amount }
-    context 'amount is nil' do
-      let(:amount) { nil }
-      it { should eq default_amount }
-    end
-    context 'amount is specified' do
-      let(:amount) { 400 }
-      it { should eq amount }
+    describe '.set_month' do
+      let(:current_month) { '12|2029' }
+      before { allow(BudgetMonth).to receive(:piped).and_return(current_month) }
+      let(:budgeted_amount) { FactoryGirl.create(:budgeted_amount, month: month) }
+      subject { budgeted_amount.month }
+      context 'month in create attributes is nil' do
+        let(:month) { nil }
+        it { should eq current_month }
+      end
+      context 'month is specified' do
+        let(:month) { '11|2030' }
+        it { should eq month }
+      end
     end
   end
 end

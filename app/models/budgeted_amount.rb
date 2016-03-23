@@ -6,6 +6,7 @@ class BudgetedAmount < ActiveRecord::Base
   validates :budget_item, presence: true
   delegate :default_amount, to: :budget_item
 
+  before_validation :set_month!, if: 'month.nil?'
   after_create :set_default_amount!, if: 'amount.nil?'
 
   scope :current, -> { where(month: BudgetMonth.piped) }
@@ -20,6 +21,9 @@ class BudgetedAmount < ActiveRecord::Base
     self.amount = default_amount
   end
 
+  def set_month!
+    self.month = BudgetMonth.piped
+  end
 end
 
 class MonthlyAmount < BudgetedAmount
