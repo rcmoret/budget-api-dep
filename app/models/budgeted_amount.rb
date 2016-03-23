@@ -50,5 +50,16 @@ class WeeklyAmount < MonthlyAmount
   end
 
   def remaining
+    if expense?
+      difference < 0 ? difference : 0
+    else
+      difference > 0 ? difference : 0
+    end
+  end
+
+  private
+
+  def difference
+    amount - transactions.sum(:amount)
   end
 end

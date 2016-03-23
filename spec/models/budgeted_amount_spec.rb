@@ -108,10 +108,10 @@ end
 
 RSpec.describe WeeklyAmount, type: :model do
   describe '#remaining' do
-    let(:groceries) { FactoryGirl.create(:budget_item, expense: true, monthly: false, name: 'Grocery') }
+    let(:grocery) { FactoryGirl.create(:budget_item, expense: true, monthly: false, name: 'Grocery') }
     let(:gas) { FactoryGirl.create(:budget_item, expense: true, monthly: false, name: 'Gas') }
     let(:budgeted_amounts) do
-      [ FactoryGirl.create(:weekly_amount, budget_item: groceries),
+      [ FactoryGirl.create(:weekly_amount, budget_item: grocery),
         FactoryGirl.create(:weekly_amount, budget_item: gas) ]
     end
     before do
@@ -125,6 +125,50 @@ RSpec.describe WeeklyAmount, type: :model do
     it 'should apply remaining to all' do
       expect(budgeted_amounts).to all_receive(:remaining)
       WeeklyAmount.remaining
+    end
+  end
+  describe '.remaining' do
+    let(:spent) { amounts.inject(:+) }
+    let(:remaining) { amount - spent }
+    let(:budgeted_amount) { FactoryGirl.create(:weekly_amount, budget_item: item, amount: amount) }
+    before do
+      amounts.each { |amt| FactoryGirl.create(:transaction, amount: amt, monthly_amount_id: budgeted_amount.id) }
+    end
+
+    subject { budgeted_amount.remaining }
+    context 'revenue' do
+      let(:amount) { 1000 }
+      let(:item) do
+        FactoryGirl.create(:budget_item, expense: false, monthly: false, name: 'Lyft')
+      end
+      context 'made less than budgeted' do
+        let(:amounts) { [100, 300] }
+        it { should eq 600 } # 1000 - (100 + 300)
+      end
+      context 'made more than budgeted' do
+        let(:amounts) { [1000, 100] }
+        it { should eq 0 } # 1000 - (1000 + 100)
+      end
+      context 'made a "negative" amount' do
+        let(:amounts) { [-300] }
+        it { should eq 1300 } # 1000 - (-300)
+      end
+    end
+    context 'expense' do
+      let(:amount) { -1000 }
+      let(:item) { FactoryGirl.create(:budget_item, expense: true, monthly: false, name: 'Grocery') }
+      context 'spent less than budgeted' do
+        let(:amounts) { [-200, -100, -50] }
+        it { should eq -650 } # -1000 - (-200 + -100 + -50)
+      end
+      context 'spent more than budgeted' do
+        let(:amounts) { [-1000, -400] }
+        it { should be 0 } # -1000 - (-1000 + -400)
+      end
+      context '"spent" a positive amount' do
+        let(:amounts) { [-100, 300] }
+        it { should eq -1200 } # -1000 - (-100 + 300)
+      end
     end
   end
 end
