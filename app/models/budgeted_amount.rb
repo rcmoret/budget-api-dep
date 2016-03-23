@@ -30,7 +30,9 @@ class BudgetedAmount < ActiveRecord::Base
 end
 
 class MonthlyAmount < BudgetedAmount
+
   default_scope { current.joins(:budget_item).merge(BudgetItem.monthly) }
+
   scope :anticipated, -> { joins("LEFT JOIN (#{::Base::Transaction.all.to_sql}) t " +
                                  'ON t.monthly_amount_id = "monthly_amounts".id').where('t.id IS NULL') }
 
@@ -40,5 +42,13 @@ class MonthlyAmount < BudgetedAmount
 end
 
 class WeeklyAmount < MonthlyAmount
-  default_scope { current.joins(:budget_item).merge(BudgetItem.daily) }
+
+  default_scope { current.joins(:budget_item).merge(BudgetItem.weekly) }
+
+  def self.remaining
+    all.inject(0) { |total, amount| total += amount.remaining }
+  end
+
+  def remaining
+  end
 end

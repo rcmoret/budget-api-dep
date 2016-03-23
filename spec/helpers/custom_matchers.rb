@@ -9,5 +9,10 @@ module Helpers
         end
       end
     end
+    RSpec::Matchers.define :all_receive do |expected|
+      match do |actual|
+        actual.each { |a| expect(a).to receive(expected) }
+      end
+    end
   end
 end

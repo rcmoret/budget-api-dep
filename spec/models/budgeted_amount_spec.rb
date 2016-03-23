@@ -107,6 +107,24 @@ RSpec.describe MonthlyAmount, type: :model do
 end
 
 RSpec.describe WeeklyAmount, type: :model do
-  let(:item) { FactoryGirl.create(:budget_item, expense: true, monthly: false, name: 'Grocery') }
-  let(:budgeted_amount) { FactoryGirl.create(:monthly_amount, budget_item: item) }
+  describe '#remaining' do
+    let(:groceries) { FactoryGirl.create(:budget_item, expense: true, monthly: false, name: 'Grocery') }
+    let(:gas) { FactoryGirl.create(:budget_item, expense: true, monthly: false, name: 'Gas') }
+    let(:budgeted_amounts) do
+      [ FactoryGirl.create(:weekly_amount, budget_item: groceries),
+        FactoryGirl.create(:weekly_amount, budget_item: gas) ]
+    end
+    before do
+      allow(WeeklyAmount).to receive(:all).and_return(budgeted_amounts)
+      budgeted_amounts.each { |amount| allow(amount).to receive(:remaining).and_return(0) }
+    end
+    it 'should apply remaining to all' do
+      expect(budgeted_amounts).to receive(:inject)
+      WeeklyAmount.remaining
+    end
+    it 'should apply remaining to all' do
+      expect(budgeted_amounts).to all_receive(:remaining)
+      WeeklyAmount.remaining
+    end
+  end
 end
