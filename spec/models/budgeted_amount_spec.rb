@@ -3,6 +3,8 @@ require 'spec_helper'
 RSpec.describe BudgetedAmount, type: :model do
   it { should belong_to(:budget_item) }
   it { should have_many(:transactions) }
+  it { should validate_presence_of(:budget_item) }
+  it { should delegate_method(:default_amount).to(:budget_item) }
 
   describe '#current' do
     before { Timecop.travel(2022, 12, 10) }
@@ -19,6 +21,23 @@ RSpec.describe BudgetedAmount, type: :model do
     end
     subject { BudgetedAmount.remaining }
     it { should eq 30 }
+  end
+
+  describe 'after_create callbacks' do
+    let(:default_amount) { 200 }
+    let(:item) { FactoryGirl.create(:budget_item, default_amount: default_amount) }
+    let(:budgeted_amount) do
+      FactoryGirl.create(:budgeted_amount, amount: amount, budget_item: item)
+    end
+    subject { budgeted_amount.amount }
+    context 'amount is nil' do
+      let(:amount) { nil }
+      it { should eq default_amount }
+    end
+    context 'amount is specified' do
+      let(:amount) { 400 }
+      it { should eq amount }
+    end
   end
 end
 

@@ -1,11 +1,23 @@
 class BudgetedAmount < ActiveRecord::Base
   self.table_name = 'monthly_amounts'
-  belongs_to :budget_item
   has_many :transactions, class_name: 'Base::Transaction', foreign_key: :monthly_amount_id
+
+  belongs_to :budget_item
+  validates :budget_item, presence: true
+  delegate :default_amount, to: :budget_item
+
+  after_create :set_default_amount!, if: 'amount.nil?'
+
   scope :current, -> { where(month: BudgetMonth.piped) }
 
   def self.remaining
     MonthlyAmount.remaining + WeeklyAmount.remaining
+  end
+
+  private
+
+  def set_default_amount!
+    self.amount = default_amount
   end
 
 end
