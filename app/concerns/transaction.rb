@@ -15,13 +15,12 @@ end
 module Transactions
   module Queries
     extend ActiveSupport::Concern
-    module ClassMethods
-      def between(first_date, last_date, include_pending: false)
-        date_range = (first_date.to_date..last_date.to_date)
+    included do
+      scope :between, -> (first, last, include_pending: false) do
         if include_pending
-          where { clearance_date.in(date_range) | clearance_date.eq(nil) }
+          where { clearance_date.in(first.to_date..last.to_date) | clearance_date.eq(nil) }
         else
-          where { clearance_date.in(date_range) }
+          where { clearance_date.in(first.to_date..last.to_date) }
         end
       end
     end
