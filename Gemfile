@@ -14,8 +14,8 @@ group :test do
   gem 'database_cleaner'
   gem 'factory_girl'
   gem 'pry'
-  gem 'rspec'
   gem 'rack-test'
+  gem 'rspec'
   gem 'shoulda-matchers'
   gem 'timecop'
 end
