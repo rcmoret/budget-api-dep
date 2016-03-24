@@ -6,13 +6,13 @@ load ENV['PWD'] + '/Rakefile'
 require './spec/helpers/custom_matchers'
 Rake::Task['app:setup'].invoke
 
-
 RSpec.configure do |config|
+  config.include(Rack::Test::Methods)
   config.include(Shoulda::Matchers::ActiveModel, type: :model)
   config.include(Shoulda::Matchers::ActiveRecord, type: :model)
   config.include(Shoulda::Matchers::Independent)
-
   config.include(Helpers::CustomMatchers)
+
   config.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true
   end
@@ -37,4 +37,10 @@ RSpec.configure do |config|
   config.around(:each) do |example|
     DatabaseCleaner.cleaning { example.run }
   end
+end
+
+def app
+  Rack::URLMap.new(
+    '/accounts' => AccountsApi.new
+  )
 end

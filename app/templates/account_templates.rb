@@ -1,19 +1,19 @@
 class AccountTemplate
-  def initialize(account = nil)
+  def initialize(account)
     @account = account
+    return not_found if @account.nil?
   end
 
   def index
+    binding.pry
     Account.all.map(&:to_hash).to_json
   end
 
   def show
-    return not_found if @account.nil?
     @account.to_hash.to_json
   end
 
   def transactions_collection(**query_opts)
-    return not_found if @account.nil?
     transaction_template = TransactionTemplate.new(@account, query_opts)
     {
       account: @account.to_hash,
