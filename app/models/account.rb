@@ -12,15 +12,16 @@ class Account < ActiveRecord::Base
     }
   end
 
-  def balance
-    transactions.sum(:amount)
+  def balance(prior_to: nil)
+    if prior_to.nil?
+      transactions.sum(:amount).to_f
+    else
+      transactions.prior_to(prior_to).sum(:amount).to_f
+    end
   end
 
   def transaction_collection(**query_opts)
-    if query_opts.empty?
-      transactions.in_month
-    else
-      transactions.query_with(query_opts)
-    end
+    return transactions.in_month if query_opts.empty?
+    transactions.query_with(query_opts)
   end
 end

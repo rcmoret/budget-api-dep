@@ -4,6 +4,9 @@ module View
     include Transactions::Base
     include Transactions::Queries
 
+    scope :cleared,  -> { where.not(clearance_date: nil) }
+    scope :prior_to, -> (date) { cleared.where{ clearance_date < date } }
+
     def readonly?
       true
     end
