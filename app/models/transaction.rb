@@ -6,7 +6,7 @@ module Transaction
     end
 
     def amount
-      self[:amount].to_f
+      self[:amount].to_f unless self[:amount].nil?
     end
   end
 
@@ -52,6 +52,7 @@ module Transaction
     self.table_name = 'transactions'
     belongs_to :budgeted_amount, foreign_key: :monthly_amount_id
     has_one :budget_item, through: :budgeted_amount
+    validates :account, presence: true
   end
 end
 
@@ -61,6 +62,8 @@ module Primary
     has_many :subtransactions, class_name: 'Sub::Transaction', foreign_key: :primary_transaction_id,
                                dependent: :destroy
     has_one :view, class_name: 'Transaction::View', foreign_key: :id
+    validates :amount, presence: true, unless: 'subtransactions.any?'
+    validates :amount, absence: true, if: 'subtransactions.any?'
     accepts_nested_attributes_for :subtransactions
     default_scope do
       where(primary_transaction_id: nil).includes(:subtransactions)
@@ -72,8 +75,18 @@ module Sub
   class Transaction < Transaction::Record
     belongs_to :primary_transaction, class_name: 'Primary::Transaction'
     has_one :view, through: :primary_transaction
+    validates :amount, presence: true
+
+    before_validation :set_account_id!, if: 'account_id.nil?'
+
     default_scope do
       where.not(primary_transaction_id: nil)
+    end
+
+    private
+
+    def set_account_id!
+      self[:account_id] = primary_transaction.account_id
     end
   end
 end

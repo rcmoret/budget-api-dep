@@ -26,6 +26,11 @@ RSpec.describe Transaction::View, type: :model do
   end
 end
 
+RSpec.describe Transaction::Record, type: :model do
+  it { should belong_to(:account) }
+  it { should validate_presence_of(:account) }
+end
+
 RSpec.describe Primary::Transaction, type: :model do
   it { should belong_to(:account) }
   it { should belong_to(:budgeted_amount) }
@@ -33,6 +38,36 @@ RSpec.describe Primary::Transaction, type: :model do
   it { should have_many(:subtransactions) }
   it { should have_one(:view) }
   it { should accept_nested_attributes_for(:subtransactions) }
+
+  describe 'amount validation' do
+    context 'primary without subtransactions' do
+      context 'amount is nil' do
+        subject { FactoryGirl.build(:transaction, amount: nil) }
+        it { should_not be_valid }
+      end
+      context 'amount is an empty string' do
+        subject { FactoryGirl.build(:transaction, amount: '') }
+        it { should_not be_valid }
+      end
+    end
+    context 'primary with subtransactions' do
+      let(:subs) do
+        [{ description: 'Kroger', amount: -20, account_id: 1 }]
+      end
+      context 'amount is nil' do
+        subject do
+          FactoryGirl.build(:transaction, amount: nil, subtransactions_attributes: subs)
+        end
+        it { should be_valid }
+      end
+      context 'amount is not nil' do
+        subject do
+          FactoryGirl.build(:transaction, amount: 100, subtransactions_attributes: subs)
+        end
+        it { should_not be_valid }
+      end
+    end
+  end
 
   describe '.between' do
     let(:account) { FactoryGirl.create(:account) }
@@ -69,4 +104,16 @@ RSpec.describe Sub::Transaction, type: :model do
   it { should have_one(:view) }
   it { should belong_to(:budgeted_amount) }
   it { should have_one(:budget_item) }
+  context 'account/amount validation' do
+    before { allow_any_instance_of(Sub::Transaction).to receive(:account_id) { 1 } }
+    it { should validate_presence_of(:account) }
+    it { should validate_presence_of(:amount) }
+  end
+
+  describe 'set_account_id!' do
+    let(:primary) { FactoryGirl.create(:transaction) }
+    let(:sub) { FactoryGirl.build(:subtransaction, primary_transaction: primary, account_id: nil) }
+    before { sub.valid? }
+    it { expect(sub.account_id).to_not be_nil }
+  end
 end
