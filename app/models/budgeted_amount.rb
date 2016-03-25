@@ -1,6 +1,6 @@
 class BudgetedAmount < ActiveRecord::Base
   self.table_name = 'monthly_amounts'
-  has_many :transactions, class_name: 'Base::Transaction', foreign_key: :monthly_amount_id
+  has_many :transactions, class_name: 'Transaction::Record', foreign_key: :monthly_amount_id
 
   belongs_to :budget_item
   validates :budget_item, presence: true
@@ -33,7 +33,7 @@ class MonthlyAmount < BudgetedAmount
 
   default_scope { current.joins(:budget_item).merge(BudgetItem.monthly) }
 
-  scope :anticipated, -> { joins("LEFT JOIN (#{::Base::Transaction.all.to_sql}) t " +
+  scope :anticipated, -> { joins("LEFT JOIN (#{::Transaction::Record.all.to_sql}) t " +
                                  'ON t.monthly_amount_id = "monthly_amounts".id').where('t.id IS NULL') }
 
   def self.remaining

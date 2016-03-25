@@ -1,5 +1,5 @@
 class Account < ActiveRecord::Base
-  has_many :transactions, class_name: 'View::Transaction'
+  has_many :transactions, class_name: 'Transaction::View'
   has_many :primary_transactions, class_name: 'Primary::Transaction'
 
   def to_hash

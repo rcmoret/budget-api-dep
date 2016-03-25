@@ -5,7 +5,6 @@ class AccountTemplate
   end
 
   def index
-    binding.pry
     Account.all.map(&:to_hash).to_json
   end
 

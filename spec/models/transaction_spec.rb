@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe View::Transaction, type: :model do
+RSpec.describe Transaction::View, type: :model do
   it { should belong_to(:account) }
   it { should be_readonly }
   describe '.attributes' do
@@ -48,15 +48,15 @@ RSpec.describe Primary::Transaction, type: :model do
     let(:pending) do
       FactoryGirl.create_list(:transaction, 2, clearance_date: nil, account: account)
     end
-    let(:dates) { [2.months.ago, Date.today] }
+    let(:dates) { (2.months.ago..Date.today) }
     context 'pending false (default)' do
-      subject { Primary::Transaction.between(*dates) }
+      subject { Primary::Transaction.between(dates) }
       it { should include(old_transactions) }
       it { should include(this_months) }
       it { should_not include(pending) }
     end
     context 'pending true' do
-      subject { Primary::Transaction.between(*dates, include_pending: true) }
+      subject { Primary::Transaction.between(dates, include_pending: true) }
       it { should include(old_transactions) }
       it { should include(this_months) }
       it { should include(pending) }
