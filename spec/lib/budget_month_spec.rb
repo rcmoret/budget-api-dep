@@ -62,5 +62,9 @@ RSpec.describe BudgetMonth do
     describe 'piped' do
       it { expect(subject.piped).to eq '03|2099' }
     end
+    describe 'date range' do
+      let(:expected_range) { (subject.first_day..subject.last_day) }
+      it { expect(subject.date_range).to eq expected_range }
+    end
   end
 end

@@ -17,6 +17,10 @@ class BudgetMonth
     (last_day - @date + 1).to_i
   end
 
+  def date_range
+    (first_day.to_date..last_day.to_date)
+  end
+
   def puts_current_month
     @month.strftime('%B')
   end
