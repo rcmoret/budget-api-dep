@@ -11,7 +11,9 @@ Top Level Resources
 Endpoints
 ---------
 *Accounts*
+
 | HTTP Verb   | Endpoint      | Required Params | Optional Query Params | Expected return           |
+|-------------|---------------|-----------------|-----------------------|---------------------------|
 | GET (index) | /accounts     | NONE            | NONE                  | all (not scoped accounts) |
 | GET (show)  | /accounts/:id | :id             | NONE                  | resource as json / 404    |
 | POST        | /accounts     | :name           | :cash_flow, :hsa      | 201 + resource / 400      |
@@ -19,15 +21,20 @@ Endpoints
 | DELETE      | /accounts/:id | :id             | NONE                  | 200 / 400                 |
 
 *Transactions*
+
 Transactions are scoped to account so all endpoints will begin: /action/:id
+
 | HTTP Verb   | Endpoint      | Required Params | Optional Query Params | Expected return                                                               |
+|-------------|---------------|-----------------|-----------------------|----------------                                                               |
 | GET (index) | /transactions | NONE            | :budget_month         | resources where clearance_date IN current month (or range if provided) |
 
 JSON Representations
 --------------------
 
 *Accounts*
+
 Index/Show
+```
   {
     'id' : '10',
     'name' : 'first bank'
@@ -35,8 +42,11 @@ Index/Show
     'cash_flow' : true,
     'health_savings_account' : false
   }
+```
 
 Account Transaction Collection
+
+```
   {
     'account': {
       'id': '10',
@@ -76,9 +86,10 @@ Account Transaction Collection
               'monthly_amount_id': 6710,
               'qualified_medical_expense': false,
               'tax_deduction': true
-            },
-            ... # there should always be 2 or more sub transactions
+            }
+            //...there should always be 2 or more sub transactions
           ]
       }
     ]
   }
+```
