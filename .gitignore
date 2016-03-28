@@ -1,4 +1,7 @@
 /spec/examples.txt
 
+/log/*
+!/log/.keep
+
 /db/dumps/*
 !/db/dumps/.keep
