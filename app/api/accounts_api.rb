@@ -24,5 +24,6 @@ class AccountsApi < Sinatra::Base
 
   def get_account!
     @account = id.nil? ? :index : Account.find_by_id(id)
+    render_404('account', id) if @account.nil?
   end
 end

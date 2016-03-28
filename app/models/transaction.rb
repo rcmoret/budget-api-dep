@@ -28,6 +28,10 @@ module Transaction
       def total
         sum(:amount).to_f
       end
+
+      def as_collection
+        all.map(&:to_hash)
+      end
     end
   end
 end

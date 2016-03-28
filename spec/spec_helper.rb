@@ -3,11 +3,12 @@ require 'rake'
 require 'database_cleaner'
 Bundler.require(:test)
 load ENV['PWD'] + '/Rakefile'
-require './spec/helpers/custom_matchers'
+Dir['./spec/helpers/*.rb'].each { |f| require f }
 Rake::Task['app:setup'].invoke
 
 RSpec.configure do |config|
   config.include(Helpers::CustomMatchers)
+  config.include(Helpers::SharedExamples)
   config.include(Rack::Test::Methods)
   config.include(Shoulda::Matchers::ActiveModel, type: :model)
   config.include(Shoulda::Matchers::ActiveRecord, type: :model)
