@@ -1,6 +1,8 @@
 class AccountsApi < Sinatra::Base
   include Api::Helpers
 
+  ACCOUNT_PARAMS = %w(name cash_flow health_savings_account)
+
   before do
     get_account!
     get_template!
@@ -26,6 +28,14 @@ class AccountsApi < Sinatra::Base
     end
   end
 
+  put '/:id' do
+    if @account.update_attributes(update_params)
+      render_updated(@account.to_hash)
+    else
+      render_error(400)
+    end
+  end
+
   def validate_create_params!
     render_422 if ['name'].blank?
   end
@@ -43,8 +53,14 @@ class AccountsApi < Sinatra::Base
     end
   end
 
+  def whitelisted_filterd_params
+    params.slice(*ACCOUNT_PARAMS).reject { |k,v| v.blank? }
+  end
+
   def create_params
     require_parameters!('name')
-    params.slice('name', 'cash_flow', 'health_savings_account').reject { |k,v| v.blank? }
+    whitelisted_filterd_params
   end
+
+  alias_method :update_params, :whitelisted_filterd_params
 end

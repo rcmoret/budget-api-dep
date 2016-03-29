@@ -87,6 +87,20 @@ RSpec.describe 'AccountsApi', type: :request do
       end
     end
   end
-  describe 'POST /accounts' do
+  describe 'PUT /accounts/:id' do
+    let!(:account) { FactoryGirl.create(:account, cash_flow: true, name: checking.name) }
+    let(:endpoint) { "/accounts/#{account.id}" }
+    let(:request_body) { { cash_flow: false } }
+    let(:response) { put endpoint, request_body }
+    let(:request) { response }
+    let(:status) { response.status }
+    it 'should return a 200 and update the account' do
+      expect(status).to be 200
+    end
+    it 'should update the account record' do
+      expect { request }.to change { account.reload.cash_flow }
+    end
+    subject { JSON.parse(response.body) }
+    include_examples 'a JSON account'
   end
 end
