@@ -9,14 +9,17 @@ RSpec.describe Transaction::View, type: :model do
       {
         id: transaction.id,
         description: transaction.description,
-        name: nil,
+        budget_item: nil,
         clearance_date: nil,
         notes: nil,
         receipt: nil,
         check_number: nil,
         account_id: transaction.account_id,
-        amount: transaction.amount,
-        subtransactions: []
+        account_name: transaction.account.name,
+        amount: transaction.amount.to_d,
+        subtransactions: [],
+        tax_deduction: false,
+        qualified_medical_expense: false
       }
     end
     subject { transaction.view.to_hash }

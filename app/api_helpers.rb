@@ -31,5 +31,11 @@ module Api
     def render_new(resource)
       [201, resource.to_json]
     end
+
+    def require_parameters! *args
+      return if args.all? { |key| params.has_key?(key) && params[key].present? }
+      missing_keys = args.select { |key| params[key].blank? }
+      render_error(422, "Missing required paramater(s): '#{missing_keys.join(',')}'")
+    end
   end
 end

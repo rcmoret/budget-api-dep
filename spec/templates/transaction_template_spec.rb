@@ -10,10 +10,9 @@ RSpec.describe TransactionTemplate do
   describe '.metadata' do
     subject { template.metadata }
     it 'should return some metadata' do
-      expect(subject[:account_id]).to eq account.id
-      expect(subject[:first_date]).to eq budget_month.first_day
-      expect(subject[:last_date]).to eq budget_month.last_day
-      expect(subject[:balance]).to eq transaction.amount
+      expect(subject[:date_range].first).to eq budget_month.first_day
+      expect(subject[:date_range].last).to eq budget_month.last_day
+      expect(subject[:prior_balance]).to eq transaction.amount
       expect(subject[:query_options]).to be_empty
     end
   end

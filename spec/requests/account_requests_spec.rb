@@ -66,11 +66,13 @@ RSpec.describe 'AccountsApi', type: :request do
   describe 'POST /accounts' do
     let(:endpoint) { '/accounts' }
     context 'valid params' do
-      let(:body) { { name: '3rd National' } }
+      let(:body) { { name: checking.name } }
       let(:response) { post endpoint, body }
-      it 'should' do
+      it 'should create a new resource' do
         expect { response }.to change { Account.count }.by 1
       end
+      subject { JSON.parse(response.body) }
+      include_examples 'a JSON account'
     end
   end
 end

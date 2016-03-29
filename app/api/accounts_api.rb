@@ -20,7 +20,7 @@ class AccountsApi < Sinatra::Base
 
   post '/' do
     if @account.save
-      render_new(@account)
+      render_new(@account.to_hash)
     else
       render_error(400)
     end
@@ -44,7 +44,8 @@ class AccountsApi < Sinatra::Base
   end
 
   def create_params
-    render_error(422, 'Missing required paramater: "name"') if request.params['name'].blank?
-    request.params.slice('name', 'cash_flow', 'health_savings_account').reject { |k,v| v.blank? }
+    require_parameters!('name')
+    params.slice('name', 'cash_flow', 'health_savings_account').reject { |k,v| v.blank? }
   end
+  alias_method :update_params, :create_params
 end
