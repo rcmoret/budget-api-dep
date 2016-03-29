@@ -74,5 +74,19 @@ RSpec.describe 'AccountsApi', type: :request do
       subject { JSON.parse(response.body) }
       include_examples 'a JSON account'
     end
+    context 'invalid params (lacking "name")' do
+      let(:post_body) { { cash_flow: false } }
+      let(:response) { post endpoint, post_body }
+      let(:status) { response.status }
+      let(:response_body) { JSON.parse(response.body) }
+      it 'should return a 422 status' do
+        expect(status).to be 422
+      end
+      it 'should have an error message' do
+        expect(response_body['error']).to eq "Missing required paramater(s): 'name'"
+      end
+    end
+  end
+  describe 'POST /accounts' do
   end
 end

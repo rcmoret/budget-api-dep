@@ -47,5 +47,4 @@ class AccountsApi < Sinatra::Base
     require_parameters!('name')
     params.slice('name', 'cash_flow', 'health_savings_account').reject { |k,v| v.blank? }
   end
-  alias_method :update_params, :create_params
 end
