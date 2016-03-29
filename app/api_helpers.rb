@@ -12,12 +12,10 @@ module Api
       nil
     end
 
-    def resource_should_be_found?
-      %w(PUT GET).include?(request.request_method)
-    end
-
-    def post_request?
-      request.request_method == 'POST'
+    %w(post get put delete).each do |http_verb|
+      define_method "#{http_verb}_request?" do
+        request.request_method == http_verb.upcase
+      end
     end
 
     def render_error(code, message = nil)

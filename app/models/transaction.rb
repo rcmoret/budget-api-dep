@@ -66,11 +66,26 @@ module Primary
     has_many :subtransactions, class_name: 'Sub::Transaction', foreign_key: :primary_transaction_id,
                                dependent: :destroy
     has_one :view, class_name: 'Transaction::View', foreign_key: :id
-    validates :amount, presence: true, unless: 'subtransactions.any?'
-    validates :amount, absence: true, if: 'subtransactions.any?'
+    validates :amount, presence: true, unless: :has_subtransactions?
+    validates :amount, absence: true, if: :has_subtransactions?
+    before_validation :set_account_id!, if: :has_subtransactions?
     accepts_nested_attributes_for :subtransactions
     default_scope do
       where(primary_transaction_id: nil).includes(:subtransactions)
+    end
+
+    def has_subtransactions?
+      subtransactions.any?
+    end
+
+    def to_hash
+      view.to_hash
+    end
+
+    private
+
+    def set_account_id!
+      subtransactions.each { |sub| sub.account_id = account_id }
     end
   end
 end
@@ -81,16 +96,8 @@ module Sub
     has_one :view, through: :primary_transaction
     validates :amount, presence: true
 
-    before_validation :set_account_id!, if: 'account_id.nil?'
-
     default_scope do
       where.not(primary_transaction_id: nil)
-    end
-
-    private
-
-    def set_account_id!
-      self[:account_id] = primary_transaction.account_id
     end
   end
 end

@@ -112,11 +112,4 @@ RSpec.describe Sub::Transaction, type: :model do
     it { should validate_presence_of(:account) }
     it { should validate_presence_of(:amount) }
   end
-
-  describe 'set_account_id!' do
-    let(:primary) { FactoryGirl.create(:transaction) }
-    let(:sub) { FactoryGirl.build(:subtransaction, primary_transaction: primary, account_id: nil) }
-    before { sub.valid? }
-    it { expect(sub.account_id).to_not be_nil }
-  end
 end
