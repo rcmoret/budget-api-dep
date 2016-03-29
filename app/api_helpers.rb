@@ -12,10 +12,24 @@ module Api
       nil
     end
 
-    def render_404(resource, id)
-      message = "Could not find a(n) #{resource} with id: #{id}"
-      halt 404, { error: message }.to_json
+    def resource_should_be_found?
+      %w(PUT GET).include?(request.request_method)
     end
 
+    def post_request?
+      request.request_method == 'POST'
+    end
+
+    def render_error(code, message = nil)
+      halt code, { error: message }.to_json
+    end
+
+    def render_404(resource, id)
+      render_error(404, "Could not find a(n) #{resource} with id: #{id}")
+    end
+
+    def render_new(resource)
+      [201, resource.to_json]
+    end
   end
 end

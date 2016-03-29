@@ -2,7 +2,6 @@ module Helpers
   module SharedExamples
     shared_examples_for 'a JSON account' do
       describe 'account as JSON' do
-        subject { parsed_response['account'] }
         it 'should include an id' do
           expect(subject['id']).to be_a(Fixnum)
         end
@@ -22,7 +21,6 @@ module Helpers
     end
     shared_examples_for 'account/transactions metadata JSON' do
       describe 'metadata' do
-        subject { parsed_response['metadata'] }
         it 'should have the date range used for the query' do
           range = subject['date_range']
           expect(range.first).to respond_to :to_date
