@@ -20,17 +20,17 @@ RSpec.describe 'AccountsApi /transactions/:id', type: :request do
       include_examples 'JSON transaction'
     end
     context 'transaction with subs' do
+      let(:subtransactions_attributes) do
+        [ { description: 'Clothes', amount: -20.0 },
+          { description: 'Food', amount: -35.0 } ]
+      end
       let(:post_body) do
         { description: 'Costco', amount: '',
-          subtransactions_attributes:
-          [
-            { description: 'Clothes', amount: -20.0 },
-            { description: 'Food', amount: -35.0 }
-          ]
-        }
+          subtransactions_attributes: subtransactions_attributes }
       end
       let(:response) { post endpoint, post_body }
       it { expect(response.status).to be 201 }
+      include_examples 'JSON transaction with subtransactions'
     end
   end
 end
