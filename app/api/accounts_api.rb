@@ -37,10 +37,19 @@ class AccountsApi < Sinatra::Base
     end
   end
 
-  post '/:id/transactions' do
+  post '/:account_id/transactions' do
     build_transaction!
     if @transaction.save
       render_new(@transaction.to_hash)
+    else
+      render_error(400)
+    end
+  end
+
+  put '/:account_id/transactions/:id' do
+    @transaction = Primary::Transaction.find_by(account_id: params['account_id'], id: params['id'])
+    if @transaction.update_attributes(params.slice(*TRANSACTION_PARAMS))
+      render_updated(@transaction.to_hash)
     else
       render_error(400)
     end

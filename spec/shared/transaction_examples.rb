@@ -6,10 +6,10 @@ module SharedExamples
       end
       it 'should have a description' do
         description = subject.fetch('description')
-        expect(description).to eq post_body[:description]
+        expect(description).to eq transaction_attributes[:description]
       end
       it 'should have a clearance_date' do
-        expect(subject['clearance_date']).to eq post_body[:clearance_date]
+        expect(subject['clearance_date']).to eq transaction_attributes[:clearance_date]
       end
       it 'should have the account info'do
         expect(subject['account_id']).to eq checking.id
@@ -32,7 +32,7 @@ module SharedExamples
       include_examples 'JSON transaction (base)'
       it 'should have an amount' do
         amount = subject['amount'].to_f
-        expect(amount).to eq post_body[:amount]
+        expect(amount).to eq transaction_attributes[:amount]
       end
     end
     shared_examples_for 'JSON transaction with subtransactions' do
