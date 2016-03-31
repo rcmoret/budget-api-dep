@@ -3,7 +3,7 @@ class AccountTemplate
     @account = account
   end
 
-  def index
+  def self.index
     Account.all.map(&:to_hash).to_json
   end
 
@@ -12,11 +12,6 @@ class AccountTemplate
   end
 
   def transactions_collection
-    {
-      account: @account.to_hash,
-      metadata: transaction_template.metadata,
-      transactions: transaction_template.collection
-    }.to_json
   end
 
   private

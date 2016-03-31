@@ -6,12 +6,6 @@ module Api
       end
     end
 
-    def id
-      request.path.match(%r{/\w+/(\d+)})[1]
-    rescue
-      nil
-    end
-
     %w(post get put delete).each do |http_verb|
       define_method "#{http_verb}_request?" do
         request.request_method == http_verb.upcase

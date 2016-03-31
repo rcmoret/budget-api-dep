@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 group :development do
   gem 'sinatra'
+  gem 'sinatra-contrib'
 
   gem 'activerecord'
   gem 'pg'
