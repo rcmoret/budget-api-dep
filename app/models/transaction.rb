@@ -69,6 +69,7 @@ module Primary
     validates :amount, presence: true, unless: :has_subtransactions?
     validates :amount, absence: true, if: :has_subtransactions?
     before_validation :set_account_id!, if: :has_subtransactions?
+    before_validation :set_amount_to_nil!, if: :has_subtransactions?
     accepts_nested_attributes_for :subtransactions
     default_scope do
       where(primary_transaction_id: nil).includes(:subtransactions)
@@ -86,6 +87,10 @@ module Primary
 
     def set_account_id!
       subtransactions.each { |sub| sub.account_id = account_id }
+    end
+
+    def set_amount_to_nil!
+      self[:amount] = nil
     end
   end
 end

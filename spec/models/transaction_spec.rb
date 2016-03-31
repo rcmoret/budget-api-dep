@@ -53,26 +53,29 @@ RSpec.describe Primary::Transaction, type: :model do
         it { should_not be_valid }
       end
     end
-    context 'primary with subtransactions' do
-      let(:subs) do
-        [{ description: 'Kroger', amount: -20, account_id: 1 }]
+  end
+
+  describe 'nil-ify amount when subtransactions present' do
+    let(:sub_attrs) do
+      [ { description: 'Food', amount: -20 }, { description: 'Stuff', amount: -25 } ]
+    end
+    context 'new transaction' do
+      let(:transaction) do
+        FactoryGirl.create(:transaction, amount: -200, subtransactions_attributes: sub_attrs)
       end
-      context 'amount is nil' do
-        subject do
-          FactoryGirl.build(:transaction, amount: nil, subtransactions_attributes: subs)
-        end
-        it { should be_valid }
-      end
-      context 'amount is not nil' do
-        subject do
-          FactoryGirl.build(:transaction, amount: 100, subtransactions_attributes: subs)
-        end
-        it { should_not be_valid }
-      end
+      it { expect(transaction.amount).to be_nil }
+      it { expect(transaction.view.amount).to eq -45 }
+    end
+    context 'updating existing' do
+      let(:transaction) { FactoryGirl.create(:transaction, amount: -200) }
+      before { transaction.update_attributes(subtransactions_attributes: sub_attrs) }
+      it { expect(transaction.amount).to be_nil }
+      it { expect(transaction.view.amount).to eq -45 }
     end
   end
 
   describe '.between' do
+    before { Timecop.travel(Date.new(2016, 3, 14)) }
     let(:account) { FactoryGirl.create(:account) }
     let!(:old_transactions) do
       FactoryGirl.create_list(:transaction, 2, clearance_date: 2.months.ago, account: account)
