@@ -41,7 +41,7 @@ class MonthlyAmount < BudgetedAmount
   end
 end
 
-class WeeklyAmount < MonthlyAmount
+class WeeklyAmount < BudgetedAmount
 
   default_scope { current.joins(:budget_item).merge(BudgetItem.weekly) }
 
