@@ -19,7 +19,7 @@ class AccountsApi < Sinatra::Base
     end
 
     put '' do
-      if account.update_attributes(update_params)
+      if account.update_attributes(filtered_params(*ACCOUNT_PARAMS))
         render_updated(account.to_hash)
       else
         render_error(400)
@@ -40,7 +40,7 @@ class AccountsApi < Sinatra::Base
     end
 
     put %r{/transactions/(?<id>\d+)} do
-      if transaction.update_attributes(transaction_params)
+      if transaction.update_attributes(filtered_params(*TRANSACTION_PARAMS))
         render_updated(transaction.to_hash)
       else
         render_error(400)

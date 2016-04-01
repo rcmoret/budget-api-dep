@@ -24,18 +24,9 @@ module Helpers
     end
 
     def create_params
-      return whitelisted_filterd_params unless params['name'].blank?
-      render_error(422, "Missing required paramater(s): 'name'")
+      require_parameters!('name')
+      filtered_params(*ACCOUNT_PARAMS)
     end
-
-    def transaction_params
-      params.slice(*TRANSACTION_PARAMS).reject { |k,v| v.blank? }
-    end
-
-    def whitelisted_filterd_params
-      params.slice(*ACCOUNT_PARAMS).reject { |k,v| v.blank? }
-    end
-    alias_method :update_params, :whitelisted_filterd_params
 
     def transaction
       @transaction ||= find_or_build_transaction!
@@ -44,7 +35,7 @@ module Helpers
     def find_or_build_transaction!
       transaction = account.primary_transactions.find_or_initialize_by(id: transaction_id)
       return transaction if transaction.persisted?
-      transaction.assign_attributes(transaction_params)
+      transaction.assign_attributes(filtered_params(*TRANSACTION_PARAMS))
       transaction
     end
   end
