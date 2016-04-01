@@ -17,6 +17,7 @@ group :test do
   gem 'pry'
   gem 'rack-test'
   gem 'rspec'
+  gem 'rspec-its'
   gem 'shoulda-matchers'
   gem 'timecop'
 end
