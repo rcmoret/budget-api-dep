@@ -3,9 +3,9 @@ require 'rake'
 require 'database_cleaner'
 Bundler.require(:test)
 load ENV['PWD'] + '/Rakefile'
+Rake::Task['app:setup'].invoke
 Dir['./spec/helpers/*.rb'].each { |f| require f }
 Dir['./spec/shared/*_examples.rb'].each { |f| require f }
-Rake::Task['app:setup'].invoke
 
 RSpec.configure do |config|
   config.include(Helpers::CustomMatchers)
@@ -39,6 +39,7 @@ end
 
 def app
   Rack::URLMap.new(
-    '/accounts' => AccountsApi.new
+    '/accounts' => AccountsApi.new,
+    '/items' => BudgetItemApi.new
   )
 end

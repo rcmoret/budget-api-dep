@@ -93,3 +93,14 @@ Account Transaction Collection
     ]
   }
 ```
+
+* Budget Item *
+```
+  {
+    'id': 131,
+    'name': 'Grocery',
+    'expense': true,
+    'monthly': false,
+    'default_amount': -500.0
+  }
+```
