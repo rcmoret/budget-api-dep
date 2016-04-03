@@ -1,5 +1,3 @@
-require 'sinatra/namespace'
-
 class AccountsApi < Sinatra::Base
   register Sinatra::Namespace
   include SharedHelpers

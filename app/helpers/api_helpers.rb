@@ -42,7 +42,7 @@ module Helpers
 
   module BudgetItemApiHelpers
     def item_id
-      params['id']
+      params['item_id']
     end
 
     def budget_item
