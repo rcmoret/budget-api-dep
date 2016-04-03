@@ -23,5 +23,17 @@ class BudgetItemApi < Sinatra::Base
         render_error(400)
       end
     end
+
+    post '/amount' do
+      amount.save ? render_new(amount) : render_error(400)
+    end
+
+    def amount
+      @amount ||= budget_item.budgeted_amounts.new(amount_params)
+    end
+
+    def amount_params
+      filtered_params(*%w(amount month))
+    end
   end
 end

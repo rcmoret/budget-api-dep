@@ -58,4 +58,29 @@ RSpec.describe BudgetItemApi do
     its(:default_amount) { should eq default_amount }
     its(:id) { should eq grocery.id }
   end
+  describe 'item/amount(s) endpoints' do
+    let(:endpoint) { "/items/#{grocery.id}/amount" }
+    before { allow(BudgetMonth).to receive(:piped) { month } }
+    let(:month) { '03|2122' }
+    let(:request) { proc { post(endpoint, post_params) } }
+    let(:response) { request.call }
+    let(:body) { JSON.parse(response.body) }
+    let(:status) { { status: response.status } }
+    subject { OpenStruct.new(body.merge(status)) }
+    context "use current month & item's default amount" do
+      let(:post_params) { {} }
+      its(:status) { should be 201 }
+      its(:month) { should eq month }
+      its(:amount) { should eq grocery.default_amount }
+      its(:budget_item_id) { should eq grocery.id }
+    end
+    context 'custom amount' do
+      let(:amount) { -200 }
+      let(:post_params) { { amount: amount } }
+      its(:status) { should be 201 }
+      its(:month) { should eq month }
+      its(:amount) { should eq amount }
+      its(:budget_item_id) { should eq grocery.id }
+    end
+  end
 end
