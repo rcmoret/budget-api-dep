@@ -35,25 +35,35 @@ class ItemsApi < Sinatra::Base
         render_error(400)
       end
     end
+  end
 
-    def amount_id
-      params['amount_id']
+  namespace '/amounts' do
+    get '/monthly' do
+      render_all(Budget::MonthlyAmount.anticipated)
     end
 
-    def amount
-      @amount ||= find_or_initialize_budget_amount!
+    get '/weekly' do
+      render_all(Budget::WeeklyAmount)
     end
+  end
 
-    def find_or_initialize_budget_amount!
-      if amount_id.present?
-        Budget::Amount.find_by_id(amount_id) || render_404('budget amount', amount_id)
-      else
-        budget_item.amounts.new(amount_params)
-      end
-    end
+  def amount_id
+    params['amount_id']
+  end
 
-    def amount_params
-      filtered_params(*%w(amount month))
+  def amount
+    @amount ||= find_or_initialize_budget_amount!
+  end
+
+  def find_or_initialize_budget_amount!
+    if amount_id.present?
+      Budget::Amount.find_by_id(amount_id) || render_404('budget amount', amount_id)
+    else
+      budget_item.amounts.new(amount_params)
     end
+  end
+
+  def amount_params
+    filtered_params(*%w(amount month))
   end
 end

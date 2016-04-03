@@ -91,5 +91,29 @@ RSpec.describe ItemsApi do
       its(:status) { should be 200 }
       it { expect { request.call }.to change { weekly.reload.amount } }
     end
+    describe 'GET /items/amounts/(monthly|weekly)' do
+      include_context 'request specs'
+      let(:method) { 'get' }
+      let!(:monthly_amount) { FactoryGirl.create(:monthly_amount) }
+      let!(:weekly_amount) { FactoryGirl.create(:weekly_amount) }
+      context 'monthly' do
+        let(:endpoint) { '/items/amounts/monthly' }
+        let(:first_json) { subject.body.first }
+        its(:status) { should be 200 }
+        it { expect(first_json['id']).to eq monthly_amount.id }
+        it { expect(first_json['amount']).to eq monthly_amount.amount }
+        it { expect(first_json['remaining']).to eq monthly_amount.amount }
+        it { expect(first_json['budget_item_id']).to eq monthly_amount.budget_item_id }
+      end
+      context 'weekly' do
+        let(:endpoint) { '/items/amounts/weekly' }
+        let(:first_json) { subject.body.first }
+        its(:status) { should be 200 }
+        it { expect(first_json['id']).to eq weekly_amount.id }
+        it { expect(first_json['amount']).to eq weekly_amount.amount }
+        it { expect(first_json['remaining']).to eq weekly_amount.remaining }
+        it { expect(first_json['budget_item_id']).to eq weekly_amount.budget_item_id }
+      end
+    end
   end
 end

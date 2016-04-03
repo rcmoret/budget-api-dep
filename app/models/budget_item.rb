@@ -44,12 +44,18 @@ module Budget
 
     scope :current, -> { where(month: BudgetMonth.piped) }
 
+    PUBLIC_ATTRS = %w(id month amount budget_item_id)
+
     def self.remaining
       MonthlyAmount.remaining + WeeklyAmount.remaining
     end
 
     def to_hash
-      attributes.slice(*%w(id month amount budget_item_id)).merge('amount' => amount)
+      attributes.slice(*PUBLIC_ATTRS).merge('amount' => amount)
+    end
+
+    def to_json
+      to_hash.to_json
     end
 
     def amount
@@ -67,7 +73,6 @@ module Budget
     end
   end
 
-
   class MonthlyAmount < Budget::Amount
 
     default_scope { current.joins(:budget_item).merge(Budget::Item.monthly) }
@@ -78,6 +83,10 @@ module Budget
     def self.remaining
       anticipated.sum(:amount)
     end
+
+    def to_hash
+      super.merge('remaining' => amount)
+    end
   end
 
   class WeeklyAmount < Budget::Amount
@@ -86,6 +95,10 @@ module Budget
 
     def self.remaining
       all.inject(0) { |total, amount| total += amount.remaining }
+    end
+
+    def to_hash
+      super.merge('remaining' => remaining)
     end
 
     def remaining

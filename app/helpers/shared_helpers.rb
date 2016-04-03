@@ -11,6 +11,10 @@ module SharedHelpers
     end
   end
 
+  def render_all(klass)
+    [200, klass.all.map(&:to_hash).to_json]
+  end
+
   def render_error(code, message = nil)
     halt code, { error: message }.to_json
   end
