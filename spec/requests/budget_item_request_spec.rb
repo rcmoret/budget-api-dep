@@ -1,12 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe BudgetItemApi do
-  let(:grocery) do
-    FactoryGirl.create(:budget_item, monthly: false, expense: true, default_amount: -100)
-  end
-  let(:paycheck) do
-    FactoryGirl.create(:budget_item, monthly: true, expense: false, default_amount: 1000)
-  end
+  let(:grocery) { FactoryGirl.create(:weekly_expense) }
+  let(:paycheck) { FactoryGirl.create(:monthly_income) }
   let!(:items) { [grocery, paycheck] }
   let(:endpoint) { 'items/' }
   describe 'GET routes' do
@@ -51,5 +47,15 @@ RSpec.describe BudgetItemApi do
       its(:error) { should eq error_message }
       its(:status) { should be 422 }
     end
+  end
+  describe 'PUT /item/:id' do
+    let(:endpoint) { "/items/#{grocery.id}" }
+    let(:default_amount) { -223.0 }
+    let(:request_body) { { default_amount: -223.0 } }
+    let(:request) { put endpoint, request_body }
+    subject { OpenStruct.new(JSON.parse(request.body).merge(status: request.status)) }
+    its(:status) { should be 200 }
+    its(:default_amount) { should eq default_amount }
+    its(:id) { should eq grocery.id }
   end
 end

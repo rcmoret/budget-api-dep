@@ -59,7 +59,11 @@ module Helpers
 
     def create_params
       require_parameters!('name', 'default_amount')
-      params.slice(*BudgetItem::PUBLIC_ATTRS)
+      filtered_params(*BudgetItem::PUBLIC_ATTRS)
+    end
+
+    def update_params
+      filtered_params(*BudgetItem::PUBLIC_ATTRS)
     end
   end
 end
