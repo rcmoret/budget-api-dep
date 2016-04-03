@@ -60,16 +60,13 @@ RSpec.describe ItemsApi do
   end
   describe 'item/amount(s) endpoints' do
     describe 'POST to /items/:item_id/amount ' do
+      include_context 'request specs'
       let(:endpoint) { "/items/#{grocery.id}/amount" }
       before { allow(BudgetMonth).to receive(:piped) { month } }
       let(:month) { '03|2122' }
-      let(:request) { proc { post(endpoint, post_params) } }
-      let(:response) { request.call }
-      let(:body) { JSON.parse(response.body) }
-      let(:status) { { status: response.status } }
-      subject { OpenStruct.new(body.merge(status)) }
+      let(:method) { 'post' }
       context "use current month & item's default amount" do
-        let(:post_params) { {} }
+        let(:request_body) { {} }
         its(:status) { should be 201 }
         its(:month) { should eq month }
         its(:amount) { should eq grocery.default_amount }
@@ -77,7 +74,7 @@ RSpec.describe ItemsApi do
       end
       context 'custom amount' do
         let(:amount) { -200 }
-        let(:post_params) { { amount: amount } }
+        let(:request_body) { { amount: amount } }
         its(:status) { should be 201 }
         its(:month) { should eq month }
         its(:amount) { should eq amount }
@@ -85,15 +82,12 @@ RSpec.describe ItemsApi do
       end
     end
     describe 'PUT to /items/:item_id/amount/:id' do
+      include_context 'request specs'
+      let(:method) { 'put' }
       let(:weekly) { FactoryGirl.create(:weekly_amount) }
       let(:endpoint) { "/items/#{grocery.id}/amount/#{weekly.id}" }
       let(:amount) { -232 }
-      let(:update_params) { { amount: amount } }
-      let(:request) { proc { put(endpoint, update_params) } }
-      let(:response) { request.call }
-      let(:body) { JSON.parse(response.body) }
-      let(:status) { { status: response.status } }
-      subject { OpenStruct.new(body.merge(status)) }
+      let(:request_body) { { amount: amount } }
       its(:status) { should be 200 }
       it { expect { request.call }.to change { weekly.reload.amount } }
     end

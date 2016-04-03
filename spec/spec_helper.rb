@@ -9,6 +9,7 @@ Dir['./spec/shared/*_examples.rb'].each { |f| require f }
 
 RSpec.configure do |config|
   config.include(Helpers::CustomMatchers)
+  config.include(Helpers::RequestHelpers)
   config.include(Rack::Test::Methods)
   config.include(SharedExamples::AccountExamples)
   config.include(SharedExamples::TransactionExamples)
