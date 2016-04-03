@@ -36,8 +36,8 @@ end
 
 RSpec.describe Primary::Transaction, type: :model do
   it { should belong_to(:account) }
-  it { should belong_to(:budgeted_amount) }
-  it { should have_one(:budget_item) }
+  it { should belong_to(:budget_amount) }
+  it { should have_one(:item) }
   it { should have_many(:subtransactions) }
   it { should have_one(:view) }
   it { should accept_nested_attributes_for(:subtransactions) }
@@ -108,8 +108,8 @@ end
 RSpec.describe Sub::Transaction, type: :model do
   it { should belong_to(:primary_transaction) }
   it { should have_one(:view) }
-  it { should belong_to(:budgeted_amount) }
-  it { should have_one(:budget_item) }
+  it { should belong_to(:budget_amount) }
+  it { should have_one(:item) }
   context 'account/amount validation' do
     before { allow_any_instance_of(Sub::Transaction).to receive(:account_id) { 1 } }
     it { should validate_presence_of(:account) }

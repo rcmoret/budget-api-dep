@@ -54,8 +54,8 @@ module Transaction
   class Record < ActiveRecord::Base
     include Transaction::SharedMethods
     self.table_name = 'transactions'
-    belongs_to :budgeted_amount, foreign_key: :monthly_amount_id
-    has_one :budget_item, through: :budgeted_amount
+    belongs_to :budget_amount, foreign_key: :monthly_amount_id, class_name: 'Budget::Amount'
+    has_one :item, through: :budget_amount, class_name: 'Budget::Item'
     validates :account, presence: true
   end
 end

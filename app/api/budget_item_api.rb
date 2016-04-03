@@ -1,10 +1,10 @@
-class BudgetItemApi < Sinatra::Base
+class ItemsApi < Sinatra::Base
   register Sinatra::Namespace
   include SharedHelpers
-  include Helpers::BudgetItemApiHelpers
+  include Helpers::ItemsApiHelpers
 
   get '/' do
-    BudgetItem.all.map(&:to_hash).to_json
+    Budget::Item.all.map(&:to_hash).to_json
   end
 
   post '/' do
@@ -29,7 +29,7 @@ class BudgetItemApi < Sinatra::Base
     end
 
     def amount
-      @amount ||= budget_item.budgeted_amounts.new(amount_params)
+      @amount ||= budget_item.amounts.new(amount_params)
     end
 
     def amount_params

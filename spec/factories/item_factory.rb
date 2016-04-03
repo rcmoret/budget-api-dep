@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :budget_item do
+  factory :budget_item, class: Budget::Item do
     default_amount 0
     name 'Stuff'
     factory :weekly_expense do

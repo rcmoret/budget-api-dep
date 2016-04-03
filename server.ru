@@ -1,5 +1,5 @@
 map '/items' do
-  run BudgetItemApi.new
+  run ItemsApi.new
 end
 
 map '/accounts' do

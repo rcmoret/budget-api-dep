@@ -40,7 +40,7 @@ module Helpers
     end
   end
 
-  module BudgetItemApiHelpers
+  module ItemsApiHelpers
     def item_id
       params['item_id']
     end
@@ -51,19 +51,19 @@ module Helpers
 
     def find_or_create_item!
       if item_id.present?
-        BudgetItem.find_by_id(item_id) || render_404('budget_item', item_id)
+        Budget::Item.find_by_id(item_id) || render_404('budget_item', item_id)
       else
-        BudgetItem.new(create_params)
+        Budget::Item.new(create_params)
       end
     end
 
     def create_params
       require_parameters!('name', 'default_amount')
-      filtered_params(*BudgetItem::PUBLIC_ATTRS)
+      filtered_params(*Budget::Item::PUBLIC_ATTRS)
     end
 
     def update_params
-      filtered_params(*BudgetItem::PUBLIC_ATTRS)
+      filtered_params(*Budget::Item::PUBLIC_ATTRS)
     end
   end
 end

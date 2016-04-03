@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe BudgetItemApi do
+RSpec.describe ItemsApi do
   let(:grocery) { FactoryGirl.create(:weekly_expense) }
   let(:paycheck) { FactoryGirl.create(:monthly_income) }
   let!(:items) { [grocery, paycheck] }
@@ -31,7 +31,7 @@ RSpec.describe BudgetItemApi do
     subject { request }
     its(:status) { should be 201 }
     it 'should create a new record' do
-      expect { request }.to change { BudgetItem.count }.by 1
+      expect { request }.to change { Budget::Item.count }.by 1
     end
     describe 'new item is returned' do
       subject { OpenStruct.new(JSON.parse(super().body)) }

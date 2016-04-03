@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-RSpec.describe BudgetItem, type: :model do
-  it { should have_many(:budgeted_amounts) }
+RSpec.describe Budget::Item, type: :model do
+  it { should have_many(:amounts) }
   it { should have_many(:transactions) }
   describe '.expense?' do
     subject { item.expense? }

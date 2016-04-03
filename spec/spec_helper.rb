@@ -40,6 +40,6 @@ end
 def app
   Rack::URLMap.new(
     '/accounts' => AccountsApi.new,
-    '/items' => BudgetItemApi.new
+    '/items' => ItemsApi.new
   )
 end
