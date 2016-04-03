@@ -52,10 +52,6 @@ module Budget
       attributes.slice(*%w(id month amount budget_item_id)).merge('amount' => amount)
     end
 
-    def to_json
-      to_hash.to_json
-    end
-
     def amount
       self[:amount].to_f unless self[:amount].nil?
     end

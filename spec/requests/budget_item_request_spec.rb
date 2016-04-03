@@ -59,28 +59,43 @@ RSpec.describe ItemsApi do
     its(:id) { should eq grocery.id }
   end
   describe 'item/amount(s) endpoints' do
-    let(:endpoint) { "/items/#{grocery.id}/amount" }
-    before { allow(BudgetMonth).to receive(:piped) { month } }
-    let(:month) { '03|2122' }
-    let(:request) { proc { post(endpoint, post_params) } }
-    let(:response) { request.call }
-    let(:body) { JSON.parse(response.body) }
-    let(:status) { { status: response.status } }
-    subject { OpenStruct.new(body.merge(status)) }
-    context "use current month & item's default amount" do
-      let(:post_params) { {} }
-      its(:status) { should be 201 }
-      its(:month) { should eq month }
-      its(:amount) { should eq grocery.default_amount }
-      its(:budget_item_id) { should eq grocery.id }
+    describe 'POST to /items/:item_id/amount ' do
+      let(:endpoint) { "/items/#{grocery.id}/amount" }
+      before { allow(BudgetMonth).to receive(:piped) { month } }
+      let(:month) { '03|2122' }
+      let(:request) { proc { post(endpoint, post_params) } }
+      let(:response) { request.call }
+      let(:body) { JSON.parse(response.body) }
+      let(:status) { { status: response.status } }
+      subject { OpenStruct.new(body.merge(status)) }
+      context "use current month & item's default amount" do
+        let(:post_params) { {} }
+        its(:status) { should be 201 }
+        its(:month) { should eq month }
+        its(:amount) { should eq grocery.default_amount }
+        its(:budget_item_id) { should eq grocery.id }
+      end
+      context 'custom amount' do
+        let(:amount) { -200 }
+        let(:post_params) { { amount: amount } }
+        its(:status) { should be 201 }
+        its(:month) { should eq month }
+        its(:amount) { should eq amount }
+        its(:budget_item_id) { should eq grocery.id }
+      end
     end
-    context 'custom amount' do
-      let(:amount) { -200 }
-      let(:post_params) { { amount: amount } }
-      its(:status) { should be 201 }
-      its(:month) { should eq month }
-      its(:amount) { should eq amount }
-      its(:budget_item_id) { should eq grocery.id }
+    describe 'PUT to /items/:item_id/amount/:id' do
+      let(:weekly) { FactoryGirl.create(:weekly_amount) }
+      let(:endpoint) { "/items/#{grocery.id}/amount/#{weekly.id}" }
+      let(:amount) { -232 }
+      let(:update_params) { { amount: amount } }
+      let(:request) { proc { put(endpoint, update_params) } }
+      let(:response) { request.call }
+      let(:body) { JSON.parse(response.body) }
+      let(:status) { { status: response.status } }
+      subject { OpenStruct.new(body.merge(status)) }
+      its(:status) { should be 200 }
+      it { expect { request.call }.to change { weekly.reload.amount } }
     end
   end
 end

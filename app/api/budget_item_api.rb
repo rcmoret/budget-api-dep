@@ -28,8 +28,28 @@ class ItemsApi < Sinatra::Base
       amount.save ? render_new(amount) : render_error(400)
     end
 
+    put %r{/amount/(?<amount_id>\d+)} do
+      if amount.update_attributes(amount_params)
+        render_updated(amount.to_hash)
+      else
+        render_error(400)
+      end
+    end
+
+    def amount_id
+      params['amount_id']
+    end
+
     def amount
-      @amount ||= budget_item.amounts.new(amount_params)
+      @amount ||= find_or_initialize_budget_amount!
+    end
+
+    def find_or_initialize_budget_amount!
+      if amount_id.present?
+        Budget::Amount.find_by_id(amount_id) || render_404('budget amount', amount_id)
+      else
+        budget_item.amounts.new(amount_params)
+      end
     end
 
     def amount_params
