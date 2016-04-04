@@ -45,7 +45,7 @@ module Helpers
       params['item_id']
     end
 
-    def budget_item
+    def item
       @item ||= find_or_create_item!
     end
 

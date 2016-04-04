@@ -8,17 +8,17 @@ class ItemsApi < Sinatra::Base
   end
 
   post '/' do
-    budget_item.save ? render_new(budget_item) : render_error(400)
+    item.save ? render_new(item) : render_error(400)
   end
 
   namespace %r{/(?<item_id>\d+)} do
     get '' do
-      budget_item.to_json
+      item.to_json
     end
 
     put '' do
-      if budget_item.update_attributes(update_params)
-        render_updated(budget_item.to_hash)
+      if item.update_attributes(update_params)
+        render_updated(item.to_hash)
       else
         render_error(400)
       end
@@ -52,14 +52,14 @@ class ItemsApi < Sinatra::Base
   end
 
   def amount
-    @amount ||= find_or_initialize_budget_amount!
+    @amount ||= find_or_initialize_amount!
   end
 
   def amount_class
     monthly? ? Budget::MonthlyAmount : Budget::WeeklyAmount
   end
 
-  def find_or_initialize_budget_amount!
+  def find_or_initialize_amount!
     if amount_id.present?
       amount_class.find_by_id(amount_id) || render_404('budget amount', amount_id)
     else
@@ -69,14 +69,14 @@ class ItemsApi < Sinatra::Base
 
   def initialize_amount!
     if monthly?
-      budget_item.monthly_amounts.new(amount_params)
+      item.monthly_amounts.new(amount_params)
     else
-      budget_item.weekly_amounts.new(amount_params)
+      item.weekly_amounts.new(amount_params)
     end
   end
 
   def monthly?
-    budget_item.monthly?
+    item.monthly?
   end
 
   def amount_params

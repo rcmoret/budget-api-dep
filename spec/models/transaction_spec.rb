@@ -9,7 +9,7 @@ RSpec.describe Transaction::View, type: :model do
       {
         id: transaction.id,
         description: transaction.description,
-        budget_item: nil,
+        item: nil,
         clearance_date: nil,
         notes: nil,
         receipt: nil,

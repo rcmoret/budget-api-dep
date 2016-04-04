@@ -34,9 +34,9 @@ module Budget
     self.table_name = 'monthly_amounts'
     has_many :transactions, class_name: 'Transaction::Record', foreign_key: :monthly_amount_id
 
-    belongs_to :budget_item, class_name: 'Budget::Item'
-    validates :budget_item, presence: true
-    delegate :name, :default_amount, :expense?, :revenue?, to: :budget_item
+    belongs_to :item, class_name: 'Budget::Item', foreign_key: :budget_item_id
+    validates :item, presence: true
+    delegate :name, :default_amount, :expense?, :revenue?, to: :item
 
     validates :amount, numericality: { less_than: 0 }, if: :expense?
     validates :amount, numericality: { greater_than: 0 }, if: :revenue?
@@ -45,14 +45,19 @@ module Budget
     before_validation :set_default_amount!, if: 'amount.nil?'
 
     scope :current, -> { where(month: BudgetMonth.piped) }
+    alias_attribute :item_id, :budget_item_id
 
     def self.remaining
       MonthlyAmount.remaining + WeeklyAmount.remaining
     end
 
+    def item_id=(id)
+      budget_item_id=(id)
+    end
+
     def to_hash
       { id: id, name: name, amount: amount, remaining: remaining,
-        month: month, item_id: budget_item_id }
+        month: month, item_id: item_id }
     end
 
     def to_json
@@ -76,7 +81,7 @@ module Budget
 
   class MonthlyAmount < Budget::Amount
 
-    default_scope { current.joins(:budget_item).merge(Budget::Item.monthly) }
+    default_scope { current.joins(:item).merge(Budget::Item.monthly) }
 
     scope :anticipated, -> { joins("LEFT JOIN (#{::Transaction::Record.all.to_sql}) t " +
                              'ON t.monthly_amount_id = "monthly_amounts".id').where('t.id IS NULL') }
@@ -90,7 +95,7 @@ module Budget
 
   class WeeklyAmount < Budget::Amount
 
-    default_scope { current.joins(:budget_item).merge(Budget::Item.weekly) }
+    default_scope { current.joins(:item).merge(Budget::Item.weekly) }
 
     def self.active
       all.to_a.unshift(discretionary)
@@ -101,7 +106,7 @@ module Budget
     end
 
     def self.discretionary
-      { id: 0, name: 'Discretionary', amount: 0, remaining: remaining,
+      { id: 0, name: 'Discretionary', amount: 0, remaining: MonthlyAmount.remaining,
         month: BudgetMonth.piped, item_id: 0 }
     end
 
