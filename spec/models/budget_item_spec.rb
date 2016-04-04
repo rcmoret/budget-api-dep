@@ -3,6 +3,9 @@ require 'spec_helper'
 RSpec.describe Budget::Item, type: :model do
   it { should have_many(:amounts) }
   it { should have_many(:transactions) }
+  it { should have_many(:weekly_amounts) }
+  it { should have_many(:monthly_amounts) }
+
   describe '.expense?' do
     subject { item.expense? }
     context 'the item is an expense' do

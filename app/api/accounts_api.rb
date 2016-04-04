@@ -4,7 +4,7 @@ class AccountsApi < Sinatra::Base
   include Helpers::AccountApiHelpers
 
   get '/' do
-    Account.all.map(&:to_hash).to_json
+    render_all(Account)
   end
 
   post '/' do

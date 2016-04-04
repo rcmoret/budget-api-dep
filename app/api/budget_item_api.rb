@@ -4,7 +4,7 @@ class ItemsApi < Sinatra::Base
   include Helpers::ItemsApiHelpers
 
   get '/' do
-    Budget::Item.all.map(&:to_hash).to_json
+    render_all(Budget::Item)
   end
 
   post '/' do
@@ -55,12 +55,28 @@ class ItemsApi < Sinatra::Base
     @amount ||= find_or_initialize_budget_amount!
   end
 
+  def amount_class
+    monthly? ? Budget::MonthlyAmount : Budget::WeeklyAmount
+  end
+
   def find_or_initialize_budget_amount!
     if amount_id.present?
-      Budget::Amount.find_by_id(amount_id) || render_404('budget amount', amount_id)
+      amount_class.find_by_id(amount_id) || render_404('budget amount', amount_id)
     else
-      budget_item.amounts.new(amount_params)
+      initialize_amount!
     end
+  end
+
+  def initialize_amount!
+    if monthly?
+      budget_item.monthly_amounts.new(amount_params)
+    else
+      budget_item.weekly_amounts.new(amount_params)
+    end
+  end
+
+  def monthly?
+    budget_item.monthly?
   end
 
   def amount_params

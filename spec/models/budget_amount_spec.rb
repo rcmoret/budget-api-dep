@@ -4,6 +4,7 @@ RSpec.describe Budget::Amount, type: :model do
   it { should belong_to(:budget_item) }
   it { should have_many(:transactions) }
   it { should delegate_method(:default_amount).to(:budget_item) }
+  it { should delegate_method(:name).to(:budget_item) }
   it { should delegate_method(:expense?).to(:budget_item) }
   it { should delegate_method(:revenue?).to(:budget_item) }
 

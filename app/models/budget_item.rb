@@ -2,6 +2,8 @@ module Budget
   class Item < ActiveRecord::Base
     self.table_name = 'budget_items'
     has_many :amounts, foreign_key: :budget_item_id
+    has_many :weekly_amounts, foreign_key: :budget_item_id
+    has_many :monthly_amounts, foreign_key: :budget_item_id
     has_many :transactions, through: :amounts
 
     scope :monthly,  -> { where(monthly: true) }
@@ -34,7 +36,7 @@ module Budget
 
     belongs_to :budget_item, class_name: 'Budget::Item'
     validates :budget_item, presence: true
-    delegate :default_amount, :expense?, :revenue?, to: :budget_item
+    delegate :name, :default_amount, :expense?, :revenue?, to: :budget_item
 
     validates :amount, numericality: { less_than: 0 }, if: :expense?
     validates :amount, numericality: { greater_than: 0 }, if: :revenue?
@@ -51,7 +53,11 @@ module Budget
     end
 
     def to_hash
-      attributes.slice(*PUBLIC_ATTRS).merge('amount' => amount)
+      attributes.slice(*PUBLIC_ATTRS).merge(extra_attrs)
+    end
+
+    def extra_attrs
+      { 'name' => name, 'amount' => amount, 'remaining' => remaining }
     end
 
     def to_json
@@ -84,8 +90,10 @@ module Budget
       anticipated.sum(:amount)
     end
 
-    def to_hash
-      super.merge('remaining' => amount)
+    alias_method :remaining, :amount
+
+    def self.discretionary
+      { id: 0, amount: 0, remaining: reamining, budget_item_id: 0, month: BudgetMonth.piped }
     end
   end
 
@@ -95,10 +103,6 @@ module Budget
 
     def self.remaining
       all.inject(0) { |total, amount| total += amount.remaining }
-    end
-
-    def to_hash
-      super.merge('remaining' => remaining)
     end
 
     def remaining
