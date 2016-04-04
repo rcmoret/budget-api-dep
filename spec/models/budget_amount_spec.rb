@@ -15,12 +15,13 @@ RSpec.describe Budget::Amount, type: :model do
     it { should include %Q{WHERE "monthly_amounts"."month" = '#{budget_month}'} }
   end
 
-  describe '#remaining' do
+  describe '#discretionary' do
     before do
       allow(Budget::MonthlyAmount).to receive(:remaining).and_return(10)
       allow(Budget::WeeklyAmount).to receive(:remaining).and_return(20)
+      allow(Account).to receive(:available_cash).and_return(0)
     end
-    subject { Budget::Amount.remaining }
+    subject { Budget::Amount.discretionary }
     it { should eq 30 }
   end
 

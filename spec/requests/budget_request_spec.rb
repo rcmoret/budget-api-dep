@@ -116,11 +116,15 @@ RSpec.describe ItemsApi do
         it { expect(first_json['item_id']).to eq weekly_amount.item_id }
         # discretionary
         let(:discretionary) { subject.body[0] }
-        before { allow(Budget::WeeklyAmount).to receive(:remaining) { 100 } }
+        before do
+          allow(Budget::WeeklyAmount).to receive(:remaining) { -100 }
+          allow(Budget::MonthlyAmount).to receive(:remaining) { -150 }
+          allow(Account).to receive(:available_cash) { 300 }
+        end
         it { expect(discretionary['id']).to be 0 }
         it { expect(discretionary['name']).to eq 'Discretionary' }
         it { expect(discretionary['amount']).to eq 0 }
-        it { expect(discretionary['remaining']).to eq '100.0' }
+        it { expect(discretionary['remaining']).to eq 50.0 }
         it { expect(discretionary['item_id']).to eq 0 }
       end
     end

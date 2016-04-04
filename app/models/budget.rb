@@ -47,8 +47,8 @@ module Budget
     scope :current, -> { where(month: BudgetMonth.piped) }
     alias_attribute :item_id, :budget_item_id
 
-    def self.remaining
-      MonthlyAmount.remaining + WeeklyAmount.remaining
+    def self.discretionary
+      (Account.available_cash + MonthlyAmount.remaining + WeeklyAmount.remaining).round(2)
     end
 
     def item_id=(id)
@@ -106,7 +106,7 @@ module Budget
     end
 
     def self.discretionary
-      { id: 0, name: 'Discretionary', amount: 0, remaining: MonthlyAmount.remaining,
+      { id: 0, name: 'Discretionary', amount: 0, remaining: MonthlyAmount.discretionary,
         month: BudgetMonth.piped, item_id: 0 }
     end
 
