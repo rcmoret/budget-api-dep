@@ -107,25 +107,39 @@ RSpec.describe Budget::MonthlyAmount, type: :model do
 end
 
 RSpec.describe Budget::WeeklyAmount, type: :model do
-  describe '#remaining' do
+  describe 'class methods' do
     let(:grocery) { FactoryGirl.create(:budget_item, expense: true, monthly: false, name: 'Grocery') }
     let(:gas) { FactoryGirl.create(:budget_item, expense: true, monthly: false, name: 'Gas') }
     let(:budget_amounts) do
       [ FactoryGirl.create(:weekly_amount, budget_item: grocery),
         FactoryGirl.create(:weekly_amount, budget_item: gas) ]
     end
-    before do
-      allow(Budget::WeeklyAmount).to receive(:all).and_return(budget_amounts)
-      budget_amounts.each { |amount| allow(amount).to receive(:remaining).and_return(0) }
+    describe '#remaining' do
+      before do
+        allow(Budget::WeeklyAmount).to receive(:all).and_return(budget_amounts)
+        budget_amounts.each { |amount| allow(amount).to receive(:remaining).and_return(0) }
+      end
+      it 'should apply remaining to all' do
+        expect(budget_amounts).to receive(:inject)
+        Budget::WeeklyAmount.remaining
+      end
+      it 'should apply remaining to all' do
+        expect(budget_amounts).to all_receive(:remaining)
+        Budget::WeeklyAmount.remaining
+      end
     end
-    it 'should apply remaining to all' do
-      expect(budget_amounts).to receive(:inject)
-      Budget::WeeklyAmount.remaining
+    describe '#discretionary' do
+      before { allow(Budget::WeeklyAmount).to receive(:remaining) { 100 } }
+      let(:discretionary) do
+      { id: 0, name: 'Discretionary', amount: 0, remaining: 100,
+        month: BudgetMonth.piped, item_id: 0 }
+      end
+      it 'should return discretionary income as a hash' do
+        expect(Budget::WeeklyAmount.discretionary).to eq discretionary
+      end
     end
-    it 'should apply remaining to all' do
-      expect(budget_amounts).to all_receive(:remaining)
-      Budget::WeeklyAmount.remaining
-    end
+
+
   end
   describe '.remaining' do
     let(:spent) { amounts.inject(:+) }

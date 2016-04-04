@@ -11,8 +11,8 @@ module SharedHelpers
     end
   end
 
-  def render_all(klass)
-    [200, klass.all.map(&:to_hash).to_json]
+  def render_collection(collection)
+    [200, collection.map(&:to_hash).to_json]
   end
 
   def render_error(code, message = nil)

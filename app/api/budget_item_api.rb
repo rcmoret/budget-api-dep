@@ -4,7 +4,7 @@ class ItemsApi < Sinatra::Base
   include Helpers::ItemsApiHelpers
 
   get '/' do
-    render_all(Budget::Item)
+    render_collection(Budget::Item.all)
   end
 
   post '/' do
@@ -39,11 +39,11 @@ class ItemsApi < Sinatra::Base
 
   namespace '/amounts' do
     get '/monthly' do
-      render_all(Budget::MonthlyAmount.anticipated)
+      render_collection(Budget::MonthlyAmount.anticipated)
     end
 
     get '/weekly' do
-      render_all(Budget::WeeklyAmount)
+      render_collection(Budget::WeeklyAmount.active)
     end
   end
 

@@ -46,18 +46,13 @@ module Budget
 
     scope :current, -> { where(month: BudgetMonth.piped) }
 
-    PUBLIC_ATTRS = %w(id month amount budget_item_id)
-
     def self.remaining
       MonthlyAmount.remaining + WeeklyAmount.remaining
     end
 
     def to_hash
-      attributes.slice(*PUBLIC_ATTRS).merge(extra_attrs)
-    end
-
-    def extra_attrs
-      { 'name' => name, 'amount' => amount, 'remaining' => remaining }
+      { id: id, name: name, amount: amount, remaining: remaining,
+        month: month, item_id: budget_item_id }
     end
 
     def to_json
@@ -84,25 +79,30 @@ module Budget
     default_scope { current.joins(:budget_item).merge(Budget::Item.monthly) }
 
     scope :anticipated, -> { joins("LEFT JOIN (#{::Transaction::Record.all.to_sql}) t " +
-                                   'ON t.monthly_amount_id = "monthly_amounts".id').where('t.id IS NULL') }
+                             'ON t.monthly_amount_id = "monthly_amounts".id').where('t.id IS NULL') }
 
     def self.remaining
       anticipated.sum(:amount)
     end
 
     alias_method :remaining, :amount
-
-    def self.discretionary
-      { id: 0, amount: 0, remaining: reamining, budget_item_id: 0, month: BudgetMonth.piped }
-    end
   end
 
   class WeeklyAmount < Budget::Amount
 
     default_scope { current.joins(:budget_item).merge(Budget::Item.weekly) }
 
+    def self.active
+      all.to_a.unshift(discretionary)
+    end
+
     def self.remaining
       all.inject(0) { |total, amount| total += amount.remaining }
+    end
+
+    def self.discretionary
+      { id: 0, name: 'Discretionary', amount: 0, remaining: remaining,
+        month: BudgetMonth.piped, item_id: 0 }
     end
 
     def remaining

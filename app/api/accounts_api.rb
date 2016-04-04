@@ -4,7 +4,7 @@ class AccountsApi < Sinatra::Base
   include Helpers::AccountApiHelpers
 
   get '/' do
-    render_all(Account)
+    render_collection(Account.all)
   end
 
   post '/' do
