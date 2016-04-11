@@ -12,6 +12,11 @@ group :development do
   gem 'standalone_migrations'
 end
 
+group :assets do
+  gem 'haml'
+  gem 'sass'
+end
+
 group :test do
   gem 'database_cleaner'
   gem 'factory_girl'
