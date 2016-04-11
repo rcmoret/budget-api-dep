@@ -54,6 +54,7 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     rack (1.6.4)
+    rack-cors (0.4.0)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
@@ -129,6 +130,7 @@ DEPENDENCIES
   factory_girl
   pg
   pry
+  rack-cors
   rack-test
   rspec
   rspec-its

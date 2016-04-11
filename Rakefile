@@ -26,6 +26,7 @@ namespace :app do
     require 'bundler/setup'
     Bundler.require(:development)
     require './config/environments'
+    Dir['./app/*.rb'].each { |f| require f }
     Dir['./app/helpers/*_helpers.rb'].each { |f| require f }
     Dir['./app/api/*.rb'].each { |f| require f }
     Dir['./app/concerns/*.rb'].each { |f| require f }
