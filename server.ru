@@ -7,6 +7,13 @@ use Rack::Cors do
   end
 end
 
+
+use Sass::Plugin::Rack
+
+map '/' do
+  run Index.new
+end
+
 map '/items' do
   run ItemsApi.new
 end
