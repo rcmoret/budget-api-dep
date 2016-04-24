@@ -6,13 +6,6 @@ var Workspace = Backbone.Router.extend({
   },
 
   pageLoad: function( param ) {
-    new app.AccountView();
-    if (param) {
-      param = param.trim();
-    }
-    // app.AccountFilter = param || '';
-    // app.Accounts.fetch();
-    // app.Accounts.trigger('all');
   }
 });
 

@@ -8,29 +8,21 @@
     %script{ type: 'text/javascript', src: '/public/javascript/lib/jquery.js' }
     %script{ type: 'text/javascript', src: '/public/javascript/lib/underscore.js' }
     %script{ type: 'text/javascript', src: '/public/javascript/lib/backbone.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/models/account.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/models/budget_amount.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/models/transaction.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/collections/accounts.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/collections/budget_items.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/collections/transactions.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/views/app.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/views/account.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/views/transaction.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/routers/routes.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/lib/app.js' }
+    - %w(models collections views routes).each do |dir|
+      - Dir["public/javascript/#{dir}/*.js"].each do |f|
+        %script{ type: 'text/javascript', src: "/#{f}" }
+    %script{ type: 'text/javascript', src: '/public/javascript/app.js' }
 
   .welcome
     %h1 Budget App
 
-  %section#accounts
+  %section#accounts.pane
     %h3 Accounts
     %ul#accounts-list
 
-  %section#monthly-amounts
+  %section#budget-items.pane
     %h3 Monthly Items
     %ul#monthly-amounts-list
 
-  %section#weekly-amounts
     %h3 Weekly Items
     %ul#weekly-amounts-list
