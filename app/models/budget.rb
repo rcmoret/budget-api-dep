@@ -121,7 +121,7 @@ module Budget
     private
 
     def difference
-      amount - transactions.sum(:amount)
+      (amount - transactions.sum(:amount)).round(2)
     end
   end
 end

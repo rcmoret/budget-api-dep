@@ -3,11 +3,10 @@ var app = app || {};
 app.AccountView = Backbone.View.extend({
   tagName: 'li',
   template: _.template( $('#account-template').html() ),
-  id: function(){
+  id: function() {
     this.model.id
   },
   events: {
-    'click a': 'select'
   },
   initialize: function(account) {
     this.model = account;
@@ -30,6 +29,7 @@ app.AccountView = Backbone.View.extend({
   },
   renderTransactions: function() {
     this.$el.find('.transactions').html('');
+    this.$el.addClass('selected');
     this.model.transactions.each(function(transaction) {
       var view = new app.TransactionView(transaction);
       this.$el.find('.transactions').append(view.render());

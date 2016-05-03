@@ -5,10 +5,14 @@
       = File.read('./public/javascript/templates/account.html')
     %script#transaction-template{ type: 'text/template' }
       = File.read('./public/javascript/templates/transaction.html')
+    %script#weekly-amount-template{ type: 'text/template' }
+      = File.read('./public/javascript/templates/weekly_amount.html')
+    %script#monthly-amount-template{ type: 'text/template' }
+      = File.read('./public/javascript/templates/monthly_amount.html')
     %script{ type: 'text/javascript', src: '/public/javascript/lib/jquery.js' }
     %script{ type: 'text/javascript', src: '/public/javascript/lib/underscore.js' }
     %script{ type: 'text/javascript', src: '/public/javascript/lib/backbone.js' }
-    - %w(models collections views routes).each do |dir|
+    - %w(models collections views routers).each do |dir|
       - Dir["public/javascript/#{dir}/*.js"].each do |f|
         %script{ type: 'text/javascript', src: "/#{f}" }
     %script{ type: 'text/javascript', src: '/public/javascript/app.js' }
@@ -17,10 +21,13 @@
     %h1 Budget App
 
   %section#accounts.pane
-    %h3 Accounts
+    %h2
+      %a{ href: '#accounts' } Accounts
     %ul#accounts-list
 
   %section#budget-items.pane
+    %h2
+      %a{ href: '#budget-items' } Budget Items
     %h3 Monthly Items
     %ul#monthly-amounts-list
 

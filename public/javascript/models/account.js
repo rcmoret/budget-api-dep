@@ -10,5 +10,6 @@ app.Account = Backbone.Model.extend({
   },
   initialize: function() {
     this.transactions = new app.Transactions(this.id);
+    return this;
   }
 });
