@@ -1,6 +1,13 @@
-<div class='transaction'>
-  <span><%= clearance_date %></span>
-  <span><%= description %></span>
-  <span><%= name %></span>
-  <span>$<%= amount %></span>
+<div class='transaction' id='transaction-<%= id %>'>
+  <span><%= displayDate %></span>
+  <span class=''><%= displayDescription %></span>
+  <% if (budgetItems != null && budgetItems != displayDescription) { %>
+    <span>(<%= budgetItems %>)</span>
+  <% } %>
+  <span class='amount'>$<%= displayAmount %></span>
+  <span class='amount'>$<%= balance %></span>
+  <% if (check_number) { %>
+    <span class='check_number'>Ck #: <%= check_number %></span>
+  <% } %>
+  <span class='notes'><%= notes %></span>
 </div>

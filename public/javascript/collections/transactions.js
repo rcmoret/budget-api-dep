@@ -9,7 +9,7 @@ app.Transactions = Backbone.Collection.extend({
     return '/accounts/' + this.accountId + '/transactions'
   },
   parse: function(resp) {
-    this.initial_balance = resp['metadata']['prior_balance'];
+    this.metadata = resp['metadata']
     return resp['transactions'];
   }
 });

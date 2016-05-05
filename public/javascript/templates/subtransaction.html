@@ -1,0 +1,14 @@
+<li>
+  <% if (description === null) { %>
+    <span><%= budget_item %></span>
+
+  <% } else if (budget_item && budget_item != description) { %>
+    <span><%= description %></span>
+    <span>(<%= budget_item %>)</span>
+  <% } else if (budget_item) { %>
+    <span><%= budget_item %></span>
+  <% } else { %>
+    <span>Misc.</span>
+  <% } %>
+  <span><%= parseFloat(amount).toFixed(2) %></span>
+</li>

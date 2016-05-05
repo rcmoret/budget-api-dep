@@ -27,11 +27,18 @@ app.AccountView = Backbone.View.extend({
   selected: function() {
     return this.$el.find('.account').hasClass('selected');
   },
+  initialBalance: function() {
+    var initial = new app.InitialBalanceView(this.model.transactions.metadata);
+    this.$el.find('.transactions').append(initial.render());
+    return initial.attrs.amount;
+  },
   renderTransactions: function() {
     this.$el.find('.transactions').html('');
     this.$el.addClass('selected');
+    balance = this.initialBalance();
     this.model.transactions.each(function(transaction) {
-      var view = new app.TransactionView(transaction);
+      balance += parseFloat(transaction.get('amount'));
+      var view = new app.TransactionView(transaction, balance);
       this.$el.find('.transactions').append(view.render());
     }, this);
   }
