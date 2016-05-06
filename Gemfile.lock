@@ -146,6 +146,3 @@ DEPENDENCIES
   squeel
   standalone_migrations
   timecop
-
-BUNDLED WITH
-   1.11.2
