@@ -8,4 +8,4 @@
 /db/dumps/*
 !/db/dumps/.keep
 
-/public/stylesheets/site.css.map
+/public/stylesheets/site.css*
