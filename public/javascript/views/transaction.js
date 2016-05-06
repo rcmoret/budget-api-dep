@@ -3,10 +3,16 @@ var app = app || {};
 app.TransactionView = Backbone.View.extend({
   template: _.template( $('#transaction-template').html() ),
   subTemplate: _.template( $('#subtransaction-template').html() ),
+  events: {
+    'click .description': 'toggleField',
+    'blur .description input': 'updateDescription'
+  },
   initialize: function(transaction, balance) {
     this.model = transaction;
-    this.balance = balance;
-    this.$el.html(this.template(this.viewAttrs()));
+    this.$el.html(this.template(this.model.displayAttrs(balance)));
+  },
+  description: function() {
+    return this.model.get('description');
   },
   render: function() {
     if (this.model.subtransactions().length > 0) {
@@ -20,8 +26,32 @@ app.TransactionView = Backbone.View.extend({
   subtransactionElement: function() {
     return $('<ul class="subtransactions collapsed"></ul>')
   },
-  viewAttrs: function() {
-    console.log(this.model.attributes)
-    return _.extend(this.model.attributes, { balance: this.balance.toFixed(2) })
-  }
+  descriptionEl: function() {
+    return this.$el.find('.description')
+  },
+  toggleField: function(e) {
+    if (this.descriptionFieldVisible()) {
+      this.descriptionField().focus();
+    } else {
+      this.descriptionEl().html(this.descriptionField());
+      this.descriptionField().val(this.description()).focus();
+    }
+  },
+  descriptionFieldVisible: function() {
+    return this.descriptionEl().find('input').length > 0
+  },
+  descriptionField: function() {
+    if (this.descriptionFieldVisible()) {
+      return this.descriptionEl().find('input')
+    } else {
+      return $('<input type="text" value="">')
+    }
+  },
+  updateDescription: function() {
+    if (this.description() === this.descriptionField().val()) {
+      this.descriptionEl().html(this.description());
+    } else {
+      this.model.update({description: this.descriptionField().val()});
+    }
+  },
 });

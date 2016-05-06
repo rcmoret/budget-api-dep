@@ -1,11 +1,11 @@
 <div class='transaction' id='transaction-<%= id %>'>
-  <span><%= displayDate %></span>
-  <span class='description'><%= displayDescription %></span>
-  <% if (budgetItems != null && budgetItems != displayDescription) { %>
+  <span><%= clear_date %></span>
+  <span class='description'><%= description %></span>
+  <% if (budgetItems != null && budgetItems != description) { %>
     <span>(<%= budgetItems %>)</span>
   <% } %>
-  <span class='amount'>$<%= displayAmount %></span>
-  <span class='amount'>$<%= balance %></span>
+  <span class='amount'>$<%= parseFloat(amount).toFixed(2) %></span>
+  <span class='amount'>$<%= parseFloat(balance).toFixed(2) %></span>
   <% if (check_number) { %>
     <span class='check_number'>Ck #: <%= check_number %></span>
   <% } %>

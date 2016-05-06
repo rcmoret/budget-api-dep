@@ -10,10 +10,9 @@ app.InitialBalanceView = Backbone.View.extend({
     var date = metadata.date_range[0].split('-');
     return {
       id: '0',
-      balance: parseFloat(metadata.prior_balance).toFixed(2),
-      displayDate: date[1] + '/' + date[2] + '/' + date[0],
-      displayDescription: 'Initial Balance',
-      displayAmount: parseFloat(metadata.prior_balance).toFixed(2),
+      balance: metadata.prior_balance,
+      clear_date: date[1] + '/' + date[2] + '/' + date[0],
+      description: 'Initial Balance',
       amount: metadata.prior_balance,
       check_number: null,
       notes: null,

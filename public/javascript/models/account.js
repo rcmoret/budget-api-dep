@@ -1,10 +1,10 @@
 var app = app || {};
 
 app.Account = Backbone.Model.extend({
-  urlRoot: '/accounts',
-  url: function() {
-    return this.urlRoot + '/' + this.id;
+  intialize: function() {
+    this.url = this.urlRoot() + '/' + this.id;
   },
+  urlRoot: '/accounts',
   defaults: {
     'name': 'default'
   },

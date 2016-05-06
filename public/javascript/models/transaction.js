@@ -2,17 +2,19 @@ app = app || {};
 
 app.Transaction = Backbone.Model.extend({
   initialize: function() {
-    this.set({displayDescription: this.displayDescription(),
-              displayAmount: this.displayAmount(),
-              displayDate: this.displayDate(),
-              budgetItems: this.items()
-    });
+    urlRoot: this.collection.url
   },
-  baseUrl: function() {
-    return '/accounts/' + this.account_id + '/transactions/'
-  },
-  url: function() {
-    return baseUrl + this.id
+  displayAttrs: function(balance) {
+    return {
+      id: this.get('id'),
+      description: this.displayDescription(),
+      budgetItems: this.items(),
+      clear_date: this.displayDate(),
+      balance: balance,
+      amount: this.get('amount'),
+      check_number: this.get('check_number'),
+      notes: this.get('notes')
+    }
   },
   displayDescription: function() {
     if (this.get('description') || this.get('budget_item')) {
@@ -21,13 +23,10 @@ app.Transaction = Backbone.Model.extend({
       return parseFloat(this.get('amount')) > 0 ? 'Deposit' : 'Discretionary'
     }
   },
-  displayAmount: function() {
-    return parseFloat(this.get('amount')).toFixed(2)
-  },
   displayDate: function() {
     if (this.get('clearance_date') != null) {
-      var date = this.get('clearance_date').split('-')
-      return date[1] + '/' + date[2] + '/' + date[0]
+      var date = this.get('clearance_date').split('-');
+      return (date[1] + '/' + date[2] + '/' + date[0])
     } else {
       return 'pending'
     }
@@ -47,5 +46,14 @@ app.Transaction = Backbone.Model.extend({
       })
       return filteredItems.join(', ')
     }
+  },
+  update: function(attrs) {
+    this.save(attrs,
+      {
+        success: function(model, resp) {
+          app.Accounts.get(model.get('account_id')).transactions.fetch({reset: true});
+        }
+      }
+    );
   }
 });

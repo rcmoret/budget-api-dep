@@ -3,11 +3,7 @@ var app = app || {};
 app.AccountView = Backbone.View.extend({
   tagName: 'li',
   template: _.template( $('#account-template').html() ),
-  id: function() {
-    this.model.id
-  },
-  events: {
-  },
+  events: { },
   initialize: function(account) {
     this.model = account;
     this.listenTo(this.model.transactions, 'reset', this.renderTransactions);
@@ -37,7 +33,7 @@ app.AccountView = Backbone.View.extend({
     this.$el.addClass('selected');
     balance = this.initialBalance();
     this.model.transactions.each(function(transaction) {
-      balance += parseFloat(transaction.get('amount'));
+      balance += transaction.get('amount');
       var view = new app.TransactionView(transaction, balance);
       this.$el.find('.transactions').append(view.render());
     }, this);
