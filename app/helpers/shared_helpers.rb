@@ -32,7 +32,15 @@ module SharedHelpers
   end
 
   def filtered_params(*white_listed_params)
-    params.slice(*white_listed_params).reject { |k, v| v.blank? }
+    request_params.slice(*white_listed_params).reject { |k, v| v.blank? }
+  end
+
+  def request_params
+    params.merge(request_body)
+  end
+
+  def request_body
+    @request_body ||= JSON.parse(request.body.read)
   end
 
   def require_parameters! *args
