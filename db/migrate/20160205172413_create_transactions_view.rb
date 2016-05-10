@@ -3,7 +3,11 @@ class CreateTransactionsView < ActiveRecord::Migration
 
   SUB_QRY = <<-SQL
     TO_JSON(ARRAY(
-      SELECT JSON_BUILD_OBJECT('id', sub.id, 'budget_item', i.name, 'description', sub.description, 'amount', sub.amount)
+      SELECT JSON_BUILD_OBJECT(
+        'id', sub.id,
+        'budget_item', i.name,
+        'budget_item_id', i.id,
+        'description', sub.description, 'amount', sub.amount)
       FROM transactions sub
       LEFT OUTER JOIN monthly_amounts m1 ON m1.id = sub.monthly_amount_id
       LEFT JOIN budget_items i ON i.id = m1.budget_item_id
@@ -16,6 +20,7 @@ class CreateTransactionsView < ActiveRecord::Migration
       CREATE VIEW transaction_view AS
         SELECT t.id, t.description AS "description",
                b.name AS "budget_item",
+               b.id AS "budget_item_id",
                t.clearance_date AS "clearance_date",
                #{SUM_QRY} AS amount,
                a.name AS "account_name",
@@ -25,7 +30,7 @@ class CreateTransactionsView < ActiveRecord::Migration
                t.notes,
                t.tax_deduction,
                t.qualified_medical_expense,
-               #{SUB_QRY}  AS subtransactions
+               #{SUB_QRY}  AS subtransactions_attributes
         FROM transactions t
         LEFT OUTER JOIN monthly_amounts ma ON ma.id = t.monthly_amount_id
         LEFT JOIN budget_items b on b.id = ma.budget_item_id

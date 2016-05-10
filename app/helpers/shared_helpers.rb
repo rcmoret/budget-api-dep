@@ -40,7 +40,20 @@ module SharedHelpers
   end
 
   def request_body
-    @request_body ||= JSON.parse(request.body.read)
+    @request_body ||= parse(request.body.read)
+  end
+
+  def parse(body)
+    case request.content_type
+    when 'application/json'
+      JSON.parse(body)
+    when 'application/x-www-form-urlencoded'
+      Rack::Utils.parse_query(body)
+    else
+      {}
+    end
+  rescue => e
+    {}
   end
 
   def require_parameters! *args
