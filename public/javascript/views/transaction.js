@@ -4,15 +4,24 @@ app.TransactionView = Backbone.View.extend({
   template: _.template( $('#transaction-template').html() ),
   subTemplate: _.template( $('#subtransaction-template').html() ),
   events: {
-    'click .description': 'toggleField',
-    'blur .description input': 'updateDescription'
+    'click .editable': 'toggleInput',
+    'blur .editable input': 'updateTransaction',
+    'keyup .editable input': 'updateTransaction'
   },
   initialize: function(transaction, balance) {
     this.model = transaction;
-    this.$el.html(this.template(this.model.displayAttrs(balance)));
+    this.$el.html(this.template(this.displayAttrs(balance)));
   },
   description: function() {
     return this.model.get('description');
+  },
+  displayAttrs: function(balance) {
+    return _.extendOwn(this.model.attributes, {
+      displayDescription: this.model.displayDescription(),
+      budgetItems: this.model.items(),
+      clear_date: this.model.displayDate(),
+      balance: balance,
+    })
   },
   render: function() {
     if (this.model.subtransactions().length > 0) {
@@ -23,35 +32,29 @@ app.TransactionView = Backbone.View.extend({
     }
     return this.$el;
   },
-  subtransactionElement: function() {
-    return $('<ul class="subtransactions collapsed"></ul>')
+  subtransactionElement: $('<ul class="subtransactions collapsed"></ul>'),
+  toggleInput: function(e) {
+    var el = $(e.toElement)
+    var data = el.data()
+    el.html(this.textInput(data.name))
+    el.find('input').val(data.value).focus()
   },
-  descriptionEl: function() {
-    return this.$el.find('.description')
+  textInput: function(name) {
+    return $('<input type="text" name="' + name + '">');
   },
-  toggleField: function(e) {
-    if (this.descriptionFieldVisible()) {
-      this.descriptionField().focus();
-    } else {
-      this.descriptionEl().html(this.descriptionField());
-      this.descriptionField().val(this.description()).focus();
+  updateTransaction: function(e) {
+    if (e.type === 'keyup' && e.keyCode === ESC_KEY) {
+      var el = $(e.target).parent();
+      el.html('');
+      el.html(el.data('value'))
+      el.addClass('editable')
+      return
+    } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type == 'focusout') {
+      var attrs = {}
+      _.each(this.$el.find('input'), function(input) {
+        attrs[$(input).attr('name')] = $(input).val()
+      });
+      this.model.update(attrs, {save: true})
     }
-  },
-  descriptionFieldVisible: function() {
-    return this.descriptionEl().find('input').length > 0
-  },
-  descriptionField: function() {
-    if (this.descriptionFieldVisible()) {
-      return this.descriptionEl().find('input')
-    } else {
-      return $('<input type="text" value="">')
-    }
-  },
-  updateDescription: function() {
-    if (this.description() === this.descriptionField().val()) {
-      this.descriptionEl().html(this.description());
-    } else {
-      this.model.update({description: this.descriptionField().val()});
-    }
-  },
+  }
 });

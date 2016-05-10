@@ -4,18 +4,6 @@ app.Transaction = Backbone.Model.extend({
   initialize: function() {
     urlRoot: this.collection.url
   },
-  displayAttrs: function(balance) {
-    return {
-      id: this.get('id'),
-      description: this.displayDescription(),
-      budgetItems: this.items(),
-      clear_date: this.displayDate(),
-      balance: balance,
-      amount: this.get('amount'),
-      check_number: this.get('check_number'),
-      notes: this.get('notes')
-    }
-  },
   displayDescription: function() {
     if (this.get('description') || this.get('budget_item')) {
       return this.get('description') || this.get ('budget_item')
@@ -47,13 +35,15 @@ app.Transaction = Backbone.Model.extend({
       return filteredItems.join(', ')
     }
   },
-  update: function(attrs) {
-    this.save(attrs,
-      {
+  update: function(attrs, options = {save: false}) {
+    this.set(attrs)
+    if (options.save) {
+      this.save(null, {
         success: function(model, resp) {
           app.Accounts.get(model.get('account_id')).transactions.fetch({reset: true});
         }
-      }
-    );
+      })
+      return
+    }
   }
 });

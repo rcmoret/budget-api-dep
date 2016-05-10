@@ -1,13 +1,27 @@
-<div class='transaction' id='transaction-<%= id %>'>
-  <span><%= clear_date %></span>
-  <span class='description'><%= description %></span>
-  <% if (budgetItems != null && budgetItems != description) { %>
-    <span>(<%= budgetItems %>)</span>
-  <% } %>
-  <span class='amount'>$<%= parseFloat(amount).toFixed(2) %></span>
-  <span class='amount'>$<%= parseFloat(balance).toFixed(2) %></span>
-  <% if (check_number) { %>
-    <span class='check_number'>Ck #: <%= check_number %></span>
-  <% } %>
-  <span class='notes'><%= notes %></span>
-</div>
+<script type='text/template' id='transaction-template'>
+  <div class='transaction' id='transaction-<%= id %>'>
+    <span class='editable' data-name='clearance_date' data-value='<%= clearance_date %>'>
+      <%= clear_date %>
+    </span>
+    <span class='description editable' data-name='description' data-value='<%= description %>'>
+      <%= displayDescription %>
+    </span>
+    <% if (!_.isNull(budgetItems) && budgetItems != description) { %>
+      <span data-name='budget_item_id' data-value='<%= budget_item_id %>'>
+        (<%= budgetItems %>)
+      </span>
+    <% } %>
+    <span class='amount<%= subtransactions_attributes.length === 0 ? " editable" : "" %>'
+      data-name='amount' data-value='<%= parseFloat(amount).toFixed(2) %>'>
+      $<%= parseFloat(amount).toFixed(2) %></span>
+    <span class='amount'>$<%= parseFloat(balance).toFixed(2) %></span>
+    <% if (check_number) { %>
+      <span class='check_number editable' data-name='check_number' data-value='<%= check_number%>'>
+        Ck #: <%= check_number %>
+      </span>
+    <% } %>
+    <span class='notes editable' data-name='notes' data-value='<%= notes %>'>
+      <%= notes %>
+    </span>
+  </div>
+</script>
