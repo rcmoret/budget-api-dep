@@ -2,6 +2,8 @@ class Account < ActiveRecord::Base
   has_many :transactions, class_name: 'Transaction::View'
   has_many :primary_transactions, class_name: 'Primary::Transaction'
 
+  PUBLIC_ATTRS = %w(name cash_flow health_savings_account).freeze
+
   def self.available_cash
     where(cash_flow: true).joins(:transactions).sum(:amount).to_f
   end

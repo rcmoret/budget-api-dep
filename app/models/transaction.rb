@@ -61,6 +61,20 @@ module Transaction
   end
 end
 
+module Sub
+  class Transaction < Transaction::Record
+    belongs_to :primary_transaction, class_name: 'Primary::Transaction'
+    has_one :view, through: :primary_transaction
+    validates :amount, presence: true
+
+    PUBLIC_ATTRS = %w(id description monthly_amount_id amount account_id clearance_date).freeze
+
+    default_scope do
+      where.not(primary_transaction_id: nil)
+    end
+  end
+end
+
 module Primary
   class Transaction < Transaction::Record
     include ::Transaction::Scopes
@@ -72,6 +86,13 @@ module Primary
     before_validation :set_account_id!, if: :has_subtransactions?
     before_validation :set_amount_to_nil!, if: :has_subtransactions?
     accepts_nested_attributes_for :subtransactions
+
+    WHITELISTED_ATTRS = %w(description monthly_amount_id amount
+                           clearance_date tax_deduction receipt notes
+                           check_number subtransactions_attributes).freeze
+
+    PUBLIC_ATTRS = (WHITELISTED_ATTRS.dup << { subtransactions_attributes: Sub::Transaction::PUBLIC_ATTRS }).freeze
+
     default_scope do
       where(primary_transaction_id: nil).includes(:subtransactions)
     end
@@ -96,14 +117,3 @@ module Primary
   end
 end
 
-module Sub
-  class Transaction < Transaction::Record
-    belongs_to :primary_transaction, class_name: 'Primary::Transaction'
-    has_one :view, through: :primary_transaction
-    validates :amount, presence: true
-
-    default_scope do
-      where.not(primary_transaction_id: nil)
-    end
-  end
-end

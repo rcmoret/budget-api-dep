@@ -31,8 +31,15 @@ module SharedHelpers
     [200, resource.to_json]
   end
 
-  def filtered_params(*white_listed_params)
-    request_params.slice(*white_listed_params).reject { |k, v| v.blank? }
+  def filtered_params(klass)
+    white_listed_params = klass::PUBLIC_ATTRS.select { |attr| attr.is_a?(String) }
+    params = request_params.slice(*white_listed_params)
+    nested_attributes = klass::PUBLIC_ATTRS.select { |attr| attr.is_a?(Hash) }
+    nested_attributes.each do |key, attributes|
+      next unless params[key]
+      params[key].map! { |_params| _params.slice(*attributes) }
+    end
+    params.reject { |k, v| v.blank? }
   end
 
   def request_params

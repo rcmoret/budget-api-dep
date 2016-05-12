@@ -1,8 +1,5 @@
 module Helpers
   module AccountApiHelpers
-    ACCOUNT_PARAMS = %w(name cash_flow health_savings_account)
-    TRANSACTION_PARAMS = %w(description monthly_amount_id amount clearance_date tax_deduction receipt check_number notes subtransactions_attributes)
-
     def account_id
       params['account_id']
     end
@@ -25,7 +22,7 @@ module Helpers
 
     def create_params
       require_parameters!('name')
-      filtered_params(*ACCOUNT_PARAMS)
+      filtered_params(Account)
     end
 
     def transaction
@@ -35,7 +32,7 @@ module Helpers
     def find_or_build_transaction!
       transaction = account.primary_transactions.find_or_initialize_by(id: transaction_id)
       return transaction if transaction.persisted?
-      transaction.assign_attributes(filtered_params(*TRANSACTION_PARAMS))
+      transaction.assign_attributes(filtered_params(Primary::Transaction))
       transaction
     end
   end
@@ -59,11 +56,11 @@ module Helpers
 
     def create_params
       require_parameters!('name', 'default_amount')
-      filtered_params(*Budget::Item::PUBLIC_ATTRS)
+      filtered_params(Budget::Item)
     end
 
     def update_params
-      filtered_params(*Budget::Item::PUBLIC_ATTRS)
+      filtered_params(Budget::Item)
     end
   end
 end

@@ -47,6 +47,8 @@ module Budget
     scope :current, -> { where(month: BudgetMonth.piped) }
     alias_attribute :item_id, :budget_item_id
 
+    PUBLIC_ATTRS = %w(amount month).freeze
+
     def self.discretionary
       (Account.available_cash + MonthlyAmount.remaining + WeeklyAmount.remaining).round(2)
     end
@@ -79,7 +81,7 @@ module Budget
     end
   end
 
-  class MonthlyAmount < Budget::Amount
+  class MonthlyAmount < Amount
 
     default_scope { current.joins(:item).merge(Budget::Item.monthly) }
 
@@ -93,7 +95,7 @@ module Budget
     alias_method :remaining, :amount
   end
 
-  class WeeklyAmount < Budget::Amount
+  class WeeklyAmount < Amount
 
     default_scope { current.joins(:item).merge(Budget::Item.weekly) }
 

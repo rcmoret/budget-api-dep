@@ -80,6 +80,6 @@ class ItemsApi < Sinatra::Base
   end
 
   def amount_params
-    filtered_params(*%w(amount month))
+    filtered_params(Budget::Amount)
   end
 end
