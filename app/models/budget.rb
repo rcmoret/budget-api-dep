@@ -45,6 +45,9 @@ module Budget
     before_validation :set_default_amount!, if: 'amount.nil?'
 
     scope :current, -> { where(month: BudgetMonth.piped) }
+    scope :expenses, -> { joins(:item).merge(Budget::Item.expenses).order('amount ASC') }
+    scope :revenues, -> { joins(:item).merge(Budget::Item.revenues).order('amount DESC') }
+
     alias_attribute :item_id, :budget_item_id
 
     PUBLIC_ATTRS = %w(amount month).freeze
@@ -99,17 +102,8 @@ module Budget
 
     default_scope { current.joins(:item).merge(Budget::Item.weekly) }
 
-    def self.active
-      all.to_a.unshift(discretionary)
-    end
-
     def self.remaining
       all.inject(0) { |total, amount| total += amount.remaining }
-    end
-
-    def self.discretionary
-      { id: 0, name: 'Discretionary', amount: 0, remaining: MonthlyAmount.discretionary,
-        month: BudgetMonth.piped, item_id: 0 }
     end
 
     def remaining
@@ -124,6 +118,13 @@ module Budget
 
     def difference
       (amount - transactions.sum(:amount)).round(2)
+    end
+  end
+
+  class Discretionary
+    def self.to_hash
+      { id: 0, name: 'Discretionary', amount: 0, remaining: Budget::Amount.discretionary,
+        month: BudgetMonth.piped, item_id: 0 }
     end
   end
 end

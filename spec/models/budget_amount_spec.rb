@@ -129,18 +129,6 @@ RSpec.describe Budget::WeeklyAmount, type: :model do
         Budget::WeeklyAmount.remaining
       end
     end
-    describe '#discretionary' do
-      before { allow(Budget::WeeklyAmount).to receive(:remaining) { 100 } }
-      let(:discretionary) do
-      { id: 0, name: 'Discretionary', amount: 0, remaining: 100,
-        month: BudgetMonth.piped, item_id: 0 }
-      end
-      it 'should return discretionary income as a hash' do
-        expect(Budget::WeeklyAmount.discretionary).to eq discretionary
-      end
-    end
-
-
   end
   describe '.remaining' do
     let(:spent) { amounts.inject(:+) }
@@ -184,6 +172,19 @@ RSpec.describe Budget::WeeklyAmount, type: :model do
         let(:amounts) { [-100, 300] }
         it { should eq -1200 } # -1000 - (-100 + 300)
       end
+    end
+  end
+end
+
+RSpec.describe Budget::Discretionary do
+  describe '#to_hash' do
+    before { allow(Budget::Amount).to receive(:discretionary) { 100 } }
+    let(:discretionary) do
+      { id: 0, name: 'Discretionary', amount: 0, remaining: 100,
+        month: BudgetMonth.piped, item_id: 0 }
+    end
+    it 'should return discretionary income as a hash' do
+      expect(Budget::Discretionary.to_hash).to eq discretionary
     end
   end
 end

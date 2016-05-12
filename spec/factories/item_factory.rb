@@ -2,17 +2,23 @@ FactoryGirl.define do
   factory :item, class: Budget::Item do
     default_amount 0
     name 'Stuff'
-    factory :weekly_expense do
-      default_amount -100
-      name 'Grocery'
-      expense true
+
+    trait :monthly do
+      monthly true
+    end
+
+    trait :weekly do
       monthly false
     end
-    factory :monthly_income do
-      default_amount 100
-      name 'Income'
+
+    trait :expense do
+      name 'Expenditures'
+      expense true
+    end
+
+    trait :revenue do
+      name 'Income!'
       expense false
-      monthly true
     end
   end
 end

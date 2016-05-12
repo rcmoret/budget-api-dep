@@ -92,15 +92,15 @@ RSpec.describe Primary::Transaction, type: :model do
     let(:dates) { (2.months.ago..Date.today) }
     context 'pending false (default)' do
       subject { Primary::Transaction.between(dates) }
-      it { should include(old_transactions) }
-      it { should include(this_months) }
-      it { should_not include(pending) }
+      it { should include_these(*old_transactions) }
+      it { should include_these(*this_months) }
+      it { should_not include_these(*pending) }
     end
     context 'pending true' do
       subject { Primary::Transaction.between(dates, include_pending: true) }
-      it { should include(old_transactions) }
-      it { should include(this_months) }
-      it { should include(pending) }
+      it { should include_these(*old_transactions) }
+      it { should include_these(*this_months) }
+      it { should include_these(*pending) }
     end
   end
 end

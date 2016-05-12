@@ -5,13 +5,9 @@ module Helpers
         actual == true || actual == false
       end
     end
-    RSpec::Matchers.define :include do |expected|
+    RSpec::Matchers.define :include_these do |*expected|
       match do |actual|
-        if expected.respond_to?(:each)
-          expected.all? { |e| actual.include?(e) }
-        else
-          actual.include?(expected)
-        end
+        expected.all? { |e| actual.include?(e) }
       end
     end
     RSpec::Matchers.define :all_receive do |expected|

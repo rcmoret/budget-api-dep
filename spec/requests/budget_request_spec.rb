@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe ItemsApi do
-  let(:grocery) { FactoryGirl.create(:weekly_expense) }
-  let(:paycheck) { FactoryGirl.create(:monthly_income) }
+  let(:grocery) { FactoryGirl.create(:item, :weekly, :expense, default_amount: -100) }
+  let(:paycheck) { FactoryGirl.create(:item, :monthly, :revenue, default_amount: 100) }
   let!(:items) { [grocery, paycheck] }
   let(:endpoint) { 'items/' }
   describe 'GET routes' do
@@ -84,49 +84,72 @@ RSpec.describe ItemsApi do
     describe 'PUT to /items/:item_id/amount/:id' do
       include_context 'request specs'
       let(:method) { 'put' }
-      let(:weekly) { FactoryGirl.create(:weekly_amount) }
+      let(:weekly) { FactoryGirl.create(:monthly_expense) }
+      let(:grocery) { weekly.item }
       let(:endpoint) { "/items/#{grocery.id}/amount/#{weekly.id}" }
       let(:amount) { -232 }
       let(:request_body) { { amount: amount } }
       its(:status) { should be 200 }
       it { expect { request.call }.to change { weekly.reload.amount } }
     end
-    describe 'GET /items/amounts/(monthly|weekly)' do
+
+    describe 'GET /items/amounts/(monthly|weekly)/(expenses|revenues)' do
       include_context 'request specs'
       let(:method) { 'get' }
-      let!(:monthly_amount) { FactoryGirl.create(:monthly_amount) }
-      let!(:weekly_amount) { FactoryGirl.create(:weekly_amount, item: grocery) }
       context 'monthly' do
+        let!(:monthly_amount) { FactoryGirl.create(:monthly_expense) }
         let(:endpoint) { '/items/amounts/monthly' }
-        let(:first_json) { subject.body.first }
         its(:status) { should be 200 }
-        it { expect(first_json['id']).to eq monthly_amount.id }
-        it { expect(first_json['amount']).to eq monthly_amount.amount }
-        it { expect(first_json['remaining']).to eq monthly_amount.amount }
-        it { expect(first_json['item_id']).to eq monthly_amount.item_id }
+        it { expect(subject.body).to include monthly_amount.to_hash.stringify_keys }
+      end
+      context 'monthly/expenses' do
+        let!(:monthly_amount) { FactoryGirl.create(:monthly_expense) }
+        let(:endpoint) { '/items/amounts/monthly/expenses' }
+        its(:status) { should be 200 }
+        its(:body) { should include monthly_amount.to_hash.stringify_keys }
+      end
+      context 'monthly/revenues' do
+        let!(:monthly_amount) { FactoryGirl.create(:monthly_revenue) }
+        let(:endpoint) { '/items/amounts/monthly/revenues' }
+        its(:status) { should be 200 }
+        its(:body) { should include monthly_amount.to_hash.stringify_keys }
       end
       context 'weekly' do
+        let!(:weekly_amount) { FactoryGirl.create(:weekly_expense) }
         let(:endpoint) { '/items/amounts/weekly' }
-        let(:first_json) { subject.body[1] }
         its(:status) { should be 200 }
-        it { expect(first_json['id']).to eq weekly_amount.id }
-        it { expect(first_json['amount']).to eq weekly_amount.amount }
-        it { expect(first_json['name']).to eq grocery.name }
-        it { expect(first_json['remaining']).to eq weekly_amount.remaining }
-        it { expect(first_json['item_id']).to eq weekly_amount.item_id }
-        # discretionary
-        let(:discretionary) { subject.body[0] }
-        before do
-          allow(Budget::WeeklyAmount).to receive(:remaining) { -100 }
-          allow(Budget::MonthlyAmount).to receive(:remaining) { -150 }
-          allow(Account).to receive(:available_cash) { 300 }
-        end
-        it { expect(discretionary['id']).to be 0 }
-        it { expect(discretionary['name']).to eq 'Discretionary' }
-        it { expect(discretionary['amount']).to eq 0 }
-        it { expect(discretionary['remaining']).to eq 50.0 }
-        it { expect(discretionary['item_id']).to eq 0 }
+        its(:body) { should include weekly_amount.to_hash.stringify_keys }
       end
+      context 'weekly/expenses' do
+        let!(:weekly_amount) { FactoryGirl.create(:weekly_expense) }
+        let(:endpoint) { '/items/amounts/weekly/expenses' }
+        its(:status) { should be 200 }
+        its(:body) { should include weekly_amount.to_hash.stringify_keys }
+      end
+      context 'weekly/revenues' do
+        let!(:weekly_amount) { FactoryGirl.create(:weekly_revenue) }
+        let(:endpoint) { '/items/amounts/weekly/revenues' }
+        its(:status) { should be 200 }
+        its(:body) { should include weekly_amount.to_hash.stringify_keys }
+      end
+
+    end
+    describe 'GET /items/amounts/discretionary' do
+      let(:request) { proc { get(endpoint) } }
+      let(:response) { request.call }
+      subject { JSON.parse(response.body) }
+      before do
+        allow(Budget::WeeklyAmount).to receive(:remaining) { -100 }
+        allow(Budget::MonthlyAmount).to receive(:remaining) { -150 }
+        allow(Account).to receive(:available_cash) { 300 }
+      end
+      let(:expected_hash) do
+        { 'id' => 0, 'name' => 'Discretionary', 'amount' => 0, 'remaining' => 50.0,
+          'month' => BudgetMonth.piped, 'item_id' => 0 }
+      end
+      let(:endpoint) { 'items/amounts/discretionary' }
+      it { expect(response.status).to be 200 }
+      it { should eq expected_hash }
     end
   end
 end

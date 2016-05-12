@@ -38,12 +38,25 @@ class ItemsApi < Sinatra::Base
   end
 
   namespace '/amounts' do
-    get '/monthly' do
-      render_collection(Budget::MonthlyAmount.anticipated)
+    get %r{/(?<freq>monthly|weekly)/?(?<type>revenues|expenses)?} do
+      render_collection(case [params['freq'], params['type']]
+                        when %w(monthly expenses)
+                          Budget::MonthlyAmount.anticipated.expenses
+                        when %w(monthly revenues)
+                          Budget::MonthlyAmount.anticipated.revenues
+                        when %w(weekly expenses)
+                          Budget::WeeklyAmount.expenses
+                        when %w(weekly revenues)
+                          Budget::WeeklyAmount.revenues
+                        when ['monthly', nil]
+                          Budget::MonthlyAmount.anticipated
+                        when ['weekly', nil]
+                          Budget::WeeklyAmount.all
+                        end)
     end
 
-    get '/weekly' do
-      render_collection(Budget::WeeklyAmount.active)
+    get '/discretionary' do
+      [200, Budget::Discretionary.to_hash.to_json]
     end
   end
 
