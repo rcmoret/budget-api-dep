@@ -25,7 +25,7 @@ module SharedExamples
         expect(subject['qualified_medical_expense']).to be_a_boolean
       end
       it 'should have an array of subtransactions' do
-        expect(subject['subtransactions']).to be_a Array
+        expect(subject['subtransactions_attributes']).to be_a Array
       end
     end
     shared_examples_for 'JSON transaction' do
@@ -47,7 +47,7 @@ module SharedExamples
         expect(amount).to eq expected_amount
       end
       it 'should return the subtransactions' do
-        subtransaction = subject['subtransactions'].first
+        subtransaction = subject['subtransactions_attributes'].first
         expect(subtransaction['description']).to eq 'Clothes'
         expect(subtransaction['amount']).to eq -20.0
       end

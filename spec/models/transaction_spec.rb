@@ -10,21 +10,24 @@ RSpec.describe Transaction::View, type: :model do
         id: transaction.id,
         description: transaction.description,
         budget_item: nil,
+        monthly_amount_id: nil,
         clearance_date: nil,
         notes: nil,
         receipt: nil,
         check_number: nil,
         account_id: transaction.account_id,
         account_name: transaction.account.name,
-        amount: transaction.amount.to_d,
-        subtransactions: [],
+        amount: transaction.amount.to_f,
+        subtransactions_attributes: [],
         tax_deduction: false,
-        qualified_medical_expense: false
+        qualified_medical_expense: false,
+        updated_at: transaction.updated_at
       }
     end
     subject { transaction.view.to_hash }
     it 'should provide a hash representation of the transaction' do
-      expect(subject).to eq expected_hash
+      expect(subject.except(:updated_at)).to eq expected_hash.except(:updated_at)
+      expect(subject[:updated_at].to_i).to eq expected_hash[:updated_at].to_i
     end
   end
 end

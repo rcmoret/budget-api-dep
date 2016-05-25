@@ -56,11 +56,13 @@ RSpec.describe 'AccountsApi', type: :request do
     describe 'the transaction collection' do
       let(:transaction) { FactoryGirl.create(:transaction, account: checking).view }
       let!(:transaction_hash) do
-        transaction.attributes.merge(amount: transaction.amount.to_s).stringify_keys
+        h = transaction.to_hash.merge(amount: transaction.amount.to_f).stringify_keys
+        h.delete_if { |k, v| k == 'updated_at' }
       end
       subject { parsed_response['transactions'] }
       it { should be_a Array }
-      it { expect(subject[0]).to eq transaction_hash }
+      it { expect(subject[0]).to include transaction_hash }
+      it { expect(subject[0]['updated_at'].to_date).to eq transaction.updated_at.to_date }
     end
   end
   describe 'POST /accounts' do
