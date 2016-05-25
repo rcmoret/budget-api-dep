@@ -52,7 +52,9 @@ app.TransactionView = Backbone.View.extend({
     } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type == 'focusout') {
       var attrs = {}
       _.each(this.$el.find('input'), function(input) {
-        attrs[$(input).attr('name')] = $(input).val()
+        if ($(input).val() !== '') {
+          attrs[$(input).attr('name')] = $(input).val()
+        }
       });
       this.model.update(attrs, {save: true})
     }
