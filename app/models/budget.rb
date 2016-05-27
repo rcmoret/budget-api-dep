@@ -56,6 +56,10 @@ module Budget
       (Account.available_cash + MonthlyAmount.remaining + WeeklyAmount.remaining).round(2)
     end
 
+    def self.active
+      WeeklyAmount.all + MonthlyAmount.anticipated
+    end
+
     def item_id=(id)
       budget_item_id=(id)
     end

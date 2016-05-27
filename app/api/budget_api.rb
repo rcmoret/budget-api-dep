@@ -11,6 +11,10 @@ class ItemsApi < Sinatra::Base
     item.save ? render_new(item) : render_error(400)
   end
 
+  get '/active' do
+    render_collection(Budget::Amount.active)
+  end
+
   namespace %r{/(?<item_id>\d+)} do
     get '' do
       item.to_json

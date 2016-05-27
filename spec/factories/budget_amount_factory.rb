@@ -21,7 +21,7 @@ FactoryGirl.define do
 
     factory :weekly_amount, class: Budget::WeeklyAmount do
       amount -10
-      association :item, factory: :weekly_expense
+      association :item, factory: [:item, :weekly]
     end
 
     factory :weekly_expense, class: Budget::WeeklyAmount do

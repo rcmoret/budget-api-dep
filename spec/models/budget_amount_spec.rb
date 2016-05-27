@@ -25,6 +25,19 @@ RSpec.describe Budget::Amount, type: :model do
     it { should eq 30 }
   end
 
+  describe '#for_select' do
+    let!(:groceries) { FactoryGirl.create(:weekly_expense) }
+    let(:nes) { FactoryGirl.create(:monthly_expense) }
+    before do
+      allow(Budget::MonthlyAmount).to receive(:anticipated) { [nes] }
+      allow(Budget::WeeklyAmount).to receive(:all) { [groceries] }
+    end
+    subject { Budget::Amount.active }
+    it 'should return the expected array' do
+      expect(subject).to include nes
+      expect(subject).to include groceries
+    end
+  end
   describe 'after_create callbacks' do
     describe '.set_default_amount!' do
       let(:default_amount) { -200 }

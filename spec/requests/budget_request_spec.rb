@@ -4,8 +4,8 @@ RSpec.describe ItemsApi do
   let(:grocery) { FactoryGirl.create(:item, :weekly, :expense, default_amount: -100) }
   let(:paycheck) { FactoryGirl.create(:item, :monthly, :revenue, default_amount: 100) }
   let!(:items) { [grocery, paycheck] }
-  let(:endpoint) { 'items/' }
   describe 'GET routes' do
+    let(:endpoint) { 'items/' }
     let(:request) { get endpoint }
     subject { JSON.parse(request.body) }
     describe '/items (index)' do
@@ -152,4 +152,18 @@ RSpec.describe ItemsApi do
       it { should eq expected_hash }
     end
   end
+  describe 'GET /items/active collection' do
+    let(:endpoint) { '/items/active' }
+    let(:request) { proc { get(endpoint) } }
+    let(:response) { request.call }
+    subject { JSON.parse(response.body) }
+    let!(:groceries) { FactoryGirl.create(:weekly_expense) }
+    let!(:nes) { FactoryGirl.create(:monthly_expense) }
+    it do
+      expect(subject).to include nes.to_hash.stringify_keys
+      expect(subject).to include groceries.to_hash.stringify_keys
+    end
+  end
+
+
 end
