@@ -39,7 +39,7 @@ module SharedHelpers
       next unless params[key]
       params[key].map! { |_params| _params.slice(*attributes) }
     end
-    params.reject { |k, v| v.blank? }
+    params.reject { |k, v| v == '' }
   end
 
   def request_params

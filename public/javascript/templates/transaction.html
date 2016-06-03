@@ -17,9 +17,14 @@
       $<%= parseFloat(amount).toFixed(2) %></div>
     <div class='amount'>$<%= parseFloat(balance).toFixed(2) %></div>
     <% if (!_.isNull(budgetItems) && budgetItems != description) { %>
+      <span class='amount'>$<%= parseFloat(balance).toFixed(2) %></span>
+    </div>
+    <% if (!_.isNull(budgetItems)) { %>
       <div class='budget-items' data-name='budget_item_id' data-value='<%= monthly_amount_id %>'>
-        (<%= budgetItems %>)
+        <a>(<%= budgetItems %>)</a>
       </div>
+    <% } else { %>
+      <div class='budget-items'><a><i class='fa fa-list-ul' aria-hidden='true'></a></i></div>
     <% } %>
     <% if (check_number) { %>
       <div class='check_number editable' data-name='check_number' data-value='<%= check_number%>'>
