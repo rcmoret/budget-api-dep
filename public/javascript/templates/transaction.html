@@ -1,28 +1,33 @@
 <script type='text/template' id='transaction-template'>
   <div class='transaction' id='transaction-<%= id %>'>
-    <i class="fa fa-caret-square-o-right" aria-hidden="true"></i>
-    <span class='editable' data-name='clearance_date' data-value='<%= clearance_date %>'>
+
+    <% if (subtransactions_attributes.length === 0) { %>
+      <i class="fa fa-circle-o" aria-hidden="true"></i>
+    <% } else { %>
+      <i class="fa fa-caret-right" aria-hidden="true"></i>
+    <% } %>
+    <div class='editable clearance-date' data-name='clearance_date' data-value='<%= clearance_date %>'>
       <%= clear_date %>
-    </span>
-    <span class='description editable' data-name='description' data-value='<%= description %>'>
+    </div>
+    <div class='description editable' data-name='description' data-value='<%= description %>'>
       <%= displayDescription %>
-    </span>
-    <% if (!_.isNull(budgetItems) && budgetItems != description) { %>
-      <span data-name='budget_item_id' data-value='<%= monthly_amount_id %>'>
-        (<%= budgetItems %>)
-      </span>
-    <% } %>
-    <span class='amount<%= subtransactions_attributes.length === 0 ? " editable" : "" %>'
+    </div>
+    <div class='amount<%= subtransactions_attributes.length === 0 ? " editable" : "" %>'
       data-name='amount' data-value='<%= parseFloat(amount).toFixed(2) %>'>
-      $<%= parseFloat(amount).toFixed(2) %></span>
-    <span class='amount'>$<%= parseFloat(balance).toFixed(2) %></span>
-    <% if (check_number) { %>
-      <span class='check_number editable' data-name='check_number' data-value='<%= check_number%>'>
-        Ck #: <%= check_number %>
-      </span>
+      $<%= parseFloat(amount).toFixed(2) %></div>
+    <div class='amount'>$<%= parseFloat(balance).toFixed(2) %></div>
+    <% if (!_.isNull(budgetItems) && budgetItems != description) { %>
+      <div class='budget-items' data-name='budget_item_id' data-value='<%= monthly_amount_id %>'>
+        (<%= budgetItems %>)
+      </div>
     <% } %>
-    <span class='notes editable' data-name='notes' data-value='<%= notes %>'>
+    <% if (check_number) { %>
+      <div class='check_number editable' data-name='check_number' data-value='<%= check_number%>'>
+        Ck #: <%= check_number %>
+      </div>
+    <% } %>
+    <div class='notes editable' data-name='notes' data-value='<%= notes %>'>
       <%= notes %>
-    </span>
+    </div>
   </div>
 </script>

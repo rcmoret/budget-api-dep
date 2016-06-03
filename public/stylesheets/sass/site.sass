@@ -1,8 +1,80 @@
-h1
-  color: blue
+$off-white: #E3E5E4
+$sky-blue: #BBDEF9
+$neon-blue: #2195D2
+$dark-blue: #07436F
+
+html
+  font-family: Palatino
+
+h1, h2, h2 a:visited, h3, h3 a:visited
+  color: $dark-blue
 
 .collapsed
   display: none
 
 .editable:hover
   cursor: pointer
+
+.fa.fa-plus-circle:hover
+  cursor: pointer
+
+.transactions
+  background-color: $dark-blue
+  padding: 9px
+  .transaction
+    padding: 8px 6px
+  div
+    border-radius: 4px
+    .transaction
+      div
+        display: inline-block
+      .clearance-date
+        width: 10%
+      .description
+        width: 14%
+        input
+          width: 100%
+      .amount
+        width: 8%
+        text-align: right
+        input
+          text-align: right
+      .budget-items
+        margin: 0 10px
+        width: 12%
+      .budget-items-select
+        width: 12%
+        width: 18%
+
+      button.submit
+        -moz-box-shadow: inset 0px -3px 7px 0px #29bbff
+        -webkit-box-shadow: inset 0px -3px 7px 0px #29bbff
+        box-shadow: inset 0px -3px 7px 0px #29bbff
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, $sky-blue), color-stop(1, $neon-blue))
+        background: -moz-linear-gradient(top, $sky-blue 5%, $neon-blue 100%)
+        background: -webkit-linear-gradient(top, $sky-blue 5%, $neon-blue 100%)
+        background: -o-linear-gradient(top, $sky-blue 5%, $neon-blue 100%)
+        background: -ms-linear-gradient(top, $sky-blue 5%, $neon-blue 100%)
+        background: linear-gradient(to bottom, $sky-blue 5%, $neon-blue 100%)
+        background-color: $sky-blue
+        -moz-border-radius: 3px
+        -webkit-border-radius: 3px
+        border-radius: 3px
+        border: 1px solid #0b0e07
+        display: inline-block
+        cursor: pointer
+        color: #ffffff
+        font-family: Arial
+        font-size: 12px
+        padding: 2px 13px
+        text-decoration: none
+  div .transaction
+    background-color: $off-white
+  div:nth-of-type(2n) .transaction
+    background-color: $sky-blue
+  .fa.fa-plus-circle
+    font-size: 0.8em
+  .fa.fa-circle-o, .fa.fa-caret-right
+    font-size: 0.6em
+
+

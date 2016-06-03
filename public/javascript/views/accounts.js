@@ -1,8 +1,7 @@
 var app = app || {};
 
 app.AccountsView = Backbone.View.extend({
-  el: 'ul#accounts-list',
-  tagName: 'li', //is this line needed?
+  el: '#accounts-list',
   template: _.template( $('#account-template').html() ),
   initialize: function() {
     this.collection = app.Accounts;

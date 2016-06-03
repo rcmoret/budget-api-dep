@@ -17,7 +17,6 @@ app.WeeklyAmountsView = Backbone.View.extend({
 });
 
 app.WeeklyAmountView = Backbone.View.extend({
-  tagName: 'li',
   template: _.template( $('#weekly-amount-template').html() ),
   id: function() {
     this.model.id

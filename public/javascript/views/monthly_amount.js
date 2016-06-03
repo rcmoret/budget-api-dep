@@ -1,7 +1,7 @@
 var app = app || {};
 
 app.MonthlyAmountsView = Backbone.View.extend({
-  el: 'ul#monthly-amounts-list',
+  el: '#monthly-amounts-list',
   initialize: function() {
     this.collection = app.MonthlyAmounts;
     this.listenTo(this.collection, 'reset', this.render);
@@ -17,7 +17,6 @@ app.MonthlyAmountsView = Backbone.View.extend({
 });
 
 app.MonthlyAmountView = Backbone.View.extend({
-  tagName: 'li',
   template: _.template( $('#monthly-amount-template').html() ),
   id: function() {
     this.model.id
