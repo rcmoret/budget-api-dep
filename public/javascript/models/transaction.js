@@ -2,7 +2,18 @@ app = app || {};
 
 app.Transaction = Backbone.Model.extend({
   initialize: function() {
-    urlRoot: this.collection.url
+  },
+  defaults: {
+    'id': null,
+    'clearance_date': null,
+    'description': null,
+    'amount': null,
+    'notes': null,
+    'check_number': null,
+    'subtransactions_attributes': []
+  },
+  urlRoot: function() {
+    return this.collection.url
   },
   displayDescription: function() {
     if (this.get('description') || this.get('budget_item')) {
