@@ -31,16 +31,16 @@ app.Transaction = Backbone.Model.extend({
     }
   },
   subtransactions: function() {
-    return this.get('subtransactions') || []
+    return this.get('subtransactions_attributes') || []
   },
   items: function() {
     if (this.subtransactions().length === 0) {
       return this.get('budget_item')
     } else {
-      var items = _.map(this.subtransactions(), function (sub) {
+      var itemArray = _.map(this.subtransactions(), function (sub) {
         return sub.budget_item
       })
-      var filteredItems = _.filter(items, function(item) {
+      var filteredItems = _.filter(itemArray, function(item) {
         return item
       })
       return filteredItems.join(', ')

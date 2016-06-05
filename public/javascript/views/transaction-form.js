@@ -4,8 +4,10 @@ app.TransactionFormView = Backbone.View.extend({
   template: _.template( $('#transaction-form-template').html() ),
   plusButton: _.template($('#plus-button').html()),
   events: {
-    'click i.fa.fa-plus-circle': 'renderForm',
-    'click button.submit': 'createTransaction'
+    'click i.fa.fa-plus': 'renderForm',
+    'click a': 'renderForm',
+    'click button.submit': 'createTransaction',
+    'click i.fa.fa-close': 'closeForm'
   },
   initialize: function(accountId) {
     this.collection = app.Accounts.get(accountId).transactions
@@ -42,5 +44,9 @@ app.TransactionFormView = Backbone.View.extend({
     app.ActiveItems.fetch({reset: true})
     this.$el.html('')
     this.$el.html(this.template);
+  },
+  closeForm: function() {
+    this.$el.html('')
+    this.$el.html(this.plusButton);
   }
 });

@@ -35,9 +35,11 @@ module SharedHelpers
     white_listed_params = klass::PUBLIC_ATTRS.select { |attr| attr.is_a?(String) }
     params = request_params.slice(*white_listed_params)
     nested_attributes = klass::PUBLIC_ATTRS.select { |attr| attr.is_a?(Hash) }
-    nested_attributes.each do |key, attributes|
-      next unless params[key]
-      params[key].map! { |_params| _params.slice(*attributes) }
+    nested_attributes.each do |hash|
+      hash.each do |key, attributes|
+        next unless params[key]
+        params[key].map! { |_params| _params.slice(*attributes) }
+      end
     end
     params.reject { |k, v| v == '' }
   end

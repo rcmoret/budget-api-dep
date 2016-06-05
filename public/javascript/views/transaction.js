@@ -8,7 +8,9 @@ app.TransactionView = Backbone.View.extend({
     'blur .editable input': 'updateTransaction',
     'keyup .editable input': 'updateTransaction',
     'click .budget-items a': 'renderSelect',
-    'blur select': 'updateItems'
+    'blur select': 'updateItems',
+    'click i.fa-chevron-right': 'renderSubtransctions',
+    'click i.fa-chevron-down': 'collapseSubtransctions'
   },
   initialize: function(transaction, balance) {
     this.model = transaction;
@@ -28,14 +30,13 @@ app.TransactionView = Backbone.View.extend({
   },
   render: function() {
     if (this.model.subtransactions().length > 0) {
-      this.$el.find('.transaction').append(this.subtransactionElement());
-      _.each(this.model.subtransactions(), function(sub) {
-        this.$el.find('ul.subtransactions').append(this.subTemplate(sub));
-      }, this);
+      this.$el.append(this.subtransactionsEl());
     }
     return this.$el;
   },
-  subtransactionElement: $('<ul class="subtransactions collapsed"></ul>'),
+  subtransactionsEl: function() {
+    return this.subTemplate({subtransactions: this.model.subtransactions()})
+  },
   toggleInput: function(e) {
     var el = $(e.toElement)
     var data = el.data()
@@ -87,5 +88,15 @@ app.TransactionView = Backbone.View.extend({
   updateItems: function(e) {
     var value = e.target.value === '' ? null : e.target.value
     this.model.update({monthly_amount_id: value}, {save: true})
+  },
+  renderSubtransctions: function() {
+    this.$el.find('i.fa.fa-chevron-right').addClass('fa-chevron-down')
+    this.$el.find('i.fa.fa-chevron-right').removeClass('fa-chevron-right')
+    this.$el.find('.subtransaction').removeClass('collapsed')
+  },
+  collapseSubtransctions: function() {
+    this.$el.find('i.fa.fa-chevron-down').addClass('fa-chevron-right')
+    this.$el.find('i.fa.fa-chevron-down').removeClass('fa-chevron-down')
+    this.$el.find('.subtransaction').addClass('collapsed')
   }
 });
