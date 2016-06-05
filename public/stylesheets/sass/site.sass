@@ -11,13 +11,11 @@ html
   a
     text-decoration: none
 
-.collapsed
-  display: none
-
-.fa.fa-plus-circle:hover
+.new.transaction
+.fa.fa-plus:hover, a:hover, .fa.fa-close:hover
   cursor: pointer
 
-h2, h2 a:visited, h3, h3 a:visited
+h2, h2 a, h2 a:visited, h3, h3 a, h3 a:visited
   color: black
 
 h1,
@@ -32,6 +30,8 @@ section#accounts
   background-color: $azul
   border-radius: 8px
   .account
+    h3
+      text-align: center
     float: left
     border-radius: 8px 8px 0 0
     padding: 6px 20px 8px 8px
@@ -39,6 +39,7 @@ section#accounts
     padding-right: 20px
     border-left: 3px solid $azul
     border-right: 3px solid $azul
+    text-align: right
 
   #accounts-list
     .selected
@@ -54,6 +55,7 @@ section#accounts
     padding: 8px 6px
   div
     .transaction
+      width: 100%
       div
         display: inline-block
       .clearance-date
@@ -73,8 +75,15 @@ section#accounts
       .budget-items-select
         width: 12%
         width: 18%
-      i.fa
+      i.fa.fa-list-ul
         color: $dark-grey
+      .left-icon
+        width: 1.5%
+        margin-left: 1%
+        i.fa:hover
+          cursor: pointer
+        i.fa.fa-caret-right
+          cursor: default
       button.submit
         outline: none
         box-shadow: none
@@ -82,14 +91,23 @@ section#accounts
         cursor: pointer
         color: $off-white
         font-weight: 100
-        font-size: 0.9em
-        padding: 4px 18px
+        font-size: 0.7em
+        font-family: Helvetica
+        letter-spacing: 1px
+        padding: 2px 18px
         border-radius: 8px
-        border: 2px solid $mid-grey
-        background-color: $mid-grey
-      button.submit:focus
         border: 2px solid $dark-grey
-  div:first-of-type .transaction
+        background-color: $dark-grey
+      button.submit:focus
+        border: 2px solid $mid-grey
+    .transaction.subtransaction.collapsed
+      display: none
+    .transaction.subtransaction
+      font-size: 0.8em
+      padding: 1px 6px
+      color: $dark-grey
+      border-radius: 0
+  div:first-of-type .transaction:first-of-type
     padding-top: 25px
     border-top-right-radius: 18px
   div:last-of-type .transaction
@@ -99,7 +117,5 @@ section#accounts
     background-color: $off-white
   div:nth-of-type(2n) .transaction
     background-color: $light-grey
-  .fa.fa-plus-circle
+  .fa.fa-chevron-down, .fa.fa-chevron-right, .fa.fa-plus
     font-size: 0.8em
-  .fa.fa-circle-o, .fa.fa-caret-right
-    font-size: 0.6em

@@ -1,13 +1,24 @@
 <script type='text/template' id='subtransaction-template'>
-  <li>
-    <% if (_.isNull(description)) { %>
-      <span><%= budget_item || 'Misc.' %></span>
-    <% } else { %>
-      <span><%= description %></span>
-      <% if (!_.isNull(budget_item)) { %>
-        <span>(<%= budget_item %>)</span>
+  <% _.each(subtransactions, function(sub) { %>
+    <div class='subtransaction transaction collapsed'>
+      <div class='clearance-date'></div>
+      <div class='left-icon'><i class='fa fa-caret-right' aria-hidden='true'></i></div>
+      <div class='description'>
+        <% if (_.isNull(sub.description)) { %>
+          <%= sub.budget_item || 'Misc.' %>
+        <% } %>
+      </div>
+      <div class='amount'>
+        $<%= parseFloat(sub.amount).toFixed(2) %>
+      </div>
+      <div class='amount'></div>
+      <% if (!_.isNull(sub.budget_item)) { %>
+        <div class='budget-items'>
+          <a>(<%= sub.budget_item %>)</a>
+        </div>
+      <% } else { %>
+        <div class='budget-items'><a><i class='fa fa-list-ul' aria-hidden='true'></a></i></div>
       <% } %>
-    <% } %>
-    <span><%= parseFloat(amount).toFixed(2) %></span>
-  </li>
+    </div>
+  <% }) %>
 </script>
