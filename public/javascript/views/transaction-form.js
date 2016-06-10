@@ -4,10 +4,10 @@ app.TransactionFormView = Backbone.View.extend({
   template: _.template( $('#transaction-form-template').html() ),
   plusButton: _.template($('#plus-button').html()),
   events: {
-    'click i.fa.fa-plus': 'renderForm',
-    'click a': 'renderForm',
+    'click .render-form': 'renderForm',
     'click button.submit': 'createTransaction',
-    'click i.fa.fa-close': 'closeForm'
+    'click i.fa.fa-close': 'closeForm',
+    'click a.add-subtransactions': 'addSubtransactions'
   },
   initialize: function(accountId) {
     this.collection = app.Accounts.get(accountId).transactions
@@ -16,7 +16,7 @@ app.TransactionFormView = Backbone.View.extend({
     this.$el.html(this.plusButton);
   },
   render: function() {
-    return this.$el;
+    return this;
   },
   populateSelect: function() {
     _.each(app.ActiveItems.models, function(item) {
@@ -30,23 +30,51 @@ app.TransactionFormView = Backbone.View.extend({
     return $(opt)
   },
   createTransaction: function() {
-    _.each(this.$el.find('input, select'), function(input) {
-      if (!_.isUndefined(input.value) && input.value != '') {
+    _.each(this.$el.find('.primary input, .primary select'), function(input) {
+      if (!_.isUndefined(input.value) && input.value != '' && !input.disabled) {
         this.newTransaction.attributes[input.name] = input.value
       }
     }, this)
+    this.newTransaction.attributes['subtransactions_attributes'] = this.subtransactionsAttrs();
     this.collection.create(this.newTransaction)
+  },
+  subtransactionsAttrs: function() {
+    return _.map(this.$el.find('.subtransaction-form'), function(sub) {
+      var attrs = {}
+      _.each($(sub).find('input, select'), function(input) {
+       if (!_.isUndefined(input.value) && input.value != '' && !input.disabled) {
+         attrs[input.name] = input.value
+       }
+      })
+      return attrs
+    })
   },
   renderPlusButton: function() {
     return this.plusButton()
   },
   renderForm: function() {
-    app.ActiveItems.fetch({reset: true})
     this.$el.html('')
     this.$el.html(this.template);
+    app.ActiveItems.fetch({reset: true})
   },
   closeForm: function() {
     this.$el.html('')
     this.$el.html(this.plusButton);
+  },
+  addSubtransactions: function() {
+    if (this.$el.find('.subtransaction-form').length === 0) {
+      this.disableFormFields();
+      this.addSubtranction();
+    }
+    this.addSubtranction();
+  },
+  subForm: _.template($('#subtransaction-form-template').html()),
+  addSubtranction: function() {
+    this.$el.append(this.subForm({opts: app.ActiveItems.models}))
+  },
+  disableFormFields: function() {
+    this.$el.find('input[name="amount"]').attr('disabled', true)
+    this.$el.find('select[name="monthly_amount_id"]').attr('disabled', true)
+    this.$el.find('select[name="monthly_amount_id"]').val('')
   }
 });

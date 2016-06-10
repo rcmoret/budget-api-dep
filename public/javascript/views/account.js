@@ -6,7 +6,7 @@ app.AccountView = Backbone.View.extend({
   initialize: function(account) {
     this.model = account;
     this.listenTo(this.model.transactions, 'reset', this.renderTransactions);
-    this.listenTo(this.model.transactions, 'sync', this.renderTransactions);
+    this.listenTo(this.model, 'fetch', this.updateBalance);
     this.$el.html(this.template(this.model.attributes));
   },
   render: function() {
@@ -29,18 +29,24 @@ app.AccountView = Backbone.View.extend({
     return initial.attrs.amount;
   },
   renderTransactions: function() {
+    expandedIds = _.map($('#transactions .expanded'), function(t) {
+      return parseInt($(t).attr('id'))
+    })
     $('#transactions').html('');
     this.$el.addClass('selected');
     balance = this.initialBalance();
     this.model.transactions.each(function(transaction) {
       balance += transaction.get('amount');
       var view = new app.TransactionView(transaction, balance);
-      $('#transactions').append(view.render());
+      var expanded = _.contains(expandedIds, view.id)
+      $('#transactions').append(view.render(expanded));
     }, this);
     $('#transactions').append(this.plusButton());
   },
   plusButton: function() {
     var row = new app.TransactionFormView(this.id);
-    return row.render();
+    return row.render().$el;
+  },
+  updateBalance: function() {
   }
 });

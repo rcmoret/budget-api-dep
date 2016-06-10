@@ -1,5 +1,5 @@
 <script type='text/template' id='transaction-form-template'>
-  <div class='transaction'>
+  <div class='transaction primary'>
     <div class='left-icon'>
       <i class="fa fa-close" aria-hidden="true"></i>
     </div>
@@ -13,6 +13,11 @@
       <select name='monthly_amount_id'>
         <option value='' disabled selected></option>
       </select>
+    </div>
+    <div class='extra-options'>
+      <a class='add-subtransactions'><i class='fa fa-plus-circle' aria-hidden='true'></i>
+        add subtransaction
+      </a>
     </div>
     <button class='submit'>Create Transaction</button>
   </div>

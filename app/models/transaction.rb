@@ -91,7 +91,8 @@ module Primary
                            clearance_date tax_deduction receipt notes
                            check_number subtransactions_attributes).freeze
 
-    PUBLIC_ATTRS = (WHITELISTED_ATTRS.dup << { subtransactions_attributes: Sub::Transaction::PUBLIC_ATTRS }).freeze
+    PUBLIC_ATTRS = (WHITELISTED_ATTRS.dup << { 'subtransactions_attributes' => Sub::Transaction::PUBLIC_ATTRS }
+                   ).freeze
 
     default_scope do
       where(primary_transaction_id: nil).includes(:subtransactions)

@@ -15,7 +15,9 @@ app.TransactionView = Backbone.View.extend({
   initialize: function(transaction, balance) {
     this.model = transaction;
     this.listenTo(app.ActiveItems, 'reset', this.populateSelect);
-    this.$el.html(this.template(this.displayAttrs(balance)));
+    this.model.bind('change', this.rerender, this);
+    this.balance = balance
+    // this.$el.html(this.template(this.displayAttrs(balance)));
   },
   description: function() {
     return this.model.get('description');
@@ -25,12 +27,18 @@ app.TransactionView = Backbone.View.extend({
       displayDescription: this.model.displayDescription(),
       budgetItems: this.model.items(),
       clear_date: this.model.displayDate(),
-      balance: balance,
+      balance: this.balance,
     })
   },
-  render: function() {
+  render: function(expanded = false) {
+    this.$el.html(this.template(this.displayAttrs()));
     if (this.model.subtransactions().length > 0) {
       this.$el.append(this.subtransactionsEl());
+      if (expanded) {
+        this.$el.find('.left-icon i').removeClass('fa-chevron-right')
+        this.$el.find('.left-icon i').addClass('fa-chevron-down')
+        this.$el.find('.subtransaction').removeClass('collapsed')
+      }
     }
     return this.$el;
   },
@@ -90,11 +98,13 @@ app.TransactionView = Backbone.View.extend({
     this.model.update({monthly_amount_id: value}, {save: true})
   },
   renderSubtransctions: function() {
+    this.$el.toggleClass('expanded')
     this.$el.find('i.fa.fa-chevron-right').addClass('fa-chevron-down')
     this.$el.find('i.fa.fa-chevron-right').removeClass('fa-chevron-right')
     this.$el.find('.subtransaction').removeClass('collapsed')
   },
   collapseSubtransctions: function() {
+    this.$el.toggleClass('expanded')
     this.$el.find('i.fa.fa-chevron-down').addClass('fa-chevron-right')
     this.$el.find('i.fa.fa-chevron-down').removeClass('fa-chevron-down')
     this.$el.find('.subtransaction').addClass('collapsed')
