@@ -53,7 +53,11 @@ module Budget
     PUBLIC_ATTRS = %w(amount month).freeze
 
     def self.discretionary
-      (Account.available_cash + MonthlyAmount.remaining + WeeklyAmount.remaining).round(2)
+      (Account.available_cash +
+       MonthlyAmount.remaining +
+       WeeklyAmount.remaining +
+       Account.charged
+      ).round(2)
     end
 
     def self.active

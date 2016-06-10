@@ -8,6 +8,12 @@ class Account < ActiveRecord::Base
     where(cash_flow: true).joins(:transactions).sum(:amount).to_f
   end
 
+  def self.charged
+    where(cash_flow: false).joins(:transactions).merge(
+      Transaction::View.between(BudgetMonth.new.date_range, include_pending: true)
+    ).sum(:amount).to_f
+  end
+
   def to_hash
     {
       id: id,
