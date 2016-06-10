@@ -1,5 +1,5 @@
 <script type='text/template' id='transaction-template'>
-  <div class='transaction' id='transaction-<%= id %>'>
+  <div class='primary transaction' id='transaction-<%= id %>'>
 
     <div class='left-icon'>
       <% if (subtransactions_attributes.length > 0) { %>
@@ -21,10 +21,10 @@
     </div>
     <% if (!_.isNull(budgetItems)) { %>
       <div class='budget-items' data-name='budget_item_id' data-value='<%= monthly_amount_id %>'>
-        <a>(<%= budgetItems %>)</a>
+        <a class='items'>(<%= budgetItems %>)</a>
       </div>
     <% } else { %>
-      <div class='budget-items'><a><i class='fa fa-list-ul' aria-hidden='true'></a></i></div>
+      <div class='budget-items'><a class='items'><i class='fa fa-list-ul' aria-hidden='true'></a></i></div>
     <% } %>
     <% if (check_number) { %>
       <div class='check_number editable' data-name='check_number' data-value='<%= check_number%>'>

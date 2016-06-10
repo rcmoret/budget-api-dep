@@ -4,6 +4,7 @@ $azul: #2195D2
 $dark-blue: #07436F
 $mid-grey: #919191
 $dark-grey: #5C5C5C
+$mid-blue: #186D99
 
 html
   font-family: Palatino
@@ -12,7 +13,7 @@ html
     text-decoration: none
 
 .new.transaction
-.fa.fa-plus:hover, a:hover, .fa.fa-close:hover
+.fa.fa-plus:hover, a.items:hover, .fa.fa-close:hover
   cursor: pointer
 
 h2, h2 a, h2 a:visited, h3, h3 a, h3 a:visited
@@ -25,32 +26,44 @@ h1,
 .clear-fix
   clear: both
 
-section#accounts
+section
   padding: 10px
-  background-color: $azul
-  border-radius: 8px
-  .account
-    h3
-      text-align: center
+  .title
     float: left
+    margin-right: 30px
+    padding: 10px
     border-radius: 8px 8px 0 0
-    padding: 6px 20px 8px 8px
-    background-color: $mid-grey
-    padding-right: 20px
-    border-left: 3px solid $azul
-    border-right: 3px solid $azul
-    text-align: right
+  .title
+    background-color: $mid-blue
+  .title.focused
+    background-color: $azul
+  .pane
+    padding: 30px 10px 10px
+  #accounts
+    background-color: $azul
+    border-radius: 0 8px 8px
+    .account
+      h3
+        text-align: center
+      float: left
+      border-radius: 8px 8px 0 0
+      padding: 6px 20px 8px 8px
+      background-color: $mid-grey
+      padding-right: 20px
+      border-left: 3px solid $azul
+      border-right: 3px solid $azul
+      text-align: right
 
-  #accounts-list
-    .selected
-      .account
-        background-color: $off-white
-    div:first-of-type .account
-      border-left: none
+    #accounts-list
+      .selected
+        .account
+          background-color: $off-white
+      div:first-of-type .account
+        border-left: none
 
-#transactions
+#content
   width: 98%
-  .editable:hover, .budget-items
+  .editable:hover, a.items
     cursor: pointer
   .transaction
     padding: 8px 6px

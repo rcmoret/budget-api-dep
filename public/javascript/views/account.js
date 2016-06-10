@@ -5,8 +5,8 @@ app.AccountView = Backbone.View.extend({
   formTemplate: _.template($('#transaction-form-template').html()),
   initialize: function(account) {
     this.model = account;
-    this.listenTo(this.model.transactions, 'reset', this.renderTransactions);
-    this.listenTo(this.model, 'fetch', this.updateBalance);
+    this.listenTo(this.model.transactions, 'sync', this.renderTransactions);
+    this.listenTo(this.model.transactions, 'reset', this.updateBalance);
     this.$el.html(this.template(this.model.attributes));
   },
   render: function() {
@@ -14,7 +14,7 @@ app.AccountView = Backbone.View.extend({
   },
   select: function() {
     if ( !this.selected() ) {
-      $('.account.selected #transactions').html('');
+      $('.account.selected #content').html('');
       $('.account').removeClass('selected');
       this.$el.addClass('selected');
     };
@@ -25,28 +25,34 @@ app.AccountView = Backbone.View.extend({
   },
   initialBalance: function() {
     var initial = new app.InitialBalanceView(this.model.transactions.metadata);
-    $('#transactions').append(initial.render());
+    $('#content').append(initial.render());
     return initial.attrs.amount;
   },
   renderTransactions: function() {
-    expandedIds = _.map($('#transactions .expanded'), function(t) {
+    expandedIds = _.map($('#content .expanded'), function(t) {
       return parseInt($(t).attr('id'))
     })
-    $('#transactions').html('');
+    $('#content').html('');
     this.$el.addClass('selected');
     balance = this.initialBalance();
     this.model.transactions.each(function(transaction) {
       balance += transaction.get('amount');
       var view = new app.TransactionView(transaction, balance);
       var expanded = _.contains(expandedIds, view.id)
-      $('#transactions').append(view.render(expanded));
+      $('#content').append(view.render(expanded));
     }, this);
-    $('#transactions').append(this.plusButton());
+    $('#content').append(this.plusButton());
   },
   plusButton: function() {
     var row = new app.TransactionFormView(this.id);
     return row.render().$el;
   },
   updateBalance: function() {
+    _this = this
+    this.model.fetch({
+      success: function(data) {
+        _this.$el.find('span.amount strong').html('$' + data.get('balance').toFixed(2))
+      }
+    })
   }
 });

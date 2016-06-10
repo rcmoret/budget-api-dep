@@ -9,21 +9,23 @@ var Workspace = Backbone.Router.extend({
   routes: {
     '': 'pageLoad',
     'accounts/:id': 'renderTransactions',
-    'accounts': 'renderAccounts',
+    'accounts': 'selectAccounts',
     'budget-items': 'renderBudgetItems'
   },
   pageLoad: function() {
     app.Accounts.fetch({reset: true});
+    this.selectAccounts();
   },
-  renderAccounts: function() {
-    this.togglePane('accounts');
+  selectAccounts: function() {
+    $('.title').removeClass('focused')
+    $('.title.accounts').addClass('focused')
   },
   renderTransactions: function(id) {
+    this.selectAccounts();
     var self = this
     app.Accounts.fetch({
       reset: true,
       success: function() {
-        self.togglePane('accounts');
         if ($('li.selected').length > 0  ) {
           $('li.selected .transactions').slideToggle(1000, function() {
             $('li.selected').removeClass('selected');

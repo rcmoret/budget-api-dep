@@ -1,23 +1,25 @@
 <script type='text/template' id='subtransaction-template'>
   <% _.each(subtransactions, function(sub) { %>
-    <div class='subtransaction transaction collapsed'>
+    <div class='subtransaction transaction collapsed' data-id='<%= sub.id %>'>
       <div class='clearance-date'></div>
       <div class='left-icon'><i class='fa fa-caret-right' aria-hidden='true'></i></div>
-      <div class='description'>
+      <div class='description editable' data-name='description' data-value='<%= sub.description %>'>
         <% if (_.isNull(sub.description)) { %>
           <%= sub.budget_item || 'Misc.' %>
+        <% } else { %>
+          <%= sub.description %>
         <% } %>
       </div>
-      <div class='amount'>
+      <div class='amount editable' data-name='amount' data-value='<%= sub.amount %>'>
         $<%= parseFloat(sub.amount).toFixed(2) %>
       </div>
       <div class='amount'></div>
       <% if (!_.isNull(sub.budget_item)) { %>
         <div class='budget-items'>
-          <a>(<%= sub.budget_item %>)</a>
+          <a class='items'>(<%= sub.budget_item %>)</a>
         </div>
       <% } else { %>
-        <div class='budget-items'><a><i class='fa fa-list-ul' aria-hidden='true'></a></i></div>
+        <div class='budget-items'><a class='items'><i class='fa fa-list-ul' aria-hidden='true'></a></i></div>
       <% } %>
     </div>
   <% }) %>
