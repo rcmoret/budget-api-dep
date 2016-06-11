@@ -1,6 +1,8 @@
 var app = app || {};
 
 app.AccountView = Backbone.View.extend({
+  tagName: 'div',
+  className: 'account',
   template: _.template( $('#account-template').html() ),
   formTemplate: _.template($('#transaction-form-template').html()),
   initialize: function(account) {
@@ -10,7 +12,6 @@ app.AccountView = Backbone.View.extend({
     this.$el.html(this.template(this.model.attributes));
   },
   render: function() {
-    return this.$el;
   },
   select: function() {
     if ( !this.selected() ) {

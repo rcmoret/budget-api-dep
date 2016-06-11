@@ -1,7 +1,7 @@
 var app = app || {};
 
 app.AccountsView = Backbone.View.extend({
-  el: '#accounts-list',
+  el: '#tab-list',
   template: _.template( $('#account-template').html() ),
   initialize: function() {
     this.collection = app.Accounts;
@@ -11,9 +11,10 @@ app.AccountsView = Backbone.View.extend({
     this.$el.html('');
     this.collection.each(function( account ) {
       var view = new app.AccountView(account);
-      this.$el.append(view.render());
+      this.$el.append(view.$el);
     },
     this );
+    return this
   },
   renderTransactions: function(id) {
     if (this.collection.get(id)) {

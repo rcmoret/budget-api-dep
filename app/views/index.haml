@@ -15,18 +15,15 @@
   .welcome
     %h1 Budget App
 
-  %section#accounts.pane
-    %h2
-      %a{ href: '#accounts' } Accounts
-    #accounts-list
+  %section
+    .title.accounts
+      %h2
+        %a{ href: '#accounts' } Accounts
+    .title.budget-items
+      %h2
+        %a{ href: '#budget-items' } Budget Items
     .clear-fix
-    #transactions
-
-  %section#budget-items.pane
-    %h2
-      %a{ href: '#budget-items' } Budget Items
-    %h3 Monthly Items
-    %ul#monthly-amounts-list
-
-    %h3 Weekly Items
-    %ul#weekly-amounts-list
+    .pane
+      #tab-list
+      .clear-fix
+      #content

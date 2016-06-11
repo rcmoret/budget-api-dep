@@ -31,15 +31,15 @@ section
   .title
     float: left
     margin-right: 30px
-    padding: 10px
+    padding: 10px 20px
     border-radius: 8px 8px 0 0
   .title
     background-color: $mid-blue
   .title.focused
     background-color: $azul
+    border-right: 3px solid $mid-blue
   .pane
     padding: 30px 10px 10px
-  #accounts
     background-color: $azul
     border-radius: 0 8px 8px
     .account
@@ -54,11 +54,10 @@ section
       border-right: 3px solid $azul
       text-align: right
 
-    #accounts-list
+    #tab-list
       .selected
-        .account
-          background-color: $off-white
-      div:first-of-type .account
+        background-color: $off-white
+      .account:first-of-type
         border-left: none
 
 #content
@@ -133,3 +132,32 @@ section
     background-color: $light-grey
   .fa.fa-chevron-down, .fa.fa-chevron-right, .fa.fa-plus
     font-size: 0.8em
+
+  .budget-block
+    min-width: 30%
+    vertical-align: top
+    display: inline-block
+    background-color: $off-white
+    padding: 10px 5px
+    border-radius: 8px
+    border-right: 2px solid $mid-grey
+    border-bottom: 2px solid $mid-grey
+    margin-right: 15px
+    h4, h5
+      font-size: 1.1em
+    .budget-wrapper
+      div:nth-of-type(2n) .budget-amount
+        background-color: $off-white
+      .budget-amount
+        background-color: $light-grey
+        padding: 8px
+        border-radius: 8px
+        div
+          display: inline-block
+        .left-icon
+          width: 3%
+        .name
+          width: 55%
+        .amount
+          width: 35%
+          text-align: right

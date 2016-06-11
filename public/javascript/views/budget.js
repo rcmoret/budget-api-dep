@@ -2,7 +2,11 @@ var app = app || {};
 
 app.BudgetView = Backbone.View.extend({
   initialize: function() {
-    new app.WeeklyAmountsView;
-    new app.MonthlyAmountsView;
+  },
+  render: function() {
+    var weeklyAmounts = new app.WeeklyAmountsView()
+    $('#content').append(weeklyAmounts.render());
+    var monthlyAmounts = new app.MonthlyAmountsView()
+    $('#content').append(monthlyAmounts.render());
   }
 })

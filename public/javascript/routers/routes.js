@@ -13,12 +13,13 @@ var Workspace = Backbone.Router.extend({
     'budget-items': 'renderBudgetItems'
   },
   pageLoad: function() {
-    app.Accounts.fetch({reset: true});
     this.selectAccounts();
   },
   selectAccounts: function() {
     $('.title').removeClass('focused')
     $('.title.accounts').addClass('focused')
+    $('#content').html('')
+    app.Accounts.fetch({reset: true});
   },
   renderTransactions: function(id) {
     this.selectAccounts();
@@ -26,35 +27,19 @@ var Workspace = Backbone.Router.extend({
     app.Accounts.fetch({
       reset: true,
       success: function() {
-        if ($('li.selected').length > 0  ) {
-          $('li.selected .transactions').slideToggle(1000, function() {
-            $('li.selected').removeClass('selected');
-            if ($('#account-' + id + ' .transactions').is(':hidden')) {
-              ($('#account-' + id + ' .transactions')).slideToggle(1000)
-            }
-            self.accountsView.renderTransactions(id)
-          });
-        } else {
-          self.accountsView.renderTransactions(id)
-        }
+        self.accountsView.renderTransactions(id)
       }
     })
   },
   renderBudgetItems: function() {
-    app.Accounts.fetch({reset: true});
-    this.togglePane('budget-items');
-    app.WeeklyAmounts.fetch({reset: true});
-    app.MonthlyAmounts.fetch({reset: true});
-    $('#budget-items ul').addClass('selected');
+    $('#content').html('')
+    $('#tab-list').html('')
+    this.selectBudget()
   },
-  togglePane: function(name) {
-    if ($('#' + name + ' .pane').hasClass('focused')) {
-      return
-    } else if ($('.pane.focused').size() > 0) {
-      $('.pane.focused .selected').slideUp();
-      $('.pane.focused .selected').removeClass('selected');
-      $('.pane.focused').removeClass('focused');
-    }
-    $('#' + name + '.pane').addClass('focused');
+  selectBudget: function() {
+    $('.title').removeClass('focused')
+    $('.title.budget-items').addClass('focused')
+    var budgetView = new app.BudgetView;
+    budgetView.render();
   }
 });
