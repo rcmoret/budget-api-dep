@@ -2,6 +2,8 @@
   <div class='budget-amount'>
     <div class='left-icon'><i class='fa fa-caret-right' aria-hidden=true></i></div>
     <div class='name'><%= name %></div>
-    <div class='amount'>$<%= parseFloat(remaining).toFixed(2).replace('-', '') %></div>
+    <div class='amount editable' data-name='amount' data-value='<%= parseFloat(remaining).toFixed(2) %>'>
+      $<%= parseFloat(remaining).toFixed(2).replace('-', '') %>
+    </div>
   </div>
 </script>
