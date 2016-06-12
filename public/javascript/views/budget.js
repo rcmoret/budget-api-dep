@@ -5,7 +5,8 @@ app.BudgetView = Backbone.View.extend({
   },
   render: function() {
     var weeklyAmounts = new app.WeeklyAmountsView()
-    $('#content').append(weeklyAmounts.render());
+    $('#content').append(weeklyAmounts.$el);
+    weeklyAmounts.renderDiscretionary();
     var monthlyAmounts = new app.MonthlyAmountsView()
     $('#content').append(monthlyAmounts.render());
   }

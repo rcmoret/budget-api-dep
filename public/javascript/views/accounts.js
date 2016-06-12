@@ -14,18 +14,7 @@ app.AccountsView = Backbone.View.extend({
       this.$el.append(view.$el);
     },
     this );
+    $('#content').append($('<div><div class="transaction"><h2>Select an Account</h2></div></div>'))
     return this
-  },
-  renderTransactions: function(id) {
-    if (this.collection.get(id)) {
-      this.collection.get(id).transactions.fetch({reset: true});
-    } else {
-      this.collection.fetch({
-        reset: true,
-        success: function(accounts) {
-          accounts.get(id).transactions.fetch({reset: true});
-        }
-      })
-    }
   }
 });

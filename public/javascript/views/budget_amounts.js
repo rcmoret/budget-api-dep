@@ -43,20 +43,22 @@ app.WeeklyAmountsView = app.BudgetAmountsView.extend({
   initialize: function() {
     this.collection = app.WeeklyAmounts;
     this.listenTo(this.collection, 'reset', this.renderItems);
+    this.listenTo(app.MonthlyAmounts, 'updateDiscretionary', this.renderDiscretionary);
+    this.listenTo(this.collection, 'updateDiscretionary', this.renderDiscretionary);
+    _.bindAll(this, 'renderItem')
+    this.discretionaryView = new app.DiscretionaryView();
+    this.$el.html(this.template());
+    this.collection.fetch({reset: true})
   },
   render: function() {
-    this.preRender();
-    this.renderDiscretionary();
     this.collection.fetch({reset: true})
     return this.$el;
   },
   renderDiscretionary: function() {
-    var discretionary = new app.Discretionary();
-    _this = this
-    discretionary.fetch({
-      success: function(resp) {
-        _this.$el.find('.budget-wrapper.discretionary').append(_this.amountTemplate(resp.attributes));
-      }
-    })
+    this.$el.find('.budget-wrapper#discretionary').html(this.discretionaryView.render())
+  },
+  budgetAmountView: function(record) {
+    return new app.WeeklyAmountView(record)
   }
+
 });

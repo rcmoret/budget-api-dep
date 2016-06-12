@@ -15,9 +15,7 @@ app.TransactionView = Backbone.View.extend({
   initialize: function(transaction, balance) {
     this.model = transaction;
     this.listenTo(app.ActiveItems, 'reset', this.populateSelect);
-    this.model.bind('change', this.rerender, this);
     this.balance = balance
-    // this.$el.html(this.template(this.displayAttrs(balance)));
   },
   description: function() {
     return this.model.get('description');
