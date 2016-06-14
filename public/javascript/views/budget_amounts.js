@@ -3,17 +3,13 @@ var app = app || {};
 app.BudgetAmountsView = Backbone.View.extend({
   className: 'budget-block',
   amountTemplate: _.template($('#budget-amount-template').html()),
-  preRender: function() {
-    this.$el.html('')
-    this.$el.html(this.template());
-  },
   renderItems: function() {
-    _this = this
-    _.each(this.collection.models, function(budgetItem) {
-      var view = new app.BudgetAmountView(budgetItem);
-      _this.$el.find('.budget-wrapper.' + budgetItem.className()).append(view.render());
-    })
+    _.each(this.collection.sort().models, this.renderItem)
   },
+  renderItem: function(item) {
+    var view = this.budgetAmountView(item)
+    this.$el.find('.budget-wrapper.' + item.className()).append(view.render());
+  }
 })
 
 app.MonthlyAmountsView = app.BudgetAmountsView.extend({
@@ -22,19 +18,17 @@ app.MonthlyAmountsView = app.BudgetAmountsView.extend({
   initialize: function() {
     this.collection = app.MonthlyAmounts;
     this.listenTo(this.collection, 'reset', this.renderItems);
+    _.bindAll(this, 'renderItem')
   },
   render: function() {
-    this.preRender();
+    this.$el.html('')
+    this.$el.html(this.template());
     this.collection.fetch({reset: true})
     return this.$el;
-  } //,
-  // renderItems: function() {
-  //   _this = this
-  //   _.each(this.collection.models, function(budgetItem) {
-  //     var view = new app.BudgetAmountView(budgetItem);
-  //     _this.$el.find('.budget-wrapper.' + budgetItem.className()).append(view.render());
-  //   })
-  // },
+  },
+  budgetAmountView: function(record) {
+    return new app.MonthlyAmountView(record)
+  }
 });
 
 app.WeeklyAmountsView = app.BudgetAmountsView.extend({

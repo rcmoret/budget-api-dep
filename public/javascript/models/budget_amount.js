@@ -31,5 +31,8 @@ app.BudgetAmount = Backbone.Model.extend({
   rerender: function() {
     this.trigger('rerender')
     this.collection.trigger('updateDiscretionary')
+  },
+  spent: function() {
+    return (this.get('amount') - this.get('remaining'))
   }
 });
