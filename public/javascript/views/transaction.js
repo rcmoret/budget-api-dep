@@ -35,9 +35,7 @@ app.TransactionView = Backbone.View.extend({
       this.$el.find('.budget-items a').removeClass('items')
       this.$el.append(this.subtransactionsEl());
       if (expanded) {
-        this.$el.find('.left-icon i').removeClass('fa-chevron-right')
-        this.$el.find('.left-icon i').addClass('fa-chevron-down')
-        this.$el.find('.subtransaction').removeClass('collapsed')
+        this.renderSubtransctions();
       }
     }
     return this.$el;

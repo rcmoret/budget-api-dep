@@ -10,6 +10,7 @@ app.Transaction = Backbone.Model.extend({
     'amount': null,
     'notes': null,
     'check_number': null,
+    'monthly_amount_id': null,
     'subtransactions_attributes': []
   },
   urlRoot: function() {
@@ -49,11 +50,7 @@ app.Transaction = Backbone.Model.extend({
   update: function(attrs, options = {save: false}) {
     this.set(attrs)
     if (options.save) {
-      this.save(null, {
-        success: function(model, resp) {
-          app.Accounts.get(model.get('account_id')).transactions.fetch({reset: true});
-        }
-      })
+      this.save()
       return
     }
   }

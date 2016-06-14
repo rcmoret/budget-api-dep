@@ -36,8 +36,9 @@ app.AccountView = Backbone.View.extend({
     $('#content').append(initial.render());
   },
   renderTransactions: function() {
+    $('#content').html('')
     this.renderInitialBalance()
-    expandedIds = _.map($('#content .expanded'), function(t) {
+    var expandedIds = _.map($('#content .expanded'), function(t) {
       return parseInt($(t).attr('id'))
     })
     balance = this.initialBalance();

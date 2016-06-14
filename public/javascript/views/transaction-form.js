@@ -12,8 +12,8 @@ app.TransactionFormView = Backbone.View.extend({
   initialize: function(accountId) {
     this.collection = app.Accounts.get(accountId).transactions
     this.listenTo(app.ActiveItems, 'reset', this.populateSelect);
-    this.newTransaction = new app.Transaction({account_id: accountId});
     this.$el.html(this.plusButton);
+    this.accountId = accountId;
   },
   render: function() {
     return this;
@@ -30,13 +30,17 @@ app.TransactionFormView = Backbone.View.extend({
     return $(opt)
   },
   createTransaction: function() {
+    newTransaction = new app.Transaction();
+    newTransaction.set('account_id', this.accountId)
+    newTransaction.collection = this.collection
     _.each(this.$el.find('.primary input, .primary select'), function(input) {
       if (!_.isUndefined(input.value) && input.value != '' && !input.disabled) {
-        this.newTransaction.attributes[input.name] = input.value
+        newTransaction.set(input.name, input.value)
       }
     }, this)
-    this.newTransaction.attributes['subtransactions_attributes'] = this.subtransactionsAttrs();
-    this.collection.create(this.newTransaction)
+    newTransaction.set('subtransactions_attributes', this.subtransactionsAttrs())
+    newTransaction.save()
+    this.collection.add(newTransaction)
   },
   subtransactionsAttrs: function() {
     return _.map(this.$el.find('.subtransaction-form'), function(sub) {
