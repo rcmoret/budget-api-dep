@@ -10,11 +10,12 @@ app.AccountView = Backbone.View.extend({
     this.transactions = this.model.transactions;
     _.bindAll(this, 'renderBalance', 'renderDetails', 'renderTransactions', 'renderInitialBalance')
     this.listenTo(this.transactions, 'reset', this.updateBalance);
+    this.listenTo(this.transactions, 'change', this.renderDetails);
+    this.listenTo(this.transactions, 'add', this.renderDetails);
+    this.listenTo(this.model, 'render', this.select);
     this.$el.html(this.template(this.model.attributes));
   },
-  events: {
-    'click h3 a': 'select'
-  },
+  events: { },
   render: function() {
   },
   select: function() {
