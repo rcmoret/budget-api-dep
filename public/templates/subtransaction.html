@@ -4,14 +4,16 @@
       <div class='clearance-date'></div>
       <div class='left-icon'><i class='fa fa-caret-right' aria-hidden='true'></i></div>
       <div class='description editable' data-name='description' data-value='<%= sub.description %>'>
-        <% if (_.isNull(sub.description)) { %>
-          <%= sub.budget_item || 'Misc.' %>
-        <% } else { %>
-          <%= sub.description %>
-        <% } %>
+        <span>
+          <% if (_.isNull(sub.description)) { %>
+            <%= sub.budget_item || 'Misc.' %>
+          <% } else { %>
+            <%= sub.description %>
+          <% } %>
+        </span>
       </div>
       <div class='amount editable' data-name='amount' data-value='<%= sub.amount %>'>
-        $<%= parseFloat(sub.amount).toFixed(2) %>
+        <span>$<%= parseFloat(sub.amount).toFixed(2) %></span>
       </div>
       <div class='amount'></div>
       <% if (!_.isNull(sub.budget_item)) { %>

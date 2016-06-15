@@ -4,7 +4,7 @@ app.TransactionView = Backbone.View.extend({
   template: _.template( $('#transaction-template').html() ),
   subTemplate: _.template( $('#subtransaction-template').html() ),
   events: {
-    'click .editable': 'toggleInput',
+    'click .editable span': 'toggleInput',
     'blur .editable input': 'updateTransaction',
     'keyup .editable input': 'updateTransaction',
     'click a.items ': 'renderSelect',
@@ -44,7 +44,7 @@ app.TransactionView = Backbone.View.extend({
     return this.subTemplate({subtransactions: this.model.subtransactions()})
   },
   toggleInput: function(e) {
-    var el = $(e.toElement)
+    var el = $(e.toElement).parent()
     var data = el.data()
     el.html(this.textInput(data.name))
     el.find('input').val(data.value).focus()
@@ -56,8 +56,7 @@ app.TransactionView = Backbone.View.extend({
     if (e.type === 'keyup' && e.keyCode === ESC_KEY) {
       var el = $(e.target).parent();
       el.html('');
-      el.html(el.data('value'))
-      el.addClass('editable')
+      el.html($('<span>' + el.data('value') + '</span>'))
       return
     } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type == 'focusout') {
       var attrs = {}

@@ -24,7 +24,6 @@ app.AccountView = Backbone.View.extend({
     } else {
       $('.account').removeClass('selected')
       this.$el.addClass('selected')
-      $('#content').html('')
       this.renderDetails()
     }
   },
@@ -36,12 +35,12 @@ app.AccountView = Backbone.View.extend({
     $('#content').append(initial.render());
   },
   renderTransactions: function() {
-    $('#content').html('')
-    this.renderInitialBalance()
     var expandedIds = _.map($('#content .expanded'), function(t) {
       return parseInt($(t).attr('id'))
     })
-    balance = this.initialBalance();
+    $('#content').html('')
+    this.renderInitialBalance()
+    var balance = this.initialBalance();
     _.each(this.transactions.models, function(transaction) {
       balance += transaction.get('amount');
       var view = new app.TransactionView(transaction, balance);

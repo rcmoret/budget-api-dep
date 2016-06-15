@@ -7,10 +7,10 @@
       <% } %>
     </div>
     <div class='editable clearance-date' data-name='clearance_date' data-value='<%= clearance_date %>'>
-      <%= clear_date %>
+      <span><%= clear_date %></span>
     </div>
     <div class='description editable' data-name='description' data-value='<%= description %>'>
-      <%= displayDescription %>
+      <span><%= displayDescription %><span>
     </div>
     <div class='amount<%= subtransactions_attributes.length === 0 ? " editable" : "" %>'
       data-name='amount' data-value='<%= parseFloat(amount).toFixed(2) %>'>
@@ -28,11 +28,11 @@
     <% } %>
     <% if (check_number) { %>
       <div class='check_number editable' data-name='check_number' data-value='<%= check_number%>'>
-        Ck #: <%= check_number %>
+        <span>Ck #: <%= check_number %></span>
       </div>
     <% } %>
     <div class='notes editable' data-name='notes' data-value='<%= notes %>'>
-      <%= notes %>
+      <span><%= notes %></span>
     </div>
   </div>
 </script>
