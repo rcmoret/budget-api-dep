@@ -14,7 +14,7 @@
     </div>
     <div class='amount<%= subtransactions_attributes.length === 0 ? " editable" : "" %>'
       data-name='amount' data-value='<%= parseFloat(amount).toFixed(2) %>'>
-      $<%= parseFloat(amount).toFixed(2) %>
+      <span>$<%= parseFloat(amount).toFixed(2) %></span>
     </div>
     <div class='amount'>
       <span class='amount'>$<%= parseFloat(balance).toFixed(2) %></span>
