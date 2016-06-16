@@ -7,7 +7,8 @@ app.TransactionFormView = Backbone.View.extend({
     'click .render-form': 'renderForm',
     'click button.submit': 'createTransaction',
     'click i.fa.fa-close': 'closeForm',
-    'click a.add-subtransactions': 'addSubtransactions'
+    'click a.add-subtransactions': 'addSubtransactions',
+    'keyup .subtransaction-form input[name="amount"]': 'updateAmount'
   },
   initialize: function(accountId) {
     this.collection = app.Accounts.get(accountId).transactions
@@ -80,5 +81,16 @@ app.TransactionFormView = Backbone.View.extend({
     this.$el.find('input[name="amount"]').attr('disabled', true)
     this.$el.find('select[name="monthly_amount_id"]').attr('disabled', true)
     this.$el.find('select[name="monthly_amount_id"]').val('')
+  },
+  updateAmount: function() {
+    var targetInput = this.$el.find('.primary input[name="amount"]')
+    var total = _.reduce($('.subtransaction-form input[name="amount"]'),
+      function(memo, input) {
+        var amt = $.isNumeric(input.value) ? parseFloat(input.value) : 0
+        return memo += amt
+      }, 0
+    )
+    targetInput.val(total.toFixed(2))
+    return
   }
 });
