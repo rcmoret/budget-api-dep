@@ -131,7 +131,8 @@ module Budget
 
   class Discretionary
     def self.to_hash
-      { id: 0, name: 'Discretionary', amount: 0, remaining: Budget::Amount.discretionary,
+      amount = [Budget::Amount.discretionary, 0].max
+      { id: 0, name: 'Discretionary', amount: 0, remaining: amount,
         month: BudgetMonth.piped, item_id: 0 }
     end
   end
