@@ -29,7 +29,7 @@ app.MonthlyAmountView = app.BudgetAmountView.extend({
     return this.$el
   },
   renderAmountField: function(e) {
-    var el = $(e.toElement)
+    var el = $(e.toElement).parent()
     var data = el.data()
     el.html(this.textInput(data.name))
     el.find('input').val(data.value).focus()
@@ -47,38 +47,42 @@ app.MonthlyAmountView = app.BudgetAmountView.extend({
 });
 
 app.WeeklyAmountView = app.BudgetAmountView.extend({
-  summaryTemplate: _.template($('#summary-template').html()),
+  template: _.template($('#detail-template').html()),
   events: function(){
     return _.extend({}, app.BudgetAmountView.prototype.events, {
-      'click i.fa-caret-right': 'showSummary',
-      'click i.fa-caret-down': 'compressSummary',
-      'keyup .amount input': 'updateAmount'
+      'click i.fa-caret-right': 'toggleDetail',
+      'click i.fa-caret-down': 'toggleDetail',
+      'keyup .amount input': 'updateAmount',
+      'click .clickable': 'renderAmountField'
     })
   },
-  showSummary: function() {
-    this.$el.html('')
-    this.$el.addClass('show-summary')
-    this.$el.html(this.summaryTemplate(this.summaryAttributes()))
+  toggleDetail: function() {
+    this.$el.toggleClass('show-detail');
+    this.$el.find('.remaining .label span').toggleClass('hidden');
+    this.$el.find('i.fa').toggleClass('fa-caret-right')
+    this.$el.find('i.fa').toggleClass('fa-caret-down')
+    this.$el.find('.budgeted, .spent').slideToggle();
   },
-  summaryAttributes: function() {
+  detailAttributes: function() {
     return _.extendOwn(this.model.attributes, { spent: this.model.spent() })
   },
   render: function() {
     this.$el.html('')
-    if (this.$el.hasClass('show-summary')) {
-      this.showSummary()
-    } else {
-      this.$el.html(this.template(this.model.attributes))
+    this.$el.html(this.template(this.detailAttributes()))
+    if (this.$el.hasClass('show-detail')) {
+      this.$el.find('.budgeted, .spent').css('display', 'inline-block')
+      this.$el.find('.hidden').removeClass('hidden')
+      this.$el.find('i.fa').toggleClass('fa-caret-right')
+      this.$el.find('i.fa').toggleClass('fa-caret-down')
     }
     return this.$el
   },
-  compressSummary: function() {
-    this.$el.html(this.template(this.model.attributes))
-  },
   renderAmountField: function(e) {
-    var el = $(e.toElement)
-    this.showSummary()
     var data = this.$el.find('.editable.amount').data()
+    if (!this.$el.hasClass('show-detail')) {
+      this.toggleDetail()
+    }
+    this.$el.find('.editable.amount').html('')
     this.$el.find('.editable.amount').html(this.textInput(data.name))
     this.$el.find('.editable.amount input').val(data.value).focus()
   },

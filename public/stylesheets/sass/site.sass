@@ -16,6 +16,11 @@ html
   font-family: 'Questrial'
   a
     text-decoration: none
+  h1
+    font-size: 3.2em
+
+.hidden
+  display: none !important
 
 .fa.fa-plus:hover, a.items:hover, .fa.fa-close:hover
   cursor: pointer
@@ -153,7 +158,7 @@ section
       i.fa-caret-right:hover
         cursor: default
   .budget-block
-    min-width: 30%
+    width: 25%
     vertical-align: top
     display: inline-block
     background-color: $off-white
@@ -181,35 +186,35 @@ section
         border-bottom-left-radius: 8px
         padding-bottom: 8px
       .budget-amount
+        width: 98%
         padding-left: 8px
         padding-right: 8px
         background-color: $light-grey
-        div
-          display: inline-block
-        .left-icon
-          width: 3%
-        .name
-          width: 30%
-        .amount
-          width: 15%
-        .label span
-          font-size: 0.8em
-        .label
-          text-align: right
-          width: 34%
-          margin-right: 5%
-        .amount, .amount input
-          text-align: right
-          padding-right: 10px
-        .amount input
-          width: 120%
-      .budget-amount.summary
-        font-size: 0.8em
-        padding-top: 4px
-        .label
-          width: 69%
-          margin-right: 5%
-        .amount
-          width: 15%
         .amount.underlined
           border-bottom: 1px solid $dark-grey
+        .left-side
+          vertical-align: top
+          width: 46%
+        .right-side
+          width: 50%
+          .editable:hover, .clickable:hover
+            cursor: pointer
+          .spent, .budgeted
+            display: none
+          .amount input, .budgeted input
+            width: 100%
+            text-align: right
+          div
+            width: 100%
+          .small-text
+            font-size: 0.8em
+          .label, .amount
+            display: inline-block
+            width: 48%
+            text-align: right
+          .label
+            width: 52%
+          .amount
+            width: 45%
+        div
+          display: inline-block
