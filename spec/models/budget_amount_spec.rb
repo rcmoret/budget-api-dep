@@ -20,9 +20,10 @@ RSpec.describe Budget::Amount, type: :model do
       allow(Budget::MonthlyAmount).to receive(:remaining).and_return(10)
       allow(Budget::WeeklyAmount).to receive(:remaining).and_return(20)
       allow(Account).to receive(:available_cash).and_return(0)
+      allow(Account).to receive(:charged).and_return(-2)
     end
     subject { Budget::Amount.discretionary }
-    it { should eq 30 }
+    it { should eq 28 }
   end
 
   describe '#for_select' do
