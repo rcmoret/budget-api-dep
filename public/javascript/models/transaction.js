@@ -32,7 +32,7 @@ app.Transaction = Backbone.Model.extend({
     }
   },
   subtransactions: function() {
-    return this.get('subtransactions_attributes') || []
+    return this.get('subtransactions_attributes') || {}
   },
   items: function() {
     if (this.subtransactions().length === 0) {

@@ -5,11 +5,13 @@ app.TransactionView = Backbone.View.extend({
   subTemplate: _.template( $('#subtransaction-template').html() ),
   events: {
     'click .editable span': 'toggleInput',
-    'blur .editable input': 'updateTransaction',
-    'keyup .editable input': 'updateTransaction',
-    'click a.items ': 'renderSelect',
-    'blur select': 'updateItems',
+    'blur .primary .editable input': 'updateTransaction',
+    'keyup .primary .editable input': 'updateTransaction',
+    'click .primary a.items ': 'renderSelect',
+    'blur .primary select': 'updateItems',
     'click i.fa-chevron-right': 'renderSubtransctions',
+    'blur .subtransaction .editable input': 'updateSubTransaction',
+    'keyup .subtransaction .editable input': 'updateSubTransaction',
     'click i.fa-chevron-down': 'collapseSubtransctions'
   },
   initialize: function(transaction, balance) {
@@ -30,7 +32,7 @@ app.TransactionView = Backbone.View.extend({
   },
   render: function(expanded = false) {
     this.$el.html(this.template(this.displayAttrs()));
-    if (this.model.subtransactions().length > 0) {
+    if (!_.isEmpty(this.model.subtransactions())) {
       this.$el.find('.amount').removeClass('editable')
       this.$el.find('.budget-items a').removeClass('items')
       this.$el.append(this.subtransactionsEl());
@@ -59,26 +61,16 @@ app.TransactionView = Backbone.View.extend({
       el.html($('<span>' + el.data('value') + '</span>'))
       return
     } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type == 'focusout') {
-      var attrs = {}
-      _.each(this.$el.find('.primary.transaction input'), function(input) {
-        if ($(input).val() !== '') {
-          attrs[$(input).attr('name')] = $(input).val()
-        }
-      });
-      attrs['subtransactions_attributes'] = this.subtransactionAttributes()
-      this.model.update(attrs, {save: true})
+      var input = this.$el.find('.primary.transaction input')
+      this.model.set($(input).attr('name'), $(input).val())
+      if (_.isEmpty(this.model.changed)) {
+        var el = $(e.target).parent();
+        el.html('');
+        el.html($('<span>' + el.data('value') + '</span>'))
+      } else {
+        this.model.save()
+      }
     }
-  },
-  subtransactionAttributes: function() {
-    return _.map(this.$el.find('.subtransaction'), function(sub) {
-      subAttrs = { id: $(sub).data('id') }
-      _.each($(sub).find('input'), function(input) {
-        if ($(input).val() !== '') {
-          subAttrs[$(input).attr('name')] = $(input).val()
-        }
-       })
-      return subAttrs
-    })
   },
   renderSelect: function(e) {
     var el = $(e.toElement).parents('.budget-items')
@@ -117,5 +109,19 @@ app.TransactionView = Backbone.View.extend({
     this.$el.find('i.fa.fa-chevron-down').addClass('fa-chevron-right')
     this.$el.find('i.fa.fa-chevron-down').removeClass('fa-chevron-down')
     this.$el.find('.subtransaction').addClass('collapsed')
+  },
+  updateSubTransaction: function(e) {
+    if (e.type === 'keyup' && e.keyCode === ESC_KEY) {
+      var el = $(e.target).parent();
+      el.html('');
+      el.html($('<span>' + el.data('value') + '</span>'))
+      return
+    } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type == 'focusout') {
+      var el = $(e.target.closest('.subtransaction'))
+      var newSubAttrs = this.model.get('subtransactions_attributes')
+      newSubAttrs[el.data('id')][e.target.name] = e.target.value
+      this.model.set('subtransactions_attributes', newSubAttrs)
+      this.model.save()
+    }
   }
 });

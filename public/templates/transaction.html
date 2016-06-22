@@ -2,24 +2,24 @@
   <div class='primary transaction' id='transaction-<%= id %>'>
 
     <div class='left-icon'>
-      <% if (subtransactions_attributes.length > 0) { %>
+      <% if (!_.isEmpty(subtransactions_attributes)) { %>
         <i class="fa fa-chevron-right" aria-hidden="true"></i>
       <% } %>
     </div>
     <div class='editable clearance-date' data-name='clearance_date' data-value='<%= clearance_date %>'>
       <span><%= clear_date %></span>
     </div>
-    <div class='description editable' data-name='description' data-value='<%= description %>'>
+    <div class='description editable' data-name='description' data-value="<%= description %>">
       <span><%= displayDescription %><span>
     </div>
-    <div class='amount<%= subtransactions_attributes.length === 0 ? " editable" : "" %>'
+    <div class='amount<%= _.isEmpty(subtransactions_attributes) ? " editable" : "" %>'
       data-name='amount' data-value='<%= parseFloat(amount).toFixed(2) %>'>
       <span>$<%= parseFloat(amount).toFixed(2) %></span>
     </div>
     <div class='amount'>
       <span class='amount'>$<%= parseFloat(balance).toFixed(2) %></span>
     </div>
-    <% if (!_.isNull(budgetItems)) { %>
+    <% if (!_.isEmpty(budgetItems)) { %>
       <div class='budget-items' data-name='budget_item_id' data-value='<%= monthly_amount_id %>'>
         <a class='items'>(<%= budgetItems %>)</a>
       </div>
