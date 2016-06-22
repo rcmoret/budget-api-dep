@@ -18,7 +18,7 @@ RSpec.describe Transaction::View, type: :model do
         account_id: transaction.account_id,
         account_name: transaction.account.name,
         amount: transaction.amount.to_f,
-        subtransactions_attributes: [],
+        subtransactions_attributes: nil,
         tax_deduction: false,
         qualified_medical_expense: false,
         updated_at: transaction.updated_at

@@ -32,9 +32,24 @@ module SharedHelpers
   end
 
   def filtered_params(klass)
-    white_listed_params = klass::PUBLIC_ATTRS.select { |attr| attr.is_a?(String) }
-    params = request_params.slice(*white_listed_params)
+    params = if klass == Primary::Transaction
+               filtered_transaction_params
+             else
+               request_params.slice(*klass::PUBLIC_ATTRS)
+             end
     params.reject { |k, v| v == '' }
+  end
+
+  def filtered_transaction_params
+    params = request_params.slice(*Primary::Transaction::PUBLIC_ATTRS)
+    if request_params['subtransactions_attributes'].blank?
+      params['subtransactions_attributes'] = []
+    else
+      params['subtransactions_attributes'] = request_params['subtransactions_attributes'].map do |id, attrs|
+        attrs.slice(*Sub::Transaction::PUBLIC_ATTRS)
+      end
+    end
+    params
   end
 
   def request_params

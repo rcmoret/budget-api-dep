@@ -21,8 +21,8 @@ RSpec.describe 'AccountsApi /transactions/:id', type: :request do
     end
     context 'transaction with subs' do
       let(:subtransactions_attributes) do
-        [ { description: 'Clothes', amount: -20.0 },
-          { description: 'Food', amount: -35.0 } ]
+        { 1 =>{ description: 'Clothes', amount: -20.0 },
+          2 => { description: 'Food', amount: -35.0 } }
       end
       let(:transaction_attributes) do
         { description: 'Costco', amount: '',
@@ -58,15 +58,17 @@ RSpec.describe 'AccountsApi /transactions/:id', type: :request do
       end
       let(:update_attributes) do
         { subtransactions_attributes:
-          [
-            { id: transaction.subtransactions.first.id, amount: -14.0 },
-            { id: transaction.subtransactions.last.id, amount: -22.45 }
-          ]
+          {
+            transaction.subtransactions.first.id =>
+              { id: transaction.subtransactions.first.id, amount: -14.0 },
+            transaction.subtransactions.last.id =>
+              { id: transaction.subtransactions.last.id, amount: -22.45 }
+          }
         }
       end
       let(:transaction_attributes) { attrs.deep_merge(update_attributes) }
       let(:amount) do
-        update_attributes[:subtransactions_attributes].inject(0) do |sum, sub|
+        update_attributes[:subtransactions_attributes].values.inject(0) do |sum, sub|
           sum += sub[:amount]
         end
       end

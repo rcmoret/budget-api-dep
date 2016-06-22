@@ -50,6 +50,14 @@ module Transaction
     def to_hash
       attributes.symbolize_keys.merge(amount: amount)
     end
+
+    def attributes
+      attrs = super
+      attrs['subtransactions_attributes'] = self.subtransactions_attributes.map do |h|
+        { h['id'] => h }
+      end.inject(&:merge)
+      attrs
+    end
   end
 
   class Record < ActiveRecord::Base
