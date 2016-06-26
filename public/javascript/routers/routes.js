@@ -11,7 +11,7 @@ var Workspace = Backbone.Router.extend({
     '': 'pageLoad',
     'accounts': 'renderAccounts',
     'accounts/:id': 'renderAccount',
-    'budget-items': 'renderBudget'
+    'budget-items(/:month)(/:year)': 'renderBudget',
   },
   pageLoad: function() {
   },
@@ -41,12 +41,12 @@ var Workspace = Backbone.Router.extend({
       acct.trigger('render')
     }
   },
-  renderBudget: function() {
+  renderBudget: function(month, year) {
     $('#content').html('')
     $('#tab-list').html('')
     $('.title').removeClass('focused')
     $('.title.budget-items').addClass('focused')
-    var budgetView = new app.BudgetView;
-    budgetView.render();
+    var budgetView = new app.BudgetView();
+    budgetView.render(month, year);
   }
 });

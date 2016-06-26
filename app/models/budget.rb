@@ -44,20 +44,24 @@ module Budget
     before_validation :set_month!, if: 'month.nil?'
     before_validation :set_default_amount!, if: 'amount.nil?'
 
-    scope :current, -> { where(month: BudgetMonth.piped) }
+    scope :current,  -> { where(month: BudgetMonth.piped) }
     scope :expenses, -> { joins(:item).merge(Budget::Item.expenses).order('amount ASC') }
     scope :revenues, -> { joins(:item).merge(Budget::Item.revenues).order('amount DESC') }
+    scope :in, lambda   { |month| where(month: month) }
+    scope :weekly,   -> { joins(:item).merge(Budget::Item.weekly) }
+    scope :monthly,  -> { joins(:item).merge(Budget::Item.monthly) }
 
     alias_attribute :item_id, :budget_item_id
 
     PUBLIC_ATTRS = %w(amount month).freeze
 
-    def self.discretionary
-      (Account.available_cash +
-       MonthlyAmount.remaining +
-       WeeklyAmount.remaining +
-       Account.charged
-      ).round(2)
+    def self.discretionary(month)
+      if month.current?
+        (Account.available_cash + MonthlyAmount.remaining +
+         WeeklyAmount.remaining + Account.charged).round(2)
+      else
+        self.in(month.piped).sum(:amount)
+      end
     end
 
     def self.active
@@ -81,6 +85,10 @@ module Budget
       self[:amount].to_f unless self[:amount].nil?
     end
 
+    def remaining
+      amount.to_f
+    end
+
     private
 
     def set_default_amount!
@@ -94,7 +102,7 @@ module Budget
 
   class MonthlyAmount < Amount
 
-    default_scope { current.joins(:item).merge(Budget::Item.monthly) }
+    default_scope { current.monthly }
 
     scope :anticipated, -> { joins("LEFT JOIN (#{::Transaction::Record.all.to_sql}) t " +
                              'ON t.monthly_amount_id = "monthly_amounts".id').where('t.id IS NULL') }
@@ -102,13 +110,11 @@ module Budget
     def self.remaining
       anticipated.sum(:amount)
     end
-
-    alias_method :remaining, :amount
   end
 
   class WeeklyAmount < Amount
 
-    default_scope { current.joins(:item).merge(Budget::Item.weekly) }
+    default_scope { current.weekly }
 
     def self.remaining
       all.inject(0) { |total, amount| total += amount.remaining }
@@ -130,8 +136,8 @@ module Budget
   end
 
   class Discretionary
-    def self.to_hash
-      amount = [Budget::Amount.discretionary, 0].max
+    def self.to_hash(month)
+      amount = [Budget::Amount.discretionary(month), 0].max
       { id: 0, name: 'Discretionary', amount: 0, remaining: amount,
         month: BudgetMonth.piped, item_id: 0 }
     end
