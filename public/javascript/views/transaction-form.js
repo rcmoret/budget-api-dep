@@ -44,15 +44,18 @@ app.TransactionFormView = Backbone.View.extend({
     this.collection.add(newTransaction)
   },
   subtransactionsAttrs: function() {
-    return _.map(this.$el.find('.subtransaction-form'), function(sub) {
-      var attrs = {}
+    var attrs = {}
+    var index = 0
+    _.each(this.$el.find('.subtransaction-form'), function(sub) {
+      attrs[index] = {}
       _.each($(sub).find('input, select'), function(input) {
        if (!_.isUndefined(input.value) && input.value != '' && !input.disabled) {
-         attrs[input.name] = input.value
+         attrs[index][input.name] = input.value
        }
       })
-      return attrs
+      index++
     })
+    return attrs
   },
   renderPlusButton: function() {
     return this.plusButton()

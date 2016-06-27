@@ -32,7 +32,7 @@ class ItemsApi < Sinatra::Base
       amount.save ? render_new(amount) : render_error(400)
     end
 
-    put %r{/amount/(?<amount_id>\d+)} do
+    put %r{/amount/(?<amount_id>\d+)/?} do
       if amount.update_attributes(amount_params)
         render_updated(amount.to_hash)
       else

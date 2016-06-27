@@ -20,5 +20,10 @@ var WeeklyAmountCollection = Backbone.Collection.extend({
   }
 });
 
+var ActiveMonthlyItemsCollection = Backbone.Collection.extend({
+  url: '/items/selectable'
+})
+
 app.WeeklyAmounts = new WeeklyAmountCollection
 app.MonthlyAmounts = new MonthlyAmountCollection
+app.ActiveMonthlyItems = new ActiveMonthlyItemsCollection

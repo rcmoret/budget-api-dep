@@ -1,0 +1,13 @@
+<script type='text/template' id='budget-sidebar'>
+  <h2>Budget</h2>
+  <hr/>
+  <h4>Add a new item for this month</h4>
+  <select name='items' id='budget-items'>
+    <option value='' disabled selected>Items</option>
+  </select>
+  <br>
+  <input type='text' name='amount'/ placeholder='amount'>
+  <span class='submit'>
+    <i class='fa fa-plus-circle' aria-hidden=true></i> Add amount for <%= month %>/<%= year %>
+  </span>
+</script>

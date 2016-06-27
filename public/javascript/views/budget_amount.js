@@ -108,6 +108,6 @@ app.WeeklyAmountView = app.BudgetAmountView.extend({
     var budgeted = parseFloat(e.target.value)
     var spent = this.$el.find('.underlined').data('spent')
     var remaining = Math.abs(budgeted - spent)
-    this.$el.find('.remaining').html('$' + remaining.toFixed(2))
+    this.$el.find('.remaining.amount').html('$' + remaining.toFixed(2))
   }
 })
