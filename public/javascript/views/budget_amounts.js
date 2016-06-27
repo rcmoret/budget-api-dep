@@ -4,69 +4,61 @@ app.BudgetAmountsView = Backbone.View.extend({
   className: 'budget-block',
   amountTemplate: _.template($('#budget-amount-template').html()),
   renderItems: function() {
+    this.clearItems();
     _.each(this.collection.sort().models, this.renderItem)
   },
   renderItem: function(item) {
     var view = this.budgetAmountView(item)
     this.$el.find('.budget-wrapper.' + item.className()).append(view.render());
   },
-  dateParams: function() {
-    if (!_.isNull(this.month)) {
-      if (!_.isNull(this.year)) {
-        return { month: this.month, year: this.year }
-      } else {
-        return { month: this.month }
+  clearItems: function() {
+    _.each(this.$el.find('.budget-wrapper'), function(el) {
+      if (_.isUndefined($(el).attr('id'))) {
+        $(el).html('')
       }
-    } else {
-      return {}
-    }
+    })
+  },
+  currentMonth: function() {
+    return _.isUndefined(this.dateParams['month'])
   }
 })
 
 app.MonthlyAmountsView = app.BudgetAmountsView.extend({
   template: _.template($('#monthly-template').html()),
   id: 'monthly-amounts',
-  initialize: function(month, year) {
-    this.month = month;
-    this.year = year;
+  initialize: function(dateParams) {
+    this.dateParams = dateParams;
     this.collection = app.MonthlyAmounts;
     this.listenTo(this.collection, 'reset', this.renderItems);
+    this.listenTo(this.collection, 'change', this.updateDiscretionary);
     _.bindAll(this, 'renderItem')
   },
-  render: function(month) {
+  render: function() {
     this.$el.html('')
-    this.$el.html(this.template());
-    console.log(this.dateParams())
-    this.collection.fetch({reset: true, data: this.dateParams(), processData: true})
+    var month = this.dateParams['month'] || (new Date).getMonth() + 1
+    this.$el.html(this.template({ current: this.currentMonth(), month: month }));
+    this.collection.fetch({reset: true, data: this.dateParams, processData: true})
     return this.$el;
   },
   budgetAmountView: function(record) {
     return new app.MonthlyAmountView(record)
-  },
+  }
 });
 
 app.WeeklyAmountsView = app.BudgetAmountsView.extend({
   template: _.template($('#weekly-template').html()),
   id: 'weekly-amounts',
-  initialize: function(month, year) {
+  initialize: function(dateParams) {
+    this.dateParams = dateParams
     this.collection = app.WeeklyAmounts;
-    this.month = month;
-    this.year = year;
     this.listenTo(this.collection, 'reset', this.renderItems);
-    this.listenTo(app.MonthlyAmounts, 'change', this.renderDiscretionary);
-    this.listenTo(this.collection, 'updateDiscretionary', this.renderDiscretionary);
+    this.listenTo(this.collection, 'change', this.renderDiscretionary);
     _.bindAll(this, 'renderItem')
-    this.discretionaryView = new app.DiscretionaryView(month, year);
     this.$el.html(this.template());
   },
-  render: function(month, year) {
-    console.log(this.dateParams())
-    this.collection.fetch({reset: true, data: this.dateParams(), processData: true})
+  render: function() {
+    this.collection.fetch({reset: true, data: this.dateParams, processData: true})
     return this.$el;
-  },
-  renderDiscretionary: function() {
-    this.$el.find('.budget-wrapper#discretionary').html(
-      this.discretionaryView.render(this.dateParams()))
   },
   budgetAmountView: function(record) {
     return new app.WeeklyAmountView(record)

@@ -75,6 +75,9 @@ section
       .account:first-of-type
         border-left: none
 
+.clickable:hover
+  cursor: pointer
+
 #content
   width: 98%
   .editable span:hover, a.items
@@ -197,7 +200,7 @@ section
           width: 46%
         .right-side
           width: 50%
-          .editable:hover, .clickable:hover
+          .editable:hover
             cursor: pointer
           .spent, .budgeted
             display: none
@@ -218,3 +221,6 @@ section
             width: 45%
         div
           display: inline-block
+
+span.submit:hover
+  cursor: pointer

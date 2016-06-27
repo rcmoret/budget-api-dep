@@ -19,7 +19,7 @@
             Deposited:
           <% } %>
         </div>
-        <div class='amount small-text underlined '>
+        <div class='amount small-text underlined' data-spent=<%= parseFloat(spent) %>>
           -$<%= parseFloat(Math.abs(spent)).toFixed(2) %>
         </div>
       </div>

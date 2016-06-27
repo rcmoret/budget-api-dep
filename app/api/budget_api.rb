@@ -42,22 +42,23 @@ class ItemsApi < Sinatra::Base
   end
 
   namespace '/amounts' do
-    get %r{/(?<freq>monthly|weekly)/?} do
-      month = BudgetMonth.new(month: params[:month], year: params[:year])
-      render_collection(case [params['freq'], month.current?]
-                        when ['monthly', true]
-                          Budget::MonthlyAmount.anticipated
-                        when ['weekly', true]
-                          Budget::WeeklyAmount.all
-                        when ['monthly', false]
+    get '/monthly' do
+      render_collection(if params[:month].present?
                           Budget::Amount.monthly.in(month.piped)
-                        when ['weekly', false]
+                        else
+                          Budget::MonthlyAmount.anticipated
+                        end)
+    end
+
+    get '/weekly' do
+      render_collection(if month.current?
+                          Budget::WeeklyAmount.all
+                        else
                           Budget::Amount.weekly.in(month.piped)
                         end)
     end
 
     get '/discretionary' do
-      month = BudgetMonth.new(month: params[:month], year: params[:year])
       [200, Budget::Discretionary.to_hash(month).to_json]
     end
   end
@@ -74,9 +75,13 @@ class ItemsApi < Sinatra::Base
     monthly? ? Budget::MonthlyAmount : Budget::WeeklyAmount
   end
 
+  def month
+    @month ||= BudgetMonth.new(month: params[:month], year: params[:year])
+  end
+
   def find_or_initialize_amount!
     if amount_id.present?
-      amount_class.find_by_id(amount_id) || render_404('budget amount', amount_id)
+      amount_class.find_by(id: amount_id, item_id: item_id) || render_404('budget amount', amount_id)
     else
       initialize_amount!
     end

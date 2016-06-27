@@ -1,0 +1,17 @@
+<script type='text/template' id='discretionary-template'>
+  <div class='budget-amount'>
+    <div class='left-side'>
+      <div class='left-icon'><i class='fa fa-caret-right' aria-=true></i></div>
+      <div class='name'><%= name %></div>
+    </div>
+    <div class='right-side'>
+      <div class='remaining'>
+        <div class='label small-text'></div>
+        <div class='remaining amount' data-remaining=<%= remaining %>>
+          $<%= parseFloat(remaining).toFixed(2) %>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+

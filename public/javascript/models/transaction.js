@@ -35,7 +35,7 @@ app.Transaction = Backbone.Model.extend({
     return this.get('subtransactions_attributes') || {}
   },
   items: function() {
-    if (this.subtransactions().length === 0) {
+    if (_.isEmpty(this.subtransactions())) {
       return this.get('budget_item')
     } else {
       var itemArray = _.map(this.subtransactions(), function (sub) {
@@ -45,13 +45,6 @@ app.Transaction = Backbone.Model.extend({
         return item
       })
       return filteredItems.join(', ')
-    }
-  },
-  update: function(attrs, options = {save: false}) {
-    this.set(attrs)
-    if (options.save) {
-      this.save()
-      return
     }
   }
 });

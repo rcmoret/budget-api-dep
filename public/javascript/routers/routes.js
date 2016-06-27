@@ -46,7 +46,7 @@ var Workspace = Backbone.Router.extend({
     $('#tab-list').html('')
     $('.title').removeClass('focused')
     $('.title.budget-items').addClass('focused')
-    var budgetView = new app.BudgetView();
-    budgetView.render(month, year);
+    var budgetView = new app.BudgetView(month, year);
+    budgetView.render();
   }
 });

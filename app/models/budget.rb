@@ -13,6 +13,13 @@ module Budget
 
     PUBLIC_ATTRS = %w(id name expense monthly default_amount)
 
+
+    scope :selectable, lambda { |month|
+      joins(%Q{LEFT JOIN (#{Budget::Amount.weekly.in(month).to_sql}) wa
+               ON wa.budget_item_id = "budget_items".id}
+           ).where('wa.id IS NULL OR monthly = true').order('name ASC')
+    }
+
     def default_amount
       self[:default_amount].to_f
     end
@@ -47,7 +54,7 @@ module Budget
     scope :current,  -> { where(month: BudgetMonth.piped) }
     scope :expenses, -> { joins(:item).merge(Budget::Item.expenses).order('amount ASC') }
     scope :revenues, -> { joins(:item).merge(Budget::Item.revenues).order('amount DESC') }
-    scope :in, lambda   { |month| where(month: month) }
+    scope :in, lambda   { |month=nil| month.nil? ? current : where(month: month) }
     scope :weekly,   -> { joins(:item).merge(Budget::Item.weekly) }
     scope :monthly,  -> { joins(:item).merge(Budget::Item.monthly) }
 
@@ -137,9 +144,10 @@ module Budget
 
   class Discretionary
     def self.to_hash(month)
-      amount = [Budget::Amount.discretionary(month), 0].max
+      discretionary = Budget::Amount.discretionary(month)
+      amount = month.current? ? [discretionary, 0].max : discretionary
       { id: 0, name: 'Discretionary', amount: 0, remaining: amount,
-        month: BudgetMonth.piped, item_id: 0 }
+        month: month.piped, item_id: 0, days_remaining: month.days_remaining }
     end
   end
 end

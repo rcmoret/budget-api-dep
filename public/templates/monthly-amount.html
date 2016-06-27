@@ -1,5 +1,8 @@
 <script type='text/template' id='monthly-template'>
   <h2>Monthly Budget Amounts</h2>
+  <% if (current) { %>
+    <span class='clickable see-cleared'>See cleared items</span>
+  <% } %>
   <hr/>
   <h4>Revenues</h4>
   <div class='budget-wrapper revenues'></div>
