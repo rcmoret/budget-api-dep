@@ -7,8 +7,11 @@ app.TransactionView = Backbone.View.extend({
     'click .editable span': 'toggleInput',
     'blur .primary .editable input': 'updateTransaction',
     'keyup .primary .editable input': 'updateTransaction',
-    'click .primary a.items ': 'renderSelect',
+    'click a.items ': 'renderSelect',
     'blur .primary select': 'updateItems',
+    'keyup .primary select': 'updateItems',
+    'blur .subtransaction select': 'updateItemsViaSub',
+    'keyup .subtransaction select': 'updateItemsViaSub',
     'click i.fa-chevron-right': 'renderSubtransctions',
     'blur .subtransaction .editable input': 'updateSubTransaction',
     'keyup .subtransaction .editable input': 'updateSubTransaction',
@@ -16,7 +19,7 @@ app.TransactionView = Backbone.View.extend({
   },
   initialize: function(transaction, balance) {
     this.model = transaction;
-    this.listenTo(app.ActiveItems, 'reset', this.populateSelect);
+    _.bindAll(this, 'appendSelect')
     this.balance = balance
   },
   description: function() {
@@ -78,25 +81,52 @@ app.TransactionView = Backbone.View.extend({
     el.html('')
     el.html(this.selectInput(data))
     el.find('select').focus()
-    app.ActiveItems.fetch({reset: true})
+    app.ActiveItems.fetch({
+      success: this.appendSelect
+    })
   },
-  populateSelect: function() {
-    _.each(app.ActiveItems.models, function(item) {
-      this.$el.find('select').append(this.optionEl(item))
+  appendSelect: function(items) {
+    _.each(items.models, function(item) {
+      if (item.id !== this.model.get('monthly_amount_id')) {
+        this.$el.find('select').append(this.optionEl(item));
+      }
     }, this)
   },
   selectInput: function(data) {
-    return $("<select name='monthly_amount_id'><option value='' disabled selected></option></select>")
+    var select = "<select name='monthly_amount_id'><option selected value= "
+    if (_.isUndefined(data['value'])) {
+      select += "'' disabled>"
+    } else {
+      select += "'" + data['value'] + "'>"
+      select += data['displayVal']
+    }
+    select += "</option></select>"
+    return $(select)
   },
   optionEl: function(item) {
-    opt =  '<option value="' + item.id + '">'
+    var opt =  '<option value="' + item.id + '"'
+    opt += '>'
     opt += (item.get('name') + ' $' + parseFloat(item.get('remaining')).toFixed(2))
     opt += '</option>'
     return $(opt)
   },
   updateItems: function(e) {
-    var value = e.target.value === '' ? null : e.target.value
-    this.model.update({monthly_amount_id: value}, {save: true})
+    if (e.type === 'keyup' && e.keyCode === ESC_KEY) {
+      var el = e.target.parentElement
+      $(el).html('')
+      var anchor = '<a class="items">'
+      if (_.isNull(this.model.get('budgetItems'))) {
+        var linkText = '<i class="fa fa-list-ul" aria-hidden="true"></i>'
+      } else {
+        var linkText = this.model.get('budgetItems')
+      }
+      markup = anchor + linkText + '</a>'
+      $(el).html(markup)
+    } else {
+      var value = e.target.value === '' ? null : e.target.value
+      this.model.set({monthly_amount_id: value})
+      this.model.save()
+    }
   },
   renderSubtransctions: function() {
     this.$el.toggleClass('expanded')
@@ -115,6 +145,20 @@ app.TransactionView = Backbone.View.extend({
       var el = $(e.target).parent();
       el.html('');
       el.html($('<span>' + el.data('value') + '</span>'))
+      return
+    } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type == 'focusout') {
+      var el = $(e.target.closest('.subtransaction'))
+      var newSubAttrs = this.model.get('subtransactions_attributes')
+      newSubAttrs[el.data('id')][e.target.name] = e.target.value
+      this.model.set('subtransactions_attributes', newSubAttrs)
+      this.model.save()
+    }
+  },
+  updateItemsViaSub: function(e) {
+    if (e.type === 'keyup' && e.keyCode === ESC_KEY) {
+      var el = $(e.target).parent();
+      el.html('');
+      el.html($('<a class="items">' + el.data('value') + '</a>'))
       return
     } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type == 'focusout') {
       var el = $(e.target.closest('.subtransaction'))

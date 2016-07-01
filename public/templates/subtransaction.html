@@ -17,7 +17,7 @@
       </div>
       <div class='amount'></div>
       <% if (!_.isNull(sub.budget_item)) { %>
-        <div class='budget-items'>
+        <div class='budget-items' data-value='<%= sub.monthly_amount_id %>' data-display-val='<%= sub.budget_item %>'>
           <a class='items'>(<%= sub.budget_item %>)</a>
         </div>
       <% } else { %>
