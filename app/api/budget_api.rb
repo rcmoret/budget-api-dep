@@ -72,6 +72,7 @@ class ItemsApi < Sinatra::Base
   end
 
   def amount_class
+    return Budget::Amount unless month.piped == request_params['month']
     monthly? ? Budget::MonthlyAmount : Budget::WeeklyAmount
   end
 

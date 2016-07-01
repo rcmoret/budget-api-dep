@@ -16,14 +16,23 @@ RSpec.describe Budget::Amount, type: :model do
   end
 
   describe '#discretionary' do
-    before do
-      allow(Budget::MonthlyAmount).to receive(:remaining).and_return(10)
-      allow(Budget::WeeklyAmount).to receive(:remaining).and_return(20)
-      allow(Account).to receive(:available_cash).and_return(0)
-      allow(Account).to receive(:charged).and_return(-2)
+    context 'current month' do
+      before do
+        allow(Budget::MonthlyAmount).to receive(:remaining).and_return(10)
+        allow(Budget::WeeklyAmount).to receive(:remaining).and_return(20)
+        allow(Account).to receive(:available_cash).and_return(0)
+        allow(Account).to receive(:charged).and_return(-2)
+      end
+      let(:month) { BudgetMonth.new }
+      subject { Budget::Amount.discretionary(month) }
+      it { should eq 28 }
     end
-    subject { Budget::Amount.discretionary }
-    it { should eq 28 }
+    context 'another month' do
+      let(:month) { BudgetMonth.new(:prev_month) }
+      before do
+        allow(Budget::Amount).to receive(:in).with(month.piped)
+      end
+    end
   end
 
   describe '#for_select' do
@@ -193,12 +202,13 @@ end
 RSpec.describe Budget::Discretionary do
   describe '#to_hash' do
     before { allow(Budget::Amount).to receive(:discretionary) { 100 } }
+    let(:month) { BudgetMonth.new }
     let(:discretionary) do
       { id: 0, name: 'Discretionary', amount: 0, remaining: 100,
-        month: BudgetMonth.piped, item_id: 0 }
+        month: BudgetMonth.piped, item_id: 0, days_remaining: month.days_remaining }
     end
     it 'should return discretionary income as a hash' do
-      expect(Budget::Discretionary.to_hash).to eq discretionary
+      expect(Budget::Discretionary.to_hash(month)).to eq discretionary
     end
   end
 end

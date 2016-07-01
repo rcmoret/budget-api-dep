@@ -102,39 +102,16 @@ RSpec.describe ItemsApi do
         its(:status) { should be 200 }
         it { expect(subject.body).to include monthly_amount.to_hash.stringify_keys }
       end
-      context 'monthly/expenses' do
-        let!(:monthly_amount) { FactoryGirl.create(:monthly_expense) }
-        let(:endpoint) { '/items/amounts/monthly/expenses' }
-        its(:status) { should be 200 }
-        its(:body) { should include monthly_amount.to_hash.stringify_keys }
-      end
-      context 'monthly/revenues' do
-        let!(:monthly_amount) { FactoryGirl.create(:monthly_revenue) }
-        let(:endpoint) { '/items/amounts/monthly/revenues' }
-        its(:status) { should be 200 }
-        its(:body) { should include monthly_amount.to_hash.stringify_keys }
-      end
       context 'weekly' do
         let!(:weekly_amount) { FactoryGirl.create(:weekly_expense) }
         let(:endpoint) { '/items/amounts/weekly' }
         its(:status) { should be 200 }
         its(:body) { should include weekly_amount.to_hash.stringify_keys }
       end
-      context 'weekly/expenses' do
-        let!(:weekly_amount) { FactoryGirl.create(:weekly_expense) }
-        let(:endpoint) { '/items/amounts/weekly/expenses' }
-        its(:status) { should be 200 }
-        its(:body) { should include weekly_amount.to_hash.stringify_keys }
-      end
-      context 'weekly/revenues' do
-        let!(:weekly_amount) { FactoryGirl.create(:weekly_revenue) }
-        let(:endpoint) { '/items/amounts/weekly/revenues' }
-        its(:status) { should be 200 }
-        its(:body) { should include weekly_amount.to_hash.stringify_keys }
-      end
 
     end
     describe 'GET /items/amounts/discretionary' do
+      let(:month) { BudgetMonth.new }
       let(:request) { proc { get(endpoint) } }
       let(:response) { request.call }
       subject { JSON.parse(response.body) }
@@ -145,7 +122,7 @@ RSpec.describe ItemsApi do
       end
       let(:expected_hash) do
         { 'id' => 0, 'name' => 'Discretionary', 'amount' => 0, 'remaining' => 50.0,
-          'month' => BudgetMonth.piped, 'item_id' => 0 }
+          'month' => month.piped, 'item_id' => 0, 'days_remaining' => month.days_remaining }
       end
       let(:endpoint) { 'items/amounts/discretionary' }
       it { expect(response.status).to be 200 }
@@ -164,6 +141,4 @@ RSpec.describe ItemsApi do
       expect(subject).to include groceries.to_hash.stringify_keys
     end
   end
-
-
 end
