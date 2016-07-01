@@ -8,7 +8,8 @@ app.TransactionFormView = Backbone.View.extend({
     'click button.submit': 'createTransaction',
     'click i.fa.fa-close': 'closeForm',
     'click a.add-subtransactions': 'addSubtransactions',
-    'keyup .subtransaction-form input[name="amount"]': 'updateAmount'
+    'keyup .subtransaction-form input[name="amount"]': 'updateAmount',
+    'click i.fa-edit': 'showOptionalFields'
   },
   initialize: function(accountId) {
     this.collection = app.Accounts.get(accountId).transactions
@@ -95,5 +96,8 @@ app.TransactionFormView = Backbone.View.extend({
     )
     targetInput.val(total.toFixed(2))
     return
+  },
+  showOptionalFields: function() {
+    this.$el.find('.extra-fields').toggleClass('hidden');
   }
 });

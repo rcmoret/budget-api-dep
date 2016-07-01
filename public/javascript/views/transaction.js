@@ -152,6 +152,13 @@ app.TransactionView = Backbone.View.extend({
       newSubAttrs[el.data('id')][e.target.name] = e.target.value
       this.model.set('subtransactions_attributes', newSubAttrs)
       this.model.save()
+    } else {
+      var total = _.reduce(this.$el.find('.subtransaction .amount'), function(memo, el) {
+        var amt = ($(el).find('input').length === 0) ? $(el).data('value') : $(el).find('input').val()
+        var amount = $.isNumeric(amt) ? parseFloat(amt) : 0
+        return memo += amount
+      }, 0)
+      this.$el.find('.primary .amount').first().text('$' + parseFloat(total).toFixed(2));
     }
   },
   updateItemsViaSub: function(e) {

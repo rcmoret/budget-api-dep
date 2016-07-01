@@ -14,7 +14,6 @@ app.BudgetAmount = Backbone.Model.extend({
   className: function() {
     return this.attributes['amount'] < 0 ? 'expenses' : 'revenues'
   },
-  },
   spent: function() {
     return (this.get('amount') - this.get('remaining'))
   }

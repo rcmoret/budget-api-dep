@@ -31,6 +31,7 @@ app.MonthlyAmountView = app.BudgetAmountView.extend({
   renderAmountField: function(e) {
     var el = $(e.toElement).parent()
     var data = el.data()
+    el.removeClass('editable')
     el.html(this.textInput(data.name))
     el.find('input').val(data.value).focus()
   },
@@ -39,6 +40,7 @@ app.MonthlyAmountView = app.BudgetAmountView.extend({
       var el = $(e.target).parent();
       el.html('');
       el.html(el.data('value'))
+      el.addClass('editable')
       return
     } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type == 'focusout') {
       this.model.set({amount: e.target.value})
@@ -88,6 +90,7 @@ app.WeeklyAmountView = app.BudgetAmountView.extend({
     this.$el.find('.editable.amount').html('')
     this.$el.find('.editable.amount').html(this.textInput(data.name))
     this.$el.find('.editable.amount input').val(data.value).focus()
+    this.$el.find('.amount').removeClass('editable')
   },
   updateAmount: function(e) {
     if (e.type === 'keyup' && e.keyCode === ESC_KEY) {

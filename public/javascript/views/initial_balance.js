@@ -25,6 +25,7 @@ app.InitialBalanceView = Backbone.View.extend({
   render: function() {
     this.$el.find('.editable').removeClass('editable')
     this.$el.find('.fa-list-ul').removeClass('fa-list-ul')
+    this.$el.find('.fa-edit').removeClass('fa-edit')
     return this.$el;
   }
 });

@@ -80,7 +80,7 @@ section
 
 #content
   width: 98%
-  .editable span:hover, a.items
+  .editable span:hover
     cursor: pointer
   .transaction
     padding: 8px 6px
@@ -90,6 +90,7 @@ section
       width: 100%
       div
         display: inline-block
+        vertical-align: top
       .clearance-date
         width: 10%
       .description
@@ -106,15 +107,30 @@ section
         max-width: 18%
       .budget-items-select
         width: 12%
-        width: 18%
-      i.fa.fa-list-ul
+      a.add-subtransactions:hover
+        cursor: pointer
+      .extra-fields div
+        display: block
+        margin-bottom: 8px
+        label
+          width: 40%
+          display: inline-block
+        input, textarea
+          width: 50%
+          display: inline-block
+          vertical-align: top
+        textarea
+          resize: vertical
+      i.fa.fa-list-ul, i.fa-edit
         color: $dark-grey
+      i.fa-edit:hover
+        cursor: pointer
       .left-icon
         width: 1.5%
         margin-left: 1%
         i.fa:hover
           cursor: pointer
-        i.fa.fa-caret-right
+        i.fa.fa-caret-right:hover
           cursor: default
       a.render-form:hover
         cursor: pointer
