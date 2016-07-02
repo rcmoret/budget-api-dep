@@ -30,7 +30,6 @@ app.MonthlyAmountsView = app.BudgetAmountsView.extend({
     this.dateParams = dateParams;
     this.collection = app.MonthlyAmounts;
     this.listenTo(this.collection, 'reset', this.renderItems);
-    this.listenTo(this.collection, 'change', this.updateDiscretionary);
     _.bindAll(this, 'renderItem')
   },
   render: function() {
@@ -52,7 +51,6 @@ app.WeeklyAmountsView = app.BudgetAmountsView.extend({
     this.dateParams = dateParams
     this.collection = app.WeeklyAmounts;
     this.listenTo(this.collection, 'reset', this.renderItems);
-    this.listenTo(this.collection, 'change', this.renderDiscretionary);
     _.bindAll(this, 'renderItem')
     this.$el.html(this.template());
   },

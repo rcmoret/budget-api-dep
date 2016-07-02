@@ -9,7 +9,6 @@ app.BudgetView = Backbone.View.extend({
     var weeklyAmounts = new app.WeeklyAmountsView(this.dateParams())
     $('#content').append(weeklyAmounts.render());
     var discretionary = new app.DiscretionaryView(this.dateParams());
-    $('#discretionary').append(discretionary.render());
     var monthlyAmounts = new app.MonthlyAmountsView(this.dateParams())
     $('#content').append(monthlyAmounts.render());
     var budgetSidebar = new app.BudgetSidebarView(this.dateParams())

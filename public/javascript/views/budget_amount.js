@@ -43,9 +43,11 @@ app.MonthlyAmountView = app.BudgetAmountView.extend({
       el.addClass('editable')
       return
     } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type == 'focusout') {
-      this.model.set({amount: e.target.value})
-      this.model.save(null, {
-        success: function(data) { data.trigger('rerender') }
+      var params = { amount: e.target.value }
+      this.model.save(params, {
+        success: function(data) {
+          data.trigger('rerender')
+        }
       })
     }
   }
@@ -99,9 +101,11 @@ app.WeeklyAmountView = app.BudgetAmountView.extend({
       el.html(el.data('value'))
       return
     } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type == 'focusout') {
-      this.model.set({amount: e.target.value})
-      this.model.save(null, {
-        success: function(data) { data.trigger('rerender') }
+      var params = { amount: e.target.value }
+      this.model.save(params, {
+        success: function(data) {
+          data.trigger('rerender')
+        }
       })
     } else {
       this.updateCalculations(e)

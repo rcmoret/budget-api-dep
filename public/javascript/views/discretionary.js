@@ -8,8 +8,7 @@ app.DiscretionaryView = Backbone.View.extend({
     _.bindAll(this, 'updateDiscretionary')
     this.listenTo(app.MonthlyAmounts, 'change', this.render)
     this.listenTo(app.WeeklyAmounts, 'change', this.render)
-    this.listenTo(app.MonthlyAmounts, 'fetch', this.render)
-    this.listenTo(app.WeeklyAmounts, 'fetch', this.render)
+    this.listenTo(app.MonthlyAmounts, 'reset', this.render)
   },
   render: function() {
     this.model.fetch({
@@ -17,6 +16,7 @@ app.DiscretionaryView = Backbone.View.extend({
       data: this.dateParams,
       processData: true
     })
+    $('#discretionary').html(this.$el)
     return this.$el
   },
   updateDiscretionary: function(resp) {
