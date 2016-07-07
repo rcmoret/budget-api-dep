@@ -41,7 +41,6 @@ module Transaction
     self.table_name = 'transaction_view'
     include Transaction::SharedMethods
     include Transaction::Scopes
-    default_scope { order('clearance_date ASC, clearance_date IS NULL, updated_at ASC') }
 
     def readonly?
       true
