@@ -87,24 +87,22 @@ app.TransactionView = Backbone.View.extend({
   },
   appendSelect: function(items) {
     _.each(items.models, function(item) {
-      if (item.id !== this.model.get('monthly_amount_id')) {
-        this.$el.find('select').append(this.optionEl(item));
-      }
+      this.$el.find('select').append(this.optionEl(item));
     }, this)
   },
   selectInput: function(data) {
-    var select = "<select name='monthly_amount_id'><option selected value= "
+    var select = "<select name='monthly_amount_id'><option value=''"
     if (_.isUndefined(data['value'])) {
-      select += "'' disabled>"
-    } else {
-      select += "'" + data['value'] + "'>"
-      select += data['displayVal']
+      select += " selected"
     }
-    select += "</option></select>"
+    select += "></option></select>"
     return $(select)
   },
   optionEl: function(item) {
     var opt =  '<option value="' + item.id + '"'
+    if (this.model.get('monthly_amount_id') === item.id) {
+      opt += ' selected'
+    }
     opt += '>'
     opt += (item.get('name') + ' $' + parseFloat(item.get('remaining')).toFixed(2))
     opt += '</option>'
