@@ -96,6 +96,11 @@ module Budget
       amount.to_f
     end
 
+    def destroy
+      return false if transactions.any?
+      super
+    end
+
     private
 
     def set_default_amount!

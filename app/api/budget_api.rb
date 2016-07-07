@@ -39,6 +39,14 @@ class ItemsApi < Sinatra::Base
         render_error(400)
       end
     end
+
+    delete %r{/amount/(?<amount_id>\d+)/?} do
+      if amount.destroy
+        [200, {}.to_json]
+      else
+        render_error(400)
+      end
+    end
   end
 
   namespace '/amounts' do

@@ -84,13 +84,29 @@ RSpec.describe ItemsApi do
     describe 'PUT to /items/:item_id/amount/:id' do
       include_context 'request specs'
       let(:method) { 'put' }
-      let(:weekly) { FactoryGirl.create(:monthly_expense) }
+      let(:weekly) { FactoryGirl.create(:weekly_expense) }
       let(:grocery) { weekly.item }
       let(:endpoint) { "/items/#{grocery.id}/amount/#{weekly.id}" }
       let(:amount) { -232 }
       let(:request_body) { { amount: amount } }
       its(:status) { should be 200 }
       it { expect { request.call }.to change { weekly.reload.amount } }
+    end
+    describe 'DELETE to /items/:item_id/amount/:id' do
+      include_context 'request specs'
+      let(:method) { 'delete' }
+      let(:weekly) { FactoryGirl.create(:weekly_expense) }
+      let(:grocery) { weekly.item }
+      let(:endpoint) { "/items/#{grocery.id}/amount/#{weekly.id}" }
+      its(:status) { should be 200 }
+      it { expect { request.call }.to change { Budget::WeeklyAmount.count }.by(-1) }
+      context 'associated transactions exist' do
+        before do
+          allow_any_instance_of(Budget::Amount).to receive(:transactions) { [1] }
+        end
+        its(:status) { should be 400 }
+        it { expect { request.call }.to_not change { Budget::WeeklyAmount.count } }
+      end
     end
 
     describe 'GET /items/amounts/(monthly|weekly)/(expenses|revenues)' do
