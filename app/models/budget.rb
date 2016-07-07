@@ -122,6 +122,10 @@ module Budget
     def self.remaining
       anticipated.sum(:amount)
     end
+
+    def remaining
+      transactions.any? ? 0 : amount
+    end
   end
 
   class WeeklyAmount < Amount

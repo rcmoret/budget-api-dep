@@ -54,7 +54,7 @@ class ItemsApi < Sinatra::Base
       render_collection(if params[:month].present?
                           Budget::Amount.monthly.in(month.piped)
                         else
-                          Budget::MonthlyAmount.anticipated
+                          Budget::MonthlyAmount.all
                         end)
     end
 
