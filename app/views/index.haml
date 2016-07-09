@@ -1,12 +1,15 @@
 %html
   %link{ rel: 'stylesheet', type: 'text/css', href: '/public/stylesheets/site.css' }
   %link{ rel: 'stylesheet', type: 'text/css', href: '/public/stylesheets/font-awesome.min.css' }
+  %link{ rel: 'stylesheet', type: 'text/css', href: '/public/stylesheets/jquery-ui.theme.css' }
+  %link{ rel: 'stylesheet', type: 'text/css', href: '/public/stylesheets/jquery-ui.css' }
   %body
     - Dir['public/templates/*.html'].each do |f|
       = File.read(f)
     %script{ type: 'text/javascript', src: '/public/javascript/lib/jquery.js' }
     %script{ type: 'text/javascript', src: '/public/javascript/lib/underscore.js' }
     %script{ type: 'text/javascript', src: '/public/javascript/lib/backbone.js' }
+    %script{ type: 'text/javascript', src: '/public/javascript/lib/jquery-ui.min.js' }
     - %w(models collections views routers).each do |dir|
       - Dir["public/javascript/#{dir}/*.js"].each do |f|
         %script{ type: 'text/javascript', src: "/#{f}" }

@@ -5,8 +5,8 @@ app.TransactionView = Backbone.View.extend({
   subTemplate: _.template( $('#subtransaction-template').html() ),
   events: {
     'click .editable span': 'toggleInput',
-    'blur .primary .editable input': 'updateTransaction',
-    'keyup .primary .editable input': 'updateTransaction',
+    'blur .primary .editable input': 'update',
+    'keyup .primary .editable input': 'update',
     'click a.items ': 'renderSelect',
     'blur .primary select': 'updateItems',
     'keyup .primary select': 'updateItems',
@@ -19,7 +19,7 @@ app.TransactionView = Backbone.View.extend({
   },
   initialize: function(transaction, balance) {
     this.model = transaction;
-    _.bindAll(this, 'appendSelect')
+    _.bindAll(this, 'appendSelect', 'updateDate')
     this.balance = balance
   },
   description: function() {
@@ -52,27 +52,50 @@ app.TransactionView = Backbone.View.extend({
     var el = $(e.toElement).parent()
     var data = el.data()
     el.html(this.textInput(data.name))
-    el.find('input').val(data.value).focus()
+    if (el.hasClass('clearance-date')) {
+      this.renderDatePicker()
+    } else {
+      el.find('input').val(data.value).focus()
+    }
+  },
+  renderDatePicker: function() {
+    $('.clearance-date input').datepicker({
+        dateFormat: 'yy-mm-dd',
+        onClose: this.updateDate,
+        setDate: this.model.get('clearance_date')
+    })
+    $('.clearance-date input').datepicker('show')
   },
   textInput: function(name) {
     return $('<input type="text" name="' + name + '">');
   },
-  updateTransaction: function(e) {
-    if (e.type === 'keyup' && e.keyCode === ESC_KEY) {
+  resetEl: function(e) {
+    var el = $(e.target).parent();
+    el.html('');
+    el.html($('<span>' + el.data('value') + '</span>'))
+  },
+  updateModel: function(e) {
+    if (_.isEmpty(this.model.changed)) {
       var el = $(e.target).parent();
       el.html('');
       el.html($('<span>' + el.data('value') + '</span>'))
-      return
+    } else {
+      this.model.save()
+    }
+  },
+  updateDate: function(date) {
+    this.model.set({clearance_date: date})
+    this.model.save()
+  },
+  update: function(e) {
+    if (e.type === 'keyup' && e.keyCode === ESC_KEY) {
+      this.resetEl(e)
+    } else if ($(e.target).attr('name') === 'clearance_date') {
+      return // datepicker has a callback for updating
     } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type == 'focusout') {
       var input = this.$el.find('.primary.transaction input')
       this.model.set($(input).attr('name'), $(input).val())
-      if (_.isEmpty(this.model.changed)) {
-        var el = $(e.target).parent();
-        el.html('');
-        el.html($('<span>' + el.data('value') + '</span>'))
-      } else {
-        this.model.save()
-      }
+      this.updateModel(e)
     }
   },
   renderSelect: function(e) {
