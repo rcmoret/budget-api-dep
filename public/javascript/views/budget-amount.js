@@ -9,6 +9,7 @@ app.BudgetAmountView = Backbone.View.extend({
   initialize: function(record) {
     this.model = record
     this.listenTo(this.model, 'rerender', this.render)
+    this.listenTo(this.model, 'toggleShow', this.toggleShow)
   },
   textInput: function(name) {
     return $('<input type="text" name="' + name + '">');
@@ -49,6 +50,13 @@ app.MonthlyAmountView = app.BudgetAmountView.extend({
           data.trigger('rerender')
         }
       })
+    }
+  },
+  toggleShow: function() {
+    if (this.$el.parent().hasClass('cleared')) {
+      $('#monthly-amounts .budget-wrapper.' + this.model.className()).append(this.$el)
+    } else {
+      $('#monthly-amounts .budget-wrapper.cleared').append(this.$el)
     }
   }
 });

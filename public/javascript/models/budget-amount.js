@@ -2,6 +2,7 @@ var app = app || {};
 
 app.BudgetAmount = Backbone.Model.extend({
   initialize: function() {
+    this.cleared = (this.get('remaining') === 0)
   },
   url: function() {
     baseUrl = '/items/' + this.get('item_id') + '/amount'

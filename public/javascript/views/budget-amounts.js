@@ -60,7 +60,6 @@ app.MonthlyAmountsView = app.BudgetAmountsView.extend({
   },
   clearedCount: function() {
     var cleared = _.filter(this.collection.models, function(arr, model) {
-      debugger
       if (model.cleared) { arr.push(model) }
       return arr
     }, [])
