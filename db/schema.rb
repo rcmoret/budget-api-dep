@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160205172413) do
+ActiveRecord::Schema.define(version: 20160710180214) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,8 @@ ActiveRecord::Schema.define(version: 20160205172413) do
     t.integer "budget_item_id"
   end
 
+  add_index "monthly_amounts", ["budget_item_id"], name: "index_monthly_amounts_on_budget_item_id", using: :btree
+
   create_table "transactions", force: :cascade do |t|
     t.string   "description"
     t.decimal  "amount"
@@ -57,7 +59,9 @@ ActiveRecord::Schema.define(version: 20160205172413) do
     t.datetime "updated_at"
   end
 
+  add_index "transactions", ["account_id"], name: "index_transactions_on_account_id", using: :btree
   add_index "transactions", ["monthly_amount_id"], name: "index_transactions_on_monthly_amount_id", using: :btree
+  add_index "transactions", ["primary_transaction_id"], name: "index_transactions_on_primary_transaction_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
