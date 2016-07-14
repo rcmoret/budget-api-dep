@@ -91,6 +91,7 @@ module Primary
     validates :amount, presence: true, unless: :has_subtransactions?
     validates :amount, absence: true, if: :has_subtransactions?
     before_validation :set_account_id!, if: :has_subtransactions?
+    before_validation :set_monthly_amount_id!, if: :has_subtransactions?
     before_validation :set_amount_to_nil!, if: :has_subtransactions?
     accepts_nested_attributes_for :subtransactions
 
@@ -121,6 +122,10 @@ module Primary
 
     def set_amount_to_nil!
       self[:amount] = nil
+    end
+
+    def set_monthly_amount_id!
+      self[:monthly_amount_id] = nil
     end
   end
 end

@@ -32,12 +32,7 @@ module SharedHelpers
   end
 
   def filtered_params(klass)
-    params = if klass == Primary::Transaction
-               filtered_transaction_params
-             else
-               request_params.slice(*klass::PUBLIC_ATTRS)
-             end
-    params.reject { |k, v| v == '' }
+    klass == Primary::Transaction ? filtered_transaction_params : request_params.slice(*klass::PUBLIC_ATTRS)
   end
 
   def filtered_transaction_params
