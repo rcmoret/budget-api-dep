@@ -10,7 +10,7 @@ class Account < ActiveRecord::Base
 
   def self.charged
     where(cash_flow: false).joins(:transactions).merge(
-      Transaction::View.between(BudgetMonth.new.date_range, include_pending: true)
+      Transaction::View.between(BudgetMonth.new.date_range, include_pending: false)
     ).sum(:amount).to_f
   end
 
