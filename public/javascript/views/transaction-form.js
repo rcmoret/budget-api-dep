@@ -9,7 +9,8 @@ app.TransactionFormView = Backbone.View.extend({
     'click i.fa.fa-close': 'closeForm',
     'click a.add-subtransactions': 'addSubtransactions',
     'keyup .subtransaction-form input[name="amount"]': 'updateAmount',
-    'click i.fa-edit': 'showOptionalFields'
+    'click i.fa-edit': 'showOptionalFields',
+    'click .clearance-date input': 'renderDatePicker'
   },
   initialize: function(accountId) {
     this.collection = app.Accounts.get(accountId).transactions
@@ -99,5 +100,11 @@ app.TransactionFormView = Backbone.View.extend({
   },
   showOptionalFields: function() {
     this.$el.find('.extra-fields').toggleClass('hidden');
+  },
+  renderDatePicker: function() {
+    $('.clearance-date input').datepicker({
+        dateFormat: 'yy-mm-dd'
+    })
+    $('.clearance-date input').datepicker('show')
   }
 });
