@@ -42,8 +42,11 @@ app.TransactionFormView = Backbone.View.extend({
       }
     }, this)
     newTransaction.set('subtransactions_attributes', this.subtransactionsAttrs())
-    newTransaction.save()
-    this.collection.add(newTransaction)
+    newTransaction.save(null, {
+      success: function(data) {
+        data.collection.add(data)
+      }
+    })
   },
   subtransactionsAttrs: function() {
     var attrs = {}
