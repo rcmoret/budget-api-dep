@@ -25,7 +25,8 @@ class AccountsApi < Sinatra::Base
     end
 
     get '/transactions' do
-      transaction_template = TransactionTemplate.new(account)
+      month, year = request_params.values_at('month', 'year')
+      transaction_template = TransactionTemplate.new(account, month: month, year: year)
       {
         account: account.to_hash,
         metadata: transaction_template.metadata,

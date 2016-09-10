@@ -6,6 +6,7 @@
   %body
     - Dir['public/templates/*.html'].each do |f|
       = File.read(f)
+    %script{ type: 'text/javascript', src: '/public/javascript/lib/q.js' }
     %script{ type: 'text/javascript', src: '/public/javascript/lib/jquery.js' }
     %script{ type: 'text/javascript', src: '/public/javascript/lib/underscore.js' }
     %script{ type: 'text/javascript', src: '/public/javascript/lib/backbone.js' }

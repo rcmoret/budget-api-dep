@@ -10,6 +10,7 @@ app.AccountView = Backbone.View.extend({
     this.transactions = this.model.transactions;
     _.bindAll(this, 'renderBalance', 'renderDetails', 'renderTransactions', 'renderInitialBalance')
     this.listenTo(this.transactions, 'reset', this.updateBalance);
+    this.listenTo(this.transactions, 'reset', this.renderTransactions);
     this.listenTo(this.transactions, 'change', this.renderDetails);
     this.listenTo(this.transactions, 'add', this.renderDetails);
     this.listenTo(this.model, 'render', this.select);
@@ -17,14 +18,16 @@ app.AccountView = Backbone.View.extend({
   },
   events: { },
   render: function() {
+    return this.$el
   },
   select: function() {
+    this.renderMonthSelect()
+    this.renderDetails()
     if (this.$el.hasClass('selected')) {
       return
     } else {
       $('.account').removeClass('selected')
       this.$el.addClass('selected')
-      this.renderDetails()
     }
   },
   initialBalance: function() {
@@ -52,6 +55,7 @@ app.AccountView = Backbone.View.extend({
   renderDetails: function() {
     this.transactions.fetch({
       reset: true,
+      data: app.dateParams,
       success: this.renderTransactions
     })
   },

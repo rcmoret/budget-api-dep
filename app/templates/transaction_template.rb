@@ -1,6 +1,4 @@
 class TransactionTemplate
-  # attr_reader :metadata, :collection
-
   def initialize(account, **options)
     @account = account
     @options = options
@@ -20,9 +18,9 @@ class TransactionTemplate
   def set_date_range!
     @date_range = case
                   when @options[:date]
-                    BudgetMonth.new(options[:date]).date_range
+                    BudgetMonth.new(@options[:date]).date_range
                   when @options[:month]
-                    BudgetMonth.new(options).date_range
+                    BudgetMonth.new(@options).date_range
                   when @options[:first] && @options[:last]
                     (options[:first]..options[:last])
                   else
