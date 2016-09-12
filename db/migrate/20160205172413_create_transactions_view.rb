@@ -37,7 +37,10 @@ class CreateTransactionsView < ActiveRecord::Migration
         LEFT JOIN budget_items b on b.id = ma.budget_item_id
         LEFT JOIN accounts a ON a.id = t.account_id
         WHERE t.primary_transaction_id IS NULL
-        ORDER BY t.clearance_date ASC, t.clearance_date IS NULL, t.updated_at ASC
+        ORDER BY t.clearance_date IS NOT NULL AND t.clearance_date > NOW(),
+                 t.clearance_date IS NULL,
+                 t.clearance_date ASC,
+                 t.updated_at ASC
     SQL
   end
 
