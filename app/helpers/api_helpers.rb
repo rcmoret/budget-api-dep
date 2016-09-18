@@ -35,6 +35,14 @@ module Helpers
       transaction.assign_attributes(filtered_params(Primary::Transaction))
       transaction
     end
+
+    def selectable_months
+      beginning_date = account.oldest_clearance_date
+      ending_date = [Date.today.next_month, account.newest_clearance_date].map(&:beginning_of_month).max
+      (beginning_date.to_month..ending_date.to_month).to_a.reverse.map do |month|
+        { string: month.strftime('%B, %Y'), value: "#{month.month}|#{month.year}" }
+      end
+    end
   end
 
   module ItemsApiHelpers

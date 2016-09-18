@@ -5,16 +5,16 @@ app.AccountsView = Backbone.View.extend({
   template: _.template( $('#account-template').html() ),
   initialize: function() {
     this.collection = app.Accounts;
-    this.listenTo(this.collection, 'reset', this.render);
   },
   render: function() {
     this.$el.html('');
-    this.collection.each(function( account ) {
-      var view = new app.AccountView(account);
-      this.$el.append(view.$el);
-    },
-    this );
+    var context = this
+    this.collection.fetch({reset: true}).then(function() {
+      _.each(context.collection.models, function(account) {
+        var view = new app.AccountView(account)
+        context.$el.append(view.$el);
+      })
+    })
     $('#content').append($('<div><div class="transaction"><h2>Select an Account</h2></div></div>'))
-    return this
   }
 });

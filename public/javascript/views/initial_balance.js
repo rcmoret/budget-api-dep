@@ -1,31 +1,31 @@
 var app = app || {};
 
 app.InitialBalanceView = Backbone.View.extend({
-  template: _.template( $('#transaction-template').html() ),
-  initialize: function(metadata) {
-    this.attrs = this.attrs(metadata);
-    this.$el.html(this.template(this.attrs));
+  template: _.template( $('#initial-transaction-template').html() ),
+  initialize: function(account, metadata) {
+    this.metadata = metadata
+    this.account = account
+    this.date = this.metadata.date_range[0].split('-');
+    this.$el.html(this.template(this.attrs()));
   },
-  attrs: function(metadata) {
-    var date = metadata.date_range[0].split('-');
+  events: {
+    'change select#select-month': 'redirectToMonth'
+  },
+  attrs: function() {
     return {
       id: '0',
-      balance: metadata.prior_balance,
-      clear_date: date[1] + '/' + date[2] + '/' + date[0],
-      clearance_date: null,
-      description: null,
+      balance: this.metadata.prior_balance,
+      clear_date: this.date[1] + '/' + this.date[2] + '/' + this.date[0],
       displayDescription: 'Initial Balance',
-      amount: metadata.prior_balance,
-      check_number: null,
-      notes: null,
-      budgetItems: null,
-      subtransactions_attributes: []
+      amount: this.metadata.prior_balance
     }
   },
   render: function() {
-    this.$el.find('.editable').removeClass('editable')
-    this.$el.find('.fa-list-ul').removeClass('fa-list-ul')
-    this.$el.find('.fa-edit').removeClass('fa-edit')
     return this.$el;
+  },
+  redirectToMonth: function(event) {
+    var month = parseInt(event.target.value.split('|')[0])
+    var year =  parseInt(event.target.value.split('|')[1])
+    Backbone.history.navigate('/accounts/' + this.account.id + '/' + month + '/' + year, true)
   }
 });

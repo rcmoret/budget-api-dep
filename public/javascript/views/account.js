@@ -10,7 +10,6 @@ app.AccountView = Backbone.View.extend({
     this.transactions = this.model.transactions;
     _.bindAll(this, 'renderBalance', 'renderDetails', 'renderTransactions', 'renderInitialBalance')
     this.listenTo(this.transactions, 'reset', this.updateBalance);
-    this.listenTo(this.transactions, 'reset', this.renderTransactions);
     this.listenTo(this.transactions, 'change', this.renderDetails);
     this.listenTo(this.transactions, 'add', this.renderDetails);
     this.listenTo(this.model, 'render', this.select);
@@ -21,8 +20,8 @@ app.AccountView = Backbone.View.extend({
     return this.$el
   },
   select: function() {
-    this.renderMonthSelect()
     this.renderDetails()
+    this.renderMonthSelect()
     if (this.$el.hasClass('selected')) {
       return
     } else {
@@ -34,8 +33,8 @@ app.AccountView = Backbone.View.extend({
     return this.transactions.metadata['prior_balance']
   },
   renderInitialBalance: function() {
-    var initial = new app.InitialBalanceView(this.transactions.metadata);
-    $('#content').append(initial.render());
+    var initial = new app.InitialBalanceView(this.model, this.transactions.metadata);
+    Q.fcall($('#content').append(initial.render())).then(this.renderMonthSelect());
   },
   renderTransactions: function() {
     var expandedIds = _.map($('#content .expanded'), function(t) {
@@ -70,5 +69,9 @@ app.AccountView = Backbone.View.extend({
   },
   renderBalance: function(data) {
     this.$el.find('span.amount strong').html('$' + data.get('balance').toFixed(2))
+  },
+  renderMonthSelect: function() {
+    var selectView = new app.monthSelectView(this.id)
+    selectView.render()
   }
 });

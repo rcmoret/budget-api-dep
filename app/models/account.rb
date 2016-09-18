@@ -36,4 +36,12 @@ class Account < ActiveRecord::Base
     return transactions.in_month if query_opts.empty?
     transactions.query_with(query_opts)
   end
+
+  def newest_clearance_date
+    primary_transactions.cleared.maximum(:clearance_date)
+  end
+
+  def oldest_clearance_date
+    primary_transactions.cleared.minimum(:clearance_date)
+  end
 end

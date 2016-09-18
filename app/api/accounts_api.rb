@@ -24,6 +24,10 @@ class AccountsApi < Sinatra::Base
       end
     end
 
+    get '/selectable_months' do
+      render_collection(selectable_months)
+    end
+
     get '/transactions' do
       month, year = request_params.values_at('month', 'year')
       transaction_template = TransactionTemplate.new(account, month: month, year: year)

@@ -1,0 +1,25 @@
+<script type='text/template' id='initial-transaction-template'>
+  <div class='primary transaction' id='transaction-<%= id %>'>
+
+    <div class='left-icon'></div>
+    <div class='clearance-date'>
+      <span><%= clear_date %></span>
+    </div>
+    <div class='description'>
+      <span><%= displayDescription %><span>
+    </div>
+    <div class='amount'>
+      <span>$<%= parseFloat(amount).toFixed(2) %></span>
+    </div>
+    <div class='amount'>
+      <span class='amount'>$<%= parseFloat(balance).toFixed(2) %></span>
+    </div>
+    <div class='edit'><i class='fa fa-edit' aria-hidden='true'></i></div>
+    <div class='edit'></div>
+    <div class='select-date'>
+      Viewing:
+      <select id='select-month'>
+      </select>
+    </div>
+  </div>
+</script>
