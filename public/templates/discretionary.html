@@ -1,6 +1,20 @@
 <script type='text/template' id='discretionary-template'>
   <div class='budget-amount'>
     <div class='left-side'>
+      <div class='left-icon'><i class='fa fa-caret-right' aria-hidden=true></i></div>
+      <div class='name'><%= name %></div>
+    </div>
+    <div class='right-side'>
+      <div class='label'></div>
+      <div class='amount' data-value='<%= parseFloat(remaining).toFixed(2) %>'>
+        <span>$<%= parseFloat(remaining).toFixed(2) %></span>
+      </div>
+    </div>
+  </div>
+</script>
+<script type='text/template' id='discretionary-template'>
+  <div class='budget-amount'>
+    <div class='left-side'>
       <div class='left-icon'><i class='fa fa-caret-right' aria-=true></i></div>
       <div class='name'><%= name %></div>
     </div>

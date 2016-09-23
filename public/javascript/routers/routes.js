@@ -3,7 +3,6 @@ var app = app || {};
 var Workspace = Backbone.Router.extend({
   initialize: function() {
     this.accountsView = new app.AccountsView();
-    new app.BudgetView();
     Backbone.history.start();
   },
   routes: {
@@ -40,7 +39,8 @@ var Workspace = Backbone.Router.extend({
     $('#tab-list').html('')
     $('.title').removeClass('focused')
     $('.title.budget-items').addClass('focused')
-    var budgetView = new app.BudgetView(month, year);
+    this.setDateParams(month, year)
+    var budgetView = new app.BudgetView();
     budgetView.render();
   },
   setDateParams: function(mon, yr) {

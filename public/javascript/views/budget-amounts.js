@@ -30,7 +30,7 @@ app.MonthlyAmountsView = app.BudgetAmountsView.extend({
   },
   render: function() {
     this.$el.html('')
-    var month = this.dateParams['month'] || (new Date).getMonth() + 1
+    var month = app.dateParams.month
     this.$el.html(this.template({ clearedCount: this.clearedCount(), month: month }));
     this.collection.fetch({reset: true, data: this.dateParams, processData: true})
     return this.$el;

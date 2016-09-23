@@ -51,11 +51,7 @@ class ItemsApi < Sinatra::Base
 
   namespace '/amounts' do
     get '/monthly' do
-      render_collection(if params[:month].present?
-                          Budget::Amount.monthly.in(month.piped)
-                        else
-                          Budget::MonthlyAmount.all
-                        end)
+      render_collection(Budget::MonthlyAmount.all)
     end
 
     get '/weekly' do

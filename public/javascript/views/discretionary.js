@@ -1,7 +1,7 @@
 var app = app || {};
 
 app.DiscretionaryView = Backbone.View.extend({
-  template: _.template($('#budget-amount-template').html()),
+  template: _.template($('#discretionary-template').html()),
   initialize: function(dateParams) {
     this.dateParams = dateParams;
     this.model = new app.Discretionary();

@@ -1,28 +1,15 @@
 var app = app || {};
 
 app.BudgetView = Backbone.View.extend({
-  initialize: function(month, year) {
-    this.month = month
-    this.year = year
+  initialize: function() {
   },
   render: function() {
-    var weeklyAmounts = new app.WeeklyAmountsView(this.dateParams())
+    var weeklyAmounts = new app.WeeklyAmountsView(app.dateParams)
     $('#content').append(weeklyAmounts.render());
-    var discretionary = new app.DiscretionaryView(this.dateParams());
-    var monthlyAmounts = new app.MonthlyAmountsView(this.dateParams())
+    var discretionary = new app.DiscretionaryView(app.dateParams);
+    var monthlyAmounts = new app.MonthlyAmountsView(app.dateParams)
     $('#content').append(monthlyAmounts.render());
-    var budgetSidebar = new app.BudgetSidebarView(this.dateParams())
+    var budgetSidebar = new app.BudgetSidebarView(app.dateParams)
     $('#content').append(budgetSidebar.render());
-  },
-  dateParams: function() {
-    if (!_.isNull(this.month)) {
-      if (!_.isNull(this.year)) {
-        return { month: this.month, year: this.year }
-      } else {
-        return { month: this.month }
-      }
-    } else {
-      return {}
-    }
   }
 })
