@@ -70,5 +70,9 @@ module Helpers
     def update_params
       filtered_params(Budget::Item)
     end
+
+    def budget_month
+      BudgetMonth.new(params.symbolize_keys)
+    end
   end
 end

@@ -21,7 +21,27 @@ var WeeklyAmountCollection = Backbone.Collection.extend({
 });
 
 var ActiveMonthlyItemsCollection = Backbone.Collection.extend({
-  url: '/items/selectable'
+  model: app.BudgetItem,
+  url: '/items',
+  search: function(term, tabSelected) {
+    if (_.isEmpty(tabSelected)) {
+     var results = { set:  _.sortBy(this.models, function(model) { return model.hasCurrentWeeklyAmount() }) }
+    } else {
+      var results = _.reduce(this.models, function(memo, model) {
+        if (model.freq() === memo.freq) {
+          memo['set'].push(model)
+        }
+        return memo
+      }, {freq: tabSelected, set: []})
+    }
+    var searchTerms = { primary: (new RegExp('^' + term, 'i')),
+                        secondary: (new RegExp(term, 'i')),
+                        freq: tabSelected }
+    var refined = _.groupBy(results['set'], function(model) {
+      return model.searchMatch(searchTerms)
+    })
+    return refined
+  }
 })
 
 app.WeeklyAmounts = new WeeklyAmountCollection

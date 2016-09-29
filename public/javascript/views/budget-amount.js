@@ -1,6 +1,7 @@
 var app = app || {};
 
 app.BudgetAmountView = Backbone.View.extend({
+  className: 'budget-amount',
   template: _.template($('#budget-amount-template').html()),
   events: {
     'click .amount.editable': 'renderAmountField',
@@ -17,7 +18,6 @@ app.BudgetAmountView = Backbone.View.extend({
 });
 
 app.MonthlyAmountView = app.BudgetAmountView.extend({
-  className: 'budget-amount',
   events: function(){
     return _.extend({}, app.BudgetAmountView.prototype.events, {
       'keyup .amount input': 'updateAmount'

@@ -15,7 +15,8 @@ app.TransactionView = Backbone.View.extend({
     'click i.fa-chevron-right': 'renderSubtransctions',
     'blur .subtransaction .editable input': 'updateSubTransaction',
     'keyup .subtransaction .editable input': 'updateSubTransaction',
-    'click i.fa-chevron-down': 'collapseSubtransctions'
+    'click i.fa-chevron-down': 'collapseSubtransctions',
+    'click i.fa-edit': 'extraOptions'
   },
   initialize: function(transaction, balance) {
     this.model = transaction;
@@ -80,12 +81,12 @@ app.TransactionView = Backbone.View.extend({
       el.html('');
       el.html($('<span>' + el.data('value') + '</span>'))
     } else {
-      this.model.save()
+      this.model.save({wait: true})
     }
   },
   updateDate: function(date) {
     this.model.set({clearance_date: date})
-    this.model.save()
+    this.model.save({wait: true})
   },
   update: function(e) {
     if (e.type === 'keyup' && e.keyCode === ESC_KEY) {
@@ -146,7 +147,7 @@ app.TransactionView = Backbone.View.extend({
     } else {
       var value = e.target.value === '' ? null : e.target.value
       this.model.set({monthly_amount_id: value})
-      this.model.save()
+      this.model.save({wait: true})
     }
   },
   renderSubtransctions: function() {
@@ -172,7 +173,7 @@ app.TransactionView = Backbone.View.extend({
       var newSubAttrs = this.model.get('subtransactions_attributes')
       newSubAttrs[el.data('id')][e.target.name] = e.target.value
       this.model.set('subtransactions_attributes', newSubAttrs)
-      this.model.save()
+      this.model.save({wait: true})
     } else {
       var total = _.reduce(this.$el.find('.subtransaction .amount'), function(memo, el) {
         var amt = ($(el).find('input').length === 0) ? $(el).data('value') : $(el).find('input').val()
@@ -193,7 +194,11 @@ app.TransactionView = Backbone.View.extend({
       var newSubAttrs = this.model.get('subtransactions_attributes')
       newSubAttrs[el.data('id')][e.target.name] = e.target.value
       this.model.set('subtransactions_attributes', newSubAttrs)
-      this.model.save()
+      this.model.save({wait: true})
     }
+  },
+  extraOptions: function(e) {
+    var optionForm = _.template($('#extra-options-template').html())
+    // optionForm(_.pick(this.attributes
   }
 });

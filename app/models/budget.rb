@@ -10,15 +10,16 @@ module Budget
     scope :weekly,   -> { where(monthly: false) }
     scope :expenses, -> { where(expense: true) }
     scope :revenues, -> { where(expense: false) }
+    scope :search_order, -> (month=nil) {
+      month ||= BudgetMonth.piped
+      order(
+        %Q{ (select count(*) from monthly_amounts where month = '#{month}' AND budget_item_id = "budget_items".id) = 0 DESC,
+            (select count(*) from monthly_amounts where budget_item_id = "budget_items".id) DESC
+        }
+      )
+    }
 
     PUBLIC_ATTRS = %w(id name expense monthly default_amount)
-
-
-    scope :selectable, lambda { |month|
-      joins(%Q{LEFT JOIN (#{Budget::Amount.weekly.in(month).to_sql}) wa
-               ON wa.budget_item_id = "budget_items".id}
-           ).where('wa.id IS NULL OR monthly = true').order('name ASC')
-    }
 
     def default_amount
       self[:default_amount].to_f
@@ -48,7 +49,7 @@ module Budget
     validates :amount, numericality: { less_than: 0 }, if: :expense?
     validates :amount, numericality: { greater_than: 0 }, if: :revenue?
 
-    before_validation :set_month!, if: 'month.nil?'
+    before_validation :set_month!
     before_validation :set_default_amount!, if: 'amount.nil?'
 
     scope :current,  -> { where(month: BudgetMonth.piped) }
@@ -64,7 +65,7 @@ module Budget
 
     def self.discretionary(month)
       if month.current?
-        (Account.available_cash + MonthlyAmount.remaining +
+        (Account.available_cash + MonthlyAmount.in(month.piped).remaining +
          WeeklyAmount.remaining + Account.charged).round(2)
       else
         self.in(month.piped).sum(:amount)
@@ -114,13 +115,13 @@ module Budget
 
   class MonthlyAmount < Amount
 
-    default_scope { current.monthly }
+    default_scope { monthly }
 
     scope :anticipated, -> { joins("LEFT JOIN (#{::Transaction::Record.all.to_sql}) t " +
                              'ON t.monthly_amount_id = "monthly_amounts".id').where('t.id IS NULL') }
 
     def self.remaining
-      anticipated.sum(:amount)
+      anticipated.sum(:amount).to_f
     end
 
     def remaining
@@ -133,7 +134,7 @@ module Budget
     default_scope { current.weekly }
 
     def self.remaining
-      all.inject(0) { |total, amount| total += amount.remaining }
+      all.inject(0) { |total, amount| total += amount.remaining }.to_f
     end
 
     def remaining

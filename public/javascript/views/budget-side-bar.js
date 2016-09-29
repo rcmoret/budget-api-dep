@@ -3,26 +3,25 @@ var app = app || {};
 app.BudgetSidebarView = Backbone.View.extend({
   className: 'budget-block',
   template: _.template($('#budget-sidebar').html()),
-  initialize: function(dateParams) {
-    this.dateParams = dateParams
+  initialize: function() {
+    this.month = this.month()
+    this.year = app.dateParams.year
     this.listenTo(app.ActiveMonthlyItems, 'reset', this.updateSelect)
   },
   events: {
     'change #budget-items': 'populateDefaultVal',
-    // 'click span.submit': 'addBudgetAmount',
-    // 'keyup input': 'addBudgetAmount',
-    'click i.fa-plus': 'renderAmtForm',
+    'click span.submit': 'addBudgetAmount',
     'keyup input#budget-items': 'renderResults',
     'click span.see-more': 'renderResults',
     'click nav .tab': 'toggleItems',
-    'click span.see-less': 'showLess' //,
+    'click span.see-less': 'showLess'
   },
   showLess: function(e) {
     this.renderResults(e)
   },
   render: function() {
-    this.$el.html(this.template({month: this.month(), year: this.year()}));
-    app.ActiveMonthlyItems.fetch({reset: true, data: this.dateParams, processData: true})
+    this.$el.html(this.template({month: this.month, year: this.year}));
+    app.ActiveMonthlyItems.fetch({reset: true, data: app.dateParams, processData: true})
     return this.$el
   },
   updateSelect: function() {
@@ -46,16 +45,14 @@ app.BudgetSidebarView = Backbone.View.extend({
       return
     }
     var newAmount = new app.BudgetAmount({
-      month: (this.month() + '|' + this.year()),
-      item_id: this.$el.find('select').val(),
+      month: (this.month + '|' + this.year),
+      item_id: $(e.toElement).closest('.budget-amount-form').attr('item_id'),
       amount: this.$el.find('input[name="amount"]').val()
     })
     newAmount.save(null,{
       success: function(data) {
-        var date = data.get('month').split('|')
-        var dateParams = { month: date[0], year: date[1] }
-        app.MonthlyAmounts.fetch({reset: true, data: dateParams, processData: true})
-        app.WeeklyAmounts.fetch({reset: true, data: dateParams, processData: true})
+        app.MonthlyAmounts.fetch({reset: true, data: app.dateParams, processData: true})
+        app.WeeklyAmounts.fetch({reset: true, data: app.dateParams, processData: true})
       }
     })
     this.render();
@@ -96,6 +93,9 @@ app.BudgetSidebarView = Backbone.View.extend({
       return []
     }
     var items = app.ActiveMonthlyItems.search(term, tabSelected)
+    if (_.isEmpty(items.primary)) {
+      return []
+    }
     return items.primary.concat(items.secondary || []).concat(items.budgeted || [])
   },
   seeMoreEl: function() {
@@ -117,14 +117,12 @@ app.BudgetSidebarView = Backbone.View.extend({
     $('nav .tab').not(index).removeClass('selected')
     this.renderResults(e)
   },
-  renderAmtForm: function(e) {
-    var el = $(e.toElement.parentElement).closest('.result')
-    var newAmount = new app.BudgetAmount({
-      month: (this.month() + '|' + this.year()),
-      item_id: el.attr('id'), name: el.attr('name'),
-      amount: el.attr('default_amount')
-    })
-    var formView = new app.BudgetAmountFormView(newAmount)
-    el.find('.right-icon').after(formView.render())
+  month: function() {
+    console.log(app.dateParams.month)
+    if (String(app.dateParams.month).match(/^\d{1}$/)) {
+      return '0' + String(app.dateParams.month)
+    } else {
+      return String(app.dateParams.month)
+    }
   }
 })

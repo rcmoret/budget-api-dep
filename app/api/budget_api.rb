@@ -4,7 +4,7 @@ class ItemsApi < Sinatra::Base
   include Helpers::ItemsApiHelpers
 
   get '/' do
-    render_collection(Budget::Item.all)
+    render_collection(Budget::Item.search_order(budget_month.piped))
   end
 
   post '/' do
@@ -51,7 +51,7 @@ class ItemsApi < Sinatra::Base
 
   namespace '/amounts' do
     get '/monthly' do
-      render_collection(Budget::MonthlyAmount.all)
+      render_collection(Budget::MonthlyAmount.in(month.piped))
     end
 
     get '/weekly' do

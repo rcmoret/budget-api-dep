@@ -22,7 +22,7 @@ html
 .hidden
   display: none !important
 
-.fa.fa-plus:hover, a.items:hover, .fa.fa-close:hover
+.fa.fa-plus:hover, a.items:hover, .fa.fa-close:hover, i.fa-sort-down
   cursor: pointer
 
 h2, h2 a, h2 a:visited, h3, h3 a, h3 a:visited
@@ -34,6 +34,9 @@ h1,
 
 .clear-fix
   clear: both
+
+.strikethru
+  text-decoration: line-through
 
 section
   padding: 10px
@@ -247,6 +250,95 @@ section
 
 span.submit:hover
   cursor: pointer
+
+
+// .tab:last-of-type
+//   margin-right: 2.5%
+
+.select-box-wrapper
+  input
+    height: 35px
+    margin-bottom: 10px
+  nav .tab:hover
+    cursor: pointer
+  nav
+    width: 80%
+    margin-right: 10%
+    margin-left: 10%
+    margin-bottom: 12px
+    .tab
+      display: inline-block
+      width: 48%
+      padding: 8px 0
+      margin: 0 1%
+      background-color: $light-grey
+      border-radius: 6px
+      text-align: center
+    .tab.selected
+      background-color: $dark-blue
+      color: white
+
+#item-results, .select-box-wrapper
+  div
+    width: 80%
+    margin: 0 10%
+  input
+    margin: 0 10% 10px
+    width: 80%
+  .item-list-item
+    margin: 0
+    width: 100%
+    div
+      display: inline-block
+      margin: 0
+    .budget-amount-label
+      width: 90%
+      margin: 0 5%
+    .name
+      text-align: left
+      width: 50%
+      margin-left: 3%
+    .default-amount
+      text-align: right
+      width: 35%
+      margin-right: 3%
+    .right-icon
+      width: 3%
+    .new-amount
+      width: 100%
+      input
+        margin: 5px 2% 5px 60%
+        margin-left: 60%
+        width: 30%
+        text-align: right
+    .budget-amount-form
+      width: 100%
+  .see-more, .see-less
+    .item-list-item
+      text-align: center
+      color: $azul
+  .editable:hover
+    cursor: pointer
+  .result input
+    width: 100%
+    margin: 0
+  .result .default-amount input
+    text-align: right
+
+
+.result
+  background-color: $light-grey
+  padding: 3px 0
+  border-radius: 5px
+  // white-space: nowrap
+  font-size: 0.8em
+  i
+    color: $mid-grey
+.result:nth-of-type(2n)
+  background-color: $off-white
+
+#item-list-hidden
+  display: none
 
 .new.transaction
   color: $azul
