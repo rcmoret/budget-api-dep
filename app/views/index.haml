@@ -6,11 +6,11 @@
   %body
     - Dir['public/templates/*.html'].each do |f|
       = File.read(f)
-    %script{ type: 'text/javascript', src: '/public/javascript/lib/q.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/lib/jquery.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/lib/underscore.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/lib/backbone.js' }
-    %script{ type: 'text/javascript', src: '/public/javascript/lib/jquery-ui.min.js' }
+    %script{ type: 'text/javascript', src: '/public/vendor/javascript/q.js' }
+    %script{ type: 'text/javascript', src: '/public/vendor/javascript/jquery.js' }
+    %script{ type: 'text/javascript', src: '/public/vendor/javascript/underscore.js' }
+    %script{ type: 'text/javascript', src: '/public/vendor/javascript/backbone.js' }
+    %script{ type: 'text/javascript', src: '/public/vendor/javascript/jquery-ui.min.js' }
     - %w(models collections views routers).each do |dir|
       - Dir["public/javascript/#{dir}/*.js"].each do |f|
         %script{ type: 'text/javascript', src: "/#{f}" }
