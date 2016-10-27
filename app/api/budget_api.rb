@@ -12,7 +12,7 @@ class ItemsApi < Sinatra::Base
   end
 
   get '/active' do
-    render_collection(Budget::Amount.active)
+    render_collection(Budget::Amount.active(budget_month.piped))
   end
 
   namespace %r{/(?<item_id>\d+)} do
@@ -105,6 +105,6 @@ class ItemsApi < Sinatra::Base
   end
 
   def amount_params
-    filtered_params(Budget::Amount)
+    @amt_param ||= filtered_params(Budget::Amount)
   end
 end

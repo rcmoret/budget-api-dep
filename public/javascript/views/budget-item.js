@@ -7,6 +7,8 @@ app.BudgetItemView = Backbone.View.extend({
   initialize: function(item) {
     this.model = item
     this.attributes = item.attributes
+    this.month = this.month()
+    this.year = this.year()
     this.listenTo(this.model, 'reveal', this.reveal)
     this.listenTo(this.model, 'removeAsResult', this.removeAsResult)
     this.listenTo(this.model, 'rerender', this.rerender)
@@ -73,11 +75,11 @@ app.BudgetItemView = Backbone.View.extend({
     el.find('.right-icon i.fa-plus').removeClass('fa-plus')
     el.find('.right-icon i.fa').addClass('fa-sort-down')
     var newAmount = new app.BudgetAmount({
-      month: (app.dateParams.month + '|' + app.dateParams.year),
+      month: (this.month + '|' + this.year),
       item_id: el.attr('id'), name: el.attr('name'),
       amount: el.attr('default_amount')
     })
-    var formView = new app.BudgetAmountFormView(newAmount)
+    var formView = new app.BudgetAmountFormView(newAmount, this)
     el.find('.right-icon').after(formView.render())
     var formInput = formView.$el.find('input')
     formInput.val(el.attr('default_amount')).focus()
@@ -87,5 +89,12 @@ app.BudgetItemView = Backbone.View.extend({
     el.find('.right-icon i.fa').removeClass('fa-sort-down')
     el.find('.right-icon i.fa').addClass('fa-plus')
     this.$el.find('.budget-amount-form').remove()
-  }
+  },
+  month: function() {
+    var month = app.dateParams.month || (new Date).getMonth() + 1
+    return (month < 10 ? '0' + month : month)
+  },
+  year: function() {
+    return (app.dateParams.year || (new Date).getFullYear())
+  },
 })

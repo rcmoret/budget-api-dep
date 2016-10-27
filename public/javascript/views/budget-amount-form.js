@@ -2,12 +2,12 @@ var app = app || {};
 
 app.BudgetAmountFormView = Backbone.View.extend({
   template: _.template($('#budget-amount-form-template').html()),
-  initialize: function(model) {
+  initialize: function(model, parentView) {
     this.model = model
+    this.parentView = parentView
     this.displayAttrs = this.displayAttrs()
   },
   events: {
-    'click span.submit i.fa-check': 'saveAmount',
     'blur input[name="amount"]': 'saveAmount',
     'keyup input[name="amount"]': 'saveAmount'
   },
@@ -21,8 +21,13 @@ app.BudgetAmountFormView = Backbone.View.extend({
   },
   saveAmount: function(e) {
     if ((e.type === 'keyup' && e.keyCode === ENTER_KEY) || e.type === 'focusout' || e.type === 'click') {
-      this.model.set('amount', this.$el.find("input").val())
-      this.model.save()
+      this.model.save({ 'amount': this.$el.find('input').val() }, {
+        success: function(data) {
+          app.MonthlyAmounts.fetch({reset: true, data: app.dateParams, processData: true})
+          app.WeeklyAmounts.fetch({reset: true, data: app.dateParams, processData: true})
+        }
+      })
+      this.parentView.rerender()
     }
   }
 })

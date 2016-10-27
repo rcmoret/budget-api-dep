@@ -8,6 +8,7 @@ app.monthSelectView = Backbone.View.extend({
 
   render: function() {
     this.collection.fetch({
+      reset: true,
       success: function(data) {
         _.each(data.models, function(dateObj) {
           var template = _.template($('#selectable-month-template').html())

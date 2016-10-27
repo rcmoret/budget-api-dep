@@ -65,15 +65,15 @@ module Budget
 
     def self.discretionary(month)
       if month.current?
-        (Account.available_cash + MonthlyAmount.in(month.piped).remaining +
+        (Account.available_cash + MonthlyAmount.current.remaining +
          WeeklyAmount.remaining + Account.charged).round(2)
       else
         self.in(month.piped).sum(:amount)
       end
     end
 
-    def self.active
-      WeeklyAmount.all + MonthlyAmount.anticipated
+    def self.active(month)
+      WeeklyAmount.all + MonthlyAmount.in(month).anticipated
     end
 
     def item_id=(id)
@@ -109,7 +109,7 @@ module Budget
     end
 
     def set_month!
-      self.month = BudgetMonth.piped
+      self.month ||= BudgetMonth.piped
     end
   end
 

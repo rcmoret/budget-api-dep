@@ -5,6 +5,7 @@ Dir.glob('lib/tasks/*.rake').each { |r| load r }
 
 task :default => 'app:start'
 task :console => 'app:console'
+task :server  => 'app:start'
 
 StandaloneMigrations::Tasks.load_tasks
 

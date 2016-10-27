@@ -34,14 +34,18 @@ var Workspace = Backbone.Router.extend({
     })
   },
   renderBudget: function(month, year) {
-    this.selected = 'budget_items'
-    $('#content').html('')
-    $('#tab-list').html('')
-    $('.title').removeClass('focused')
-    $('.title.budget-items').addClass('focused')
     this.setDateParams(month, year)
-    var budgetView = new app.BudgetView();
-    budgetView.render();
+    if (this.selected === 'budget_items') {
+      this.budgetView.render();
+    } else {
+      this.selected = 'budget_items'
+      $('#content').html('')
+      $('#tab-list').html('')
+      $('.title').removeClass('focused')
+      $('.title.budget-items').addClass('focused')
+      this.budgetView = new app.BudgetView();
+      this.budgetView.render();
+    }
   },
   setDateParams: function(mon, yr) {
     var today = new Date

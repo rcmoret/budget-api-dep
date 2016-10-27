@@ -19,8 +19,7 @@ app.BudgetAmountsView = Backbone.View.extend({
 app.MonthlyAmountsView = app.BudgetAmountsView.extend({
   template: _.template($('#monthly-template').html()),
   id: 'monthly-amounts',
-  initialize: function(dateParams) {
-    this.dateParams = dateParams;
+  initialize: function() {
     this.collection = app.MonthlyAmounts;
     this.listenTo(this.collection, 'reset', this.renderItems);
     _.bindAll(this, 'renderItem')
@@ -32,7 +31,7 @@ app.MonthlyAmountsView = app.BudgetAmountsView.extend({
     this.$el.html('')
     var month = app.dateParams.month
     this.$el.html(this.template({ clearedCount: this.clearedCount(), month: month }));
-    this.collection.fetch({reset: true, data: this.dateParams, processData: true})
+    this.collection.fetch({reset: true, data: app.dateParams, processData: true})
     return this.$el;
   },
   toggleCleared: function(e) {
@@ -63,21 +62,24 @@ app.MonthlyAmountsView = app.BudgetAmountsView.extend({
       if (model.cleared) { arr.push(model) }
       return arr
     }, [])
+  },
+  rerender: function() {
+    this.$el.html('')
+    this.render()
   }
 });
 
 app.WeeklyAmountsView = app.BudgetAmountsView.extend({
   template: _.template($('#weekly-template').html()),
   id: 'weekly-amounts',
-  initialize: function(dateParams) {
-    this.dateParams = dateParams
+  initialize: function() {
     this.collection = app.WeeklyAmounts;
     this.listenTo(this.collection, 'reset', this.renderItems);
     _.bindAll(this, 'renderItem')
     this.$el.html(this.template());
   },
   render: function() {
-    this.collection.fetch({reset: true, data: this.dateParams, processData: true})
+    this.collection.fetch({reset: true, data: app.dateParams, processData: true})
     return this.$el;
   },
   renderItem: function(item) {
@@ -86,5 +88,9 @@ app.WeeklyAmountsView = app.BudgetAmountsView.extend({
   },
   budgetAmountView: function(record) {
     return new app.WeeklyAmountView(record)
+  },
+  rerender: function() {
+    this.$el.html('')
+    this.render()
   }
 });
