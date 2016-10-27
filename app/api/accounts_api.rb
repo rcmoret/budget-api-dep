@@ -50,5 +50,9 @@ class AccountsApi < Sinatra::Base
         render_error(400)
       end
     end
+
+    delete %r{/transactions/(?<id>\d+)} do
+      transaction.destroy ? [200, {}.to_json] : render_error(400)
+    end
   end
 end

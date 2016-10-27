@@ -16,6 +16,7 @@ app.TransactionView = Backbone.View.extend({
     'blur .subtransaction .editable input': 'updateSubTransaction',
     'keyup .subtransaction .editable input': 'updateSubTransaction',
     'click i.fa-chevron-down': 'collapseSubtransctions',
+    'click a.delete-transaction': 'deleteTransaction',
     'click i.fa-edit': 'extraOptions'
   },
   initialize: function(transaction, balance) {
@@ -199,6 +200,15 @@ app.TransactionView = Backbone.View.extend({
   },
   extraOptions: function(e) {
     var optionForm = _.template($('#extra-options-template').html())
-    // optionForm(_.pick(this.attributes
-  }
+  },
+  deleteTransaction: function(e) {
+    var msg =  "Are you sure you want to delete this transaction?\n"
+        msg += this.model.get('displayDescription') + ':  '
+        msg += '$' + parseFloat(this.model.get('amount')).toFixed(2)
+    var confirmDelete = confirm(msg)
+    if (confirmDelete) {
+      this.remove()
+      this.model.destroy()
+    }
+  },
 });
