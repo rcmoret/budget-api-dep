@@ -8,12 +8,12 @@ app.BudgetView = Backbone.View.extend({
     this.discretionary = new app.DiscretionaryView();
   },
   render: function() {
-    $('#content').prepend(this.monthlyAmounts.render());
-    $('#content').prepend(this.weeklyAmounts.render());
+    $('#budget-content').prepend(this.monthlyAmounts.render());
+    $('#budget-content').prepend(this.weeklyAmounts.render());
   },
   renderSidebar: function() {
     var budgetSidebar = new app.BudgetSidebarView(app.dateParams)
-    $('#content').append(budgetSidebar.render());
+    $('#budget-content').append(budgetSidebar.render());
   },
   rerender: function() {
     this.monthlyAmount.rerender()

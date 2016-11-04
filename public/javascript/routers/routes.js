@@ -2,8 +2,12 @@ var app = app || {};
 
 var Workspace = Backbone.Router.extend({
   initialize: function() {
-    this.accountsView = new app.AccountsView();
     Backbone.history.start();
+    this.setDateParams(null, null)
+    this.accountsView = new app.AccountsView();
+    this.accountsView.render()
+    this.budgetView = new app.BudgetView();
+    this.budgetView.render();
   },
   routes: {
     '': 'pageLoad',
@@ -16,8 +20,13 @@ var Workspace = Backbone.Router.extend({
   renderAccounts: function() {
     $('.title').removeClass('focused')
     $('.title.accounts').addClass('focused')
-    $('#content').html('')
-    this.accountsView.render()
+    this.setDateParams(null, null)
+    if (this.selected === 'budget_items') {
+      $('#budget-content').slideToggle(500)
+      $('#account-wrapper').slideToggle(500)
+    } else if (_.isUndefined(this.selected)) {
+      $('#account-wrapper').slideToggle(100)
+    }
     this.selected = 'accounts'
   },
   renderAccount: function(id, month, year) {
@@ -25,7 +34,7 @@ var Workspace = Backbone.Router.extend({
     if (app.Accounts.length === 0) {
       this.renderAccounts()
     }
-    $('#content').html('')
+    $('#account-content').html('')
     this.renderTransactions(id)
   },
   renderTransactions: function(id) {
@@ -34,18 +43,17 @@ var Workspace = Backbone.Router.extend({
     })
   },
   renderBudget: function(month, year) {
-    this.setDateParams(month, year)
-    if (this.selected === 'budget_items') {
-      this.budgetView.render();
-    } else {
-      this.selected = 'budget_items'
-      $('#content').html('')
-      $('#tab-list').html('')
-      $('.title').removeClass('focused')
-      $('.title.budget-items').addClass('focused')
-      this.budgetView = new app.BudgetView();
-      this.budgetView.render();
+    $('.title').removeClass('focused')
+    $('.title.budget-items').addClass('focused')
+    console.log(this.selected)
+    if (this.selected === 'accounts') {
+      $('#account-wrapper').slideToggle(1000)
+      $('#budget-content').slideToggle(1000)
+    } else if (_.isUndefined(this.selected)) {
+      $('#budget-content').slideToggle(100)
+      this.setDateParams(month, year)
     }
+    this.selected = 'budget_items'
   },
   setDateParams: function(mon, yr) {
     var today = new Date

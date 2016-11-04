@@ -34,22 +34,22 @@ app.AccountView = Backbone.View.extend({
   },
   renderInitialBalance: function() {
     var initial = new app.InitialBalanceView(this.model, this.transactions.metadata);
-    Q.fcall($('#content').append(initial.render())).then(this.renderMonthSelect());
+    Q.fcall($('#account-content').append(initial.render())).then(this.renderMonthSelect());
   },
   renderTransactions: function() {
-    var expandedIds = _.map($('#content .expanded'), function(t) {
+    var expandedIds = _.map($('#account-content .expanded'), function(t) {
       return parseInt($(t).attr('id'))
     })
-    $('#content').html('')
+    $('#account-content').html('')
     this.renderInitialBalance()
     var balance = this.initialBalance();
     _.each(this.transactions.models, function(transaction) {
       balance += transaction.get('amount');
       var view = new app.TransactionView(transaction, balance);
       var expanded = _.contains(expandedIds, view.id)
-      $('#content').append(view.render(expanded));
+      $('#account-content').append(view.render(expanded));
     }, this);
-    $('#content').append(this.plusButton());
+    $('#account-content').append(this.plusButton());
   },
   renderDetails: function() {
     this.transactions.fetch({

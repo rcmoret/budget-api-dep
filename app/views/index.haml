@@ -27,7 +27,12 @@
       .title.budget-items
         %h2 Budget
     .clear-fix
-    .pane
-      #tab-list
-      .clear-fix
-      #content
+    .pane.accounts
+      .buffer
+      #account-wrapper{ style: "display: none;" }
+        #tab-list
+        .clear-fix
+        #account-content
+    .pane.budget
+      .buffer
+      #budget-content{ style: "display: none;" }
