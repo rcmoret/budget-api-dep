@@ -45,6 +45,9 @@ app.TransactionFormView = Backbone.View.extend({
     newTransaction.save(null, {
       success: function(data) {
         data.collection.add(data)
+      },
+      error: function(data, msg) {
+        console.log(msg['responseText'])
       }
     })
   },

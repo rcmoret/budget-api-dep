@@ -1,4 +1,10 @@
+require 'logger'
+
 class Index < Sinatra::Base
+  configure do
+    $logger = Logger.new(STDOUT)
+    $logger.level = Logger::INFO
+  end
   get '/' do
     haml :index
   end

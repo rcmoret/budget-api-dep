@@ -16,6 +16,7 @@ module SharedHelpers
   end
 
   def render_error(code, message = nil)
+    $logger.warn message
     halt code, { error: message }.to_json
   end
 

@@ -8,7 +8,7 @@ class ItemsApi < Sinatra::Base
   end
 
   post '/' do
-    item.save ? render_new(item) : render_error(400)
+    item.save ? render_new(item) : render_error(400, item.errors.join('; '))
   end
 
   get '/active' do
