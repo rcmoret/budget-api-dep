@@ -1,0 +1,43 @@
+<script type='text/template' id='budget-item-form'>
+  <div id='budget-item-form'>
+    <h4>Add New Budget Item</h4>
+    <i class='fa fa-close' aria-hidden=true/>
+    <form method='post'>
+      <div class='name'>
+        <div class='label'>Name: </div><input type='text' name='name' value='<%= name %>'/>
+      </div>
+      <div class='default-amount'>
+        <div class='label'>Default Amount: </div><input type='text' name='default_amount'/>
+      </div>
+      <div class='radio-group'>
+        <div class='radio-option'>
+          <div class='radio-input'>
+            <input type='radio' value='true' name='monthly'/>
+          </div>
+          <div class='label'>Monthly</div>
+        </div>
+        <div class='radio-option'>
+          <div class='radio-input'>
+            <input type='radio' value='false' name='monthly'/>
+          </div>
+          <div class='label'>Weekly</div>
+        </div>
+      </div>
+      <div class='radio-group'>
+        <div class='radio-option'>
+          <div class='radio-input'>
+            <input type='radio' value='true' name='expense'/>
+          </div>
+          <div class='label'>Expense</div>
+        </div>
+        <div class='radio-option'>
+          <div class='radio-input'>
+            <input type='radio' value='false' name='expense'/>
+          </div>
+          <div class='label'>Revenue</div>
+        </div>
+      </div>
+      <button class='item-form-submit'>Submit</button>
+    </form>
+  </div>
+</script>

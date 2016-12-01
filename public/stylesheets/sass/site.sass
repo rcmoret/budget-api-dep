@@ -325,7 +325,7 @@ span.submit:hover
         text-align: right
     .budget-amount-form
       width: 100%
-  .see-more, .see-less
+  .see-more, .see-less, .add-term
     .item-list-item
       text-align: center
       color: $azul
@@ -354,3 +354,68 @@ span.submit:hover
 
 .new.transaction
   color: $azul
+
+#item-results #budget-item-form
+  border-radius: 6px
+  border: 1px solid $dark-blue
+  color: $dark-blue
+  width: 100%
+  margin: 20px 0 0
+  form
+    padding: 3%
+    margin-bottom: 0
+  h4
+    padding-left: 3%
+    margin: 8px 0
+    text-align: left
+    color: $dark-blue
+    font-size: 1.3em
+    display: inline-block
+  .default-amount, .name
+    width: 100%
+    margin: 0
+    .label
+      margin: 0
+      width: 55%
+      display: inline-block
+    input
+      width: 40%
+      margin: 0 0 10px 10px
+  i.fa-close
+    margin: 10px
+    float: right
+  .radio-group
+    width: 100%
+    margin: 5px 0 0
+    padding-top: 20px
+    border-top: 1px solid $dark-blue
+    .radio-option
+      width: 40%
+      display: inline-block
+      margin: 0
+      .label
+        margin: 0
+        width: 60%
+        display: inline-block
+      .radio-input
+        margin: 0
+        display: inline-block
+        width: 10%
+  .radio-group:last-of-type
+    border-bottom: 1px solid $dark-blue
+    margin-bottom: 10px
+  button
+    outline: none
+    box-shadow: none
+    display: inline-block
+    cursor: pointer
+    color: $off-white
+    font-weight: 100
+    font-size: 0.9em
+    font-family: Helvetica
+    letter-spacing: 1px
+    padding: 4px 18px
+    border-radius: 8px
+    border: 2px solid $dark-blue
+    background-color: $dark-blue
+    width: 100%

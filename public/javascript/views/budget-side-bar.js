@@ -14,6 +14,7 @@ app.BudgetSidebarView = Backbone.View.extend({
     'keyup input#budget-items': 'renderResults',
     'click span.see-more': 'renderResults',
     'click nav .tab': 'toggleItems',
+    'click span.add-term': 'addItem',
     'click span.see-less': 'showLess'
   },
   showLess: function(e) {
@@ -26,9 +27,7 @@ app.BudgetSidebarView = Backbone.View.extend({
     return this.$el
   },
   updateSelect: function() {
-    console.log('collection size: ' + app.ActiveMonthlyItems.models.length)
     _.each(app.ActiveMonthlyItems.models, function(item) {
-      console.log('adding a view')
       var itemView = new app.BudgetItemView(item)
       itemView.render()
     })
@@ -53,6 +52,7 @@ app.BudgetSidebarView = Backbone.View.extend({
   renderResults: function(e) {
     this.$el.find('.result.see-more').remove()
     this.$el.find('.result.see-less').remove()
+    this.$el.find('.result.add-term').remove()
     _.each(app.ActiveMonthlyItems.models, function(model) {
       model.trigger('removeAsResult')
     })
@@ -67,18 +67,23 @@ app.BudgetSidebarView = Backbone.View.extend({
       _.each(items, function(item) {
         item.trigger('reveal')
       })
-      if (items.length > 6) {
+      if (items.length === 0 && this.searchTerm().length > 2) {
+        $('#item-results').html('')
+        $('#item-results').append(this.addTermEl())
+      } else if (items.length > 6) {
         $('#item-results').append(this.seeLessEl())
       }
     }
   },
+  searchTerm: function() {
+    return $('input#budget-items').val()
+  },
   fetchItems: function() {
     var tabSelected = $('nav .tab.selected').text().toLowerCase()
-    var term = $('input#budget-items').val()
-    if (_.isEmpty(term) && _.isEmpty(tabSelected)) {
+    if (_.isEmpty(this.searchTerm()) && _.isEmpty(tabSelected)) {
       return []
     }
-    var items = app.ActiveMonthlyItems.search(term, tabSelected)
+    var items = app.ActiveMonthlyItems.search(this.searchTerm(), tabSelected)
     if (_.isEmpty(items.primary)) {
       return []
     }
@@ -96,6 +101,12 @@ app.BudgetSidebarView = Backbone.View.extend({
         markup += "See Fewer Results</span></div></div>"
     return $(markup)
   },
+  addTermEl: function() {
+    var markup =  "<div class='result add-term'><div class='item-list-item'>"
+        markup += "<span class='add-term clickable'>Add new item: "
+        markup += this.searchTerm() + "?</span></div></div>"
+    return $(markup)
+  },
   toggleItems: function(e) {
     var el = $(e.toElement)
     el.toggleClass('selected')
@@ -106,5 +117,10 @@ app.BudgetSidebarView = Backbone.View.extend({
   month: function() {
     var mon = String(app.dateParams.month)
     return (mon.match(/^\d{1}$/)) ? '0' + mon : mon
-  }
+  },
+  addItem: function(e) {
+    var view = new app.BudgetItemFormView(this.searchTerm())
+    $('#item-results .result').remove()
+    $('#item-results').append(view.render())
+  },
 })

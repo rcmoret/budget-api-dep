@@ -3,7 +3,11 @@ var app = app || {};
 app.BudgetItem = Backbone.Model.extend({
   initialize: function() {},
   url: function() {
-    return '/items/' + this.id
+    if (_.isUndefined(this.id)) {
+      return '/items'
+    } else {
+      return '/items/' + this.id
+    }
   },
   freq: function() {
     return this.get('monthly') ? 'monthly' : 'weekly'

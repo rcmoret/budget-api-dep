@@ -43,16 +43,15 @@ var Workspace = Backbone.Router.extend({
     })
   },
   renderBudget: function(month, year) {
+    this.setDateParams(month, year)
     $('.title').removeClass('focused')
-    $('.title.budget-items').addClass('focused')
-    console.log(this.selected)
     if (this.selected === 'accounts') {
       $('#account-wrapper').slideToggle(1000)
       $('#budget-content').slideToggle(1000)
     } else if (_.isUndefined(this.selected)) {
       $('#budget-content').slideToggle(100)
-      this.setDateParams(month, year)
     }
+    debugger
     this.selected = 'budget_items'
   },
   setDateParams: function(mon, yr) {

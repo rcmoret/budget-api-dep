@@ -63,7 +63,7 @@ module Helpers
     end
 
     def create_params
-      require_parameters!('name', 'default_amount')
+      require_parameters!('name', 'default_amount', 'monthly', 'expense')
       filtered_params(Budget::Item)
     end
 

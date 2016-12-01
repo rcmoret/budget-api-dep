@@ -70,8 +70,8 @@ module SharedHelpers
   end
 
   def require_parameters! *args
-    return if args.all? { |key| params[key].present? }
-    missing_keys = args.select { |key| params[key].blank? }
+    return if args.all? { |key| request_params[key].present? }
+    missing_keys = args.select { |key| request_params[key].blank? }
     render_error(422, "Missing required paramater(s): '#{missing_keys.join(', ')}'")
   end
 end
