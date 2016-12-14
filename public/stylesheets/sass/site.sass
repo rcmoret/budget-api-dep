@@ -53,8 +53,11 @@ section
   .title:hover
     cursor: pointer
   .pane
+    padding: 30px 10px 50px
     background-color: $azul
+    border-radius: 0 8px 8px
     border-right: 3px solid $mid-blue
+    border-bottom: 3px solid $mid-blue
     .account
       h3
         text-align: center
@@ -66,16 +69,6 @@ section
       border-left: 3px solid $azul
       border-right: 3px solid $azul
       text-align: right
-    .buffer
-      height: 10px
-  .pane.accounts
-    border-radius: 0 8px 0 0
-  .pane.budget
-    border-radius: 0 0 8px 8px
-    border-bottom: 3px solid $mid-blue
-  #account-wrapper, #budget-content
-    padding: 30px 10px 200px
-
 
     #tab-list
       h3 a:hover
@@ -90,92 +83,89 @@ section
 .clickable:hover
   cursor: pointer
 
-#budget-content, #account-content
+#content
   width: 98%
   .editable span:hover
     cursor: pointer
-  margin-bottom: 30px
-  .fa.fa-chevron-down, .fa.fa-chevron-right, .fa.fa-plus
-    font-size: 0.8em
-
-#account-content
   .transaction
     padding: 8px 6px
-  div .transaction
-    width: 100%
-    div
-      display: inline-block
-      vertical-align: top
-    .clearance-date
-      width: 10%
-    .description
-      width: 14%
-      input
-        width: 100%
-    .amount
-      width: 8%
-      text-align: right
-      input
-        text-align: right
-    .budget-items
-      margin: 0 10px
-      max-width: 18%
-    .budget-items-select
-      width: 12%
-    .delete-transaction
-      float: right
-      margin-right: 2%
-    a.add-subtransactions:hover
-      cursor: pointer
-    .extra-fields div
-      display: block
-      margin-bottom: 8px
-      label
-        width: 40%
-        display: inline-block
-      input, textarea
-        width: 50%
+  margin-bottom: 30px
+  div
+    .transaction
+      width: 100%
+      div
         display: inline-block
         vertical-align: top
-      textarea
-        resize: vertical
-    i.fa.fa-list-ul, i.fa-edit, i.fa-trash
-      color: $dark-grey
-    i.fa-edit:hover
-      cursor: pointer
-    .left-icon
-      width: 1.5%
-      margin-left: 1%
-      vertical-align: middle
-      i.fa:hover
+      .clearance-date
+        width: 10%
+      .description
+        width: 14%
+        input
+          width: 100%
+      .amount
+        width: 8%
+        text-align: right
+        input
+          text-align: right
+      .budget-items
+        margin: 0 10px
+        max-width: 18%
+      .budget-items-select
+        width: 12%
+      .delete-transaction
+        float: right
+        margin-right: 2%
+      a.add-subtransactions:hover
         cursor: pointer
-      i.fa.fa-caret-right:hover
-        cursor: default
-    a.render-form:hover
-      cursor: pointer
-    button.submit
-      outline: none
-      box-shadow: none
-      display: inline-block
-      cursor: pointer
-      color: $off-white
-      font-weight: 100
-      font-size: 0.7em
-      font-family: Helvetica
-      letter-spacing: 1px
-      padding: 2px 18px
-      border-radius: 8px
-      border: 2px solid $dark-grey
-      background-color: $dark-grey
-    button.submit:focus
-      border: 2px solid $mid-grey
-  .transaction.subtransaction.collapsed
-    display: none
-  .transaction.subtransaction
-    font-size: 0.8em
-    padding: 1px 6px
-    color: $dark-grey
-    border-radius: 0
+      .extra-fields div
+        display: block
+        margin-bottom: 8px
+        label
+          width: 40%
+          display: inline-block
+        input, textarea
+          width: 50%
+          display: inline-block
+          vertical-align: top
+        textarea
+          resize: vertical
+      i.fa.fa-list-ul, i.fa-edit, i.fa-trash
+        color: $dark-grey
+      i.fa-edit:hover
+        cursor: pointer
+      .left-icon
+        width: 1.5%
+        margin-left: 1%
+        vertical-align: middle
+        i.fa:hover
+          cursor: pointer
+        i.fa.fa-caret-right:hover
+          cursor: default
+      a.render-form:hover
+        cursor: pointer
+      button.submit
+        outline: none
+        box-shadow: none
+        display: inline-block
+        cursor: pointer
+        color: $off-white
+        font-weight: 100
+        font-size: 0.7em
+        font-family: Helvetica
+        letter-spacing: 1px
+        padding: 2px 18px
+        border-radius: 8px
+        border: 2px solid $dark-grey
+        background-color: $dark-grey
+      button.submit:focus
+        border: 2px solid $mid-grey
+    .transaction.subtransaction.collapsed
+      display: none
+    .transaction.subtransaction
+      font-size: 0.8em
+      padding: 1px 6px
+      color: $dark-grey
+      border-radius: 0
   div:first-of-type .transaction:first-of-type
     padding-top: 25px
     border-top-right-radius: 18px
@@ -186,8 +176,9 @@ section
     background-color: $off-white
   div:nth-of-type(2n) .transaction
     background-color: $light-grey
+  .fa.fa-chevron-down, .fa.fa-chevron-right, .fa.fa-plus
+    font-size: 0.8em
 
-#budget-content
   #weekly-amounts
     i.fa-caret-right:hover, i.fa-caret-down:hover
       cursor: pointer

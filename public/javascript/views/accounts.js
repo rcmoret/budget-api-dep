@@ -15,6 +15,6 @@ app.AccountsView = Backbone.View.extend({
         context.$el.append(view.$el);
       })
     })
-    $('#account-content').append($('<div><div class="transaction"><h2>Select an Account</h2></div></div>'))
+    $('#content').append($('<div><div class="transaction"><h2>Select an Account</h2></div></div>'))
   }
 });

@@ -7,6 +7,7 @@ group :development do
   gem 'activerecord'
   gem 'pg'
   gem 'rack-cors'
+  gem 'rb-readline'
   gem 'sinatra-activerecord'
   gem 'squeel'
   gem 'standalone_migrations'
