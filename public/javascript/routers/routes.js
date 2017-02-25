@@ -2,7 +2,6 @@ var app = app || {};
 
 var Workspace = Backbone.Router.extend({
   initialize: function() {
-    Backbone.history.start();
     this.setDateParams(null, null)
     this.accountsView = new app.AccountsView();
     Backbone.history.start();
