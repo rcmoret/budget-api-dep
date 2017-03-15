@@ -25,7 +25,7 @@ RSpec.describe ItemsApi do
   describe 'POST route' do
     let(:endpoint) { 'items/' }
     let(:attrs) do
-      { name: 'YMCA', default_amount: -80 }
+      { name: 'YMCA', default_amount: -80, monthly: true, expense: true }
     end
     let(:request) { post endpoint, attrs }
     subject { request }
@@ -42,7 +42,7 @@ RSpec.describe ItemsApi do
     end
     context 'missing attributes' do
       let(:attrs) { {} }
-      let(:error_message) { "Missing required paramater(s): 'name, default_amount'" }
+      let(:error_message) { "Missing required paramater(s): 'name, default_amount, monthly, expense'" }
       subject { OpenStruct.new(JSON.parse(request.body).merge(status: request.status)) }
       its(:error) { should eq error_message }
       its(:status) { should be 422 }
@@ -137,7 +137,7 @@ RSpec.describe ItemsApi do
         allow(Account).to receive(:available_cash) { 300 }
       end
       let(:expected_hash) do
-        { 'id' => 0, 'name' => 'Discretionary', 'amount' => 0, 'remaining' => 50.0,
+        { 'id' => 0, 'name' => 'Discretionary', 'amount' => 50.0, 'remaining' => 50.0,
           'month' => month.piped, 'item_id' => 0, 'days_remaining' => month.days_remaining }
       end
       let(:endpoint) { 'items/amounts/discretionary' }

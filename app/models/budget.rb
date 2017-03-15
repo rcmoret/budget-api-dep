@@ -72,7 +72,7 @@ module Budget
       end
     end
 
-    def self.active(month)
+    def self.active(month = nil)
       WeeklyAmount.all + MonthlyAmount.in(month).anticipated
     end
 
@@ -129,7 +129,7 @@ module Budget
     end
 
     def remaining
-      transactions.any? ? 0 : amount
+      transactions.any? ? 0 : amount.to_f
     end
   end
 
@@ -148,7 +148,7 @@ module Budget
     private
 
     def difference
-      (amount - transactions.sum(:amount)).round(2)
+      (amount - transactions.sum(:amount)).to_f.round(2)
     end
   end
 

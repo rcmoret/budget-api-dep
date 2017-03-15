@@ -204,7 +204,7 @@ RSpec.describe Budget::Discretionary do
     before { allow(Budget::Amount).to receive(:discretionary) { 100 } }
     let(:month) { BudgetMonth.new }
     let(:discretionary) do
-      { id: 0, name: 'Discretionary', amount: 0, remaining: 100,
+      { id: 0, name: 'Discretionary', amount: 100, remaining: 100,
         month: BudgetMonth.piped, item_id: 0, days_remaining: month.days_remaining }
     end
     it 'should return discretionary income as a hash' do
