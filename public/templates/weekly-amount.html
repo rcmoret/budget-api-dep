@@ -28,6 +28,9 @@
         <div class='remaining amount clickable' data-remaining=<%= remaining %>>
           $<%= parseFloat(Math.abs(remaining)).toFixed(2) %>
         </div>
+        <% if(deletable) { %>
+          <span><i class='fa fa-trash'></i></span>
+        <% } %>
       </div>
     </div>
   </div>

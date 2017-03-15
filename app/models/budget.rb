@@ -46,8 +46,8 @@ module Budget
     validates :item, presence: true
     delegate :name, :default_amount, :expense?, :revenue?, to: :item
 
-    validates :amount, numericality: { less_than: 0 }, if: :expense?
-    validates :amount, numericality: { greater_than: 0 }, if: :revenue?
+    validates :amount, numericality: { less_than_or_equal_to: 0 }, if: :expense?
+    validates :amount, numericality: { greater_than_or_equal_to: 0 }, if: :revenue?
 
     before_validation :set_month!
     before_validation :set_default_amount!, if: 'amount.nil?'
@@ -82,7 +82,7 @@ module Budget
 
     def to_hash
       { id: id, name: name, amount: amount, remaining: remaining,
-        month: month, item_id: item_id }
+        month: month, item_id: item_id, deletable: deletable? }
     end
 
     def to_json
@@ -111,6 +111,10 @@ module Budget
     def set_month!
       self.month ||= BudgetMonth.piped
     end
+
+    def deletable?
+      transactions.none?
+    end
   end
 
   class MonthlyAmount < Amount
@@ -138,11 +142,7 @@ module Budget
     end
 
     def remaining
-      if expense?
-        difference < 0 ? difference : 0
-      else
-        difference > 0 ? difference : 0
-      end
+      expense? ? [difference, 0].min : [difference, 0].max
     end
 
     private
@@ -156,7 +156,7 @@ module Budget
     def self.to_hash(month)
       discretionary = Budget::Amount.discretionary(month)
       amount = month.current? ? [discretionary, 0].max : discretionary
-      { id: 0, name: 'Discretionary', amount: 0, remaining: amount,
+      { id: 0, name: 'Discretionary', amount: amount, remaining: discretionary,
         month: month.piped, item_id: 0, days_remaining: month.days_remaining }
     end
   end
