@@ -4,7 +4,7 @@ class AccountsApi < Sinatra::Base
   include Helpers::AccountApiHelpers
 
   get '/' do
-    render_collection(Account.all)
+    render_collection(Account.order('id ASC'))
   end
 
   post '/' do
@@ -29,8 +29,7 @@ class AccountsApi < Sinatra::Base
     end
 
     get '/transactions' do
-      month, year = request_params.values_at('month', 'year')
-      transaction_template = TransactionTemplate.new(account, month: month, year: year)
+      transaction_template = TransactionTemplate.new(account, request_params.slice('month', 'year').symbolize_keys)
       {
         account: account.to_hash,
         metadata: transaction_template.metadata,

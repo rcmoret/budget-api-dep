@@ -18,8 +18,22 @@ app.DiscretionaryView = Backbone.View.extend({
     $('#discretionary').html(this.$el)
     return this.$el
   },
+  events: {
+    'click i.fa-caret-right': 'toggleDetail',
+    'click i.fa-caret-down': 'toggleDetail',
+  },
   updateDiscretionary: function(resp) {
-    this.$el.html(this.template(resp.attributes));
+    var spent = (resp.attributes['amount'] - resp.attributes['remaining'])
+    console.log(resp.attributes)
+    var attrs = _.extendOwn(resp.attributes, { deletable: false, spent: spent })
+    this.$el.html(this.template(attrs));
     this.$el.find('.editable').removeClass('editable')
-  }
+  },
+  toggleDetail: function() {
+    this.$el.toggleClass('show-detail');
+    this.$el.find('.remaining .label span').toggleClass('hidden');
+    this.$el.find('i.fa').toggleClass('fa-caret-right')
+    this.$el.find('i.fa').toggleClass('fa-caret-down')
+    this.$el.find('.budgeted, .spent').slideToggle();
+  },
 })

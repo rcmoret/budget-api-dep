@@ -208,7 +208,7 @@ RSpec.describe Budget::Discretionary do
         month: BudgetMonth.piped, item_id: 0, days_remaining: month.days_remaining }
     end
     it 'should return discretionary income as a hash' do
-      expect(Budget::Discretionary.to_hash(month)).to eq discretionary
+      expect(Budget::Discretionary.new(month).to_hash).to eq discretionary
     end
   end
 end

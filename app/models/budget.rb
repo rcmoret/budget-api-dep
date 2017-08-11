@@ -72,6 +72,10 @@ module Budget
       end
     end
 
+    def self.budgeted(month=nil)
+      self.in(month).sum(:amount).to_f
+    end
+
     def self.active(month = nil)
       WeeklyAmount.all + MonthlyAmount.in(month).anticipated
     end
@@ -153,11 +157,27 @@ module Budget
   end
 
   class Discretionary
-    def self.to_hash(month)
-      discretionary = Budget::Amount.discretionary(month)
-      amount = month.current? ? [discretionary, 0].max : discretionary
-      { id: 0, name: 'Discretionary', amount: amount, remaining: discretionary,
+    attr_reader :month
+
+    def initialize(month = nil)
+      @month = month || BudgetMonth.new
+    end
+
+    def to_hash
+      { id: 0, name: 'Discretionary', amount: amount, remaining: remaining, spent: spent,
         month: month.piped, item_id: 0, days_remaining: month.days_remaining }
+    end
+
+    def remaining
+      @remaining ||= Budget::Amount.discretionary(month)
+    end
+
+    def amount
+      @amount ||= Account.balance_prior_to(month.first_day) + Amount.budgeted
+    end
+
+    def spent
+      @spent ||= amount - remaining
     end
   end
 end

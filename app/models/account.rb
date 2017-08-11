@@ -14,6 +14,12 @@ class Account < ActiveRecord::Base
     ).sum(:amount).to_f
   end
 
+  def self.balance_prior_to(date)
+    where(cash_flow: true).joins(:transactions).merge(
+      Transaction::View.cleared.prior_to(date)
+    ).sum(:amount).to_f
+  end
+
   def to_hash
     {
       id: id,
