@@ -1,10 +1,14 @@
 class Month < Date
-  def succ
-    self.next_month
-  end
+  alias succ :next_month
 end
 
 class Date
+  def to_month
+    Month.new(year, month, 1)
+  end
+end
+
+class Time
   def to_month
     Month.new(year, month, 1)
   end
