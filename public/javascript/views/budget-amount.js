@@ -5,7 +5,8 @@ app.BudgetAmountView = Backbone.View.extend({
   template: _.template($('#budget-amount-template').html()),
   events: {
     'click .amount.editable': 'renderAmountField',
-    'blur .amount input': 'updateAmount'
+    'blur .amount input': 'updateAmount',
+    'click i.fa-trash': 'deleteAmount'
   },
   initialize: function(record) {
     this.model = record
