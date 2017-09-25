@@ -9,3 +9,4 @@
 !/db/dumps/.keep
 
 /public/stylesheets/site.css*
+/tmp/
