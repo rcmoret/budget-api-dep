@@ -131,7 +131,7 @@ section
           resize: vertical
       i.fa.fa-list-ul, i.fa-edit, i.fa-trash
         color: $dark-grey
-      i.fa-edit:hover
+      i.fa-edit:hover, i.fa-check, i.fa-times
         cursor: pointer
       .left-icon
         width: 1.5%
@@ -182,9 +182,6 @@ section
   #weekly-amounts
     i.fa-caret-right:hover, i.fa-caret-down:hover
       cursor: pointer
-    #discretionary
-      i.fa-caret-right:hover
-        cursor: default
   .budget-block
     width: 25%
     vertical-align: top
@@ -228,26 +225,25 @@ section
           vertical-align: top
           width: 46%
         .right-side
-          width: 50%
+          width: 44%
           .editable:hover
             cursor: pointer
           .spent, .budgeted
             display: none
-          .amount input, .budgeted input
-            width: 100%
+          .spent
             text-align: right
-          div
-            width: 100%
           .small-text
             font-size: 0.8em
           .label, .amount
             display: inline-block
-            width: 48%
+          .amount, .remaining .amount
             text-align: right
-          .label
-            width: 52%
-          .amount
+          .budgeted, .spent
+            text-align: left
+          .label, .spent .amount, .budgeted .amount, .remaining .label, .remaining .amount
             width: 45%
+          i.fa.fa-trash
+            margin-left: 5%
         div
           display: inline-block
 

@@ -28,7 +28,7 @@ app.TransactionFormView = Backbone.View.extend({
   },
   optionEl: function(item) {
     opt =  '<option value="' + item.id + '">'
-    opt += (item.get('name') + ' $' + parseFloat(item.get('remaining')).toFixed(2))
+    opt += (item.get('name') + ' ($' + parseFloat(item.get('remaining')).toFixed(2)) + ')'
     opt += '</option>'
     return $(opt)
   },

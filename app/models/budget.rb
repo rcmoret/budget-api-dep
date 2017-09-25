@@ -87,7 +87,7 @@ module Budget
     end
 
     def self.active(month = nil)
-      WeeklyAmount.all + MonthlyAmount.in(month).anticipated
+      (WeeklyAmount.all + MonthlyAmount.in(month).anticipated).sort_by(&:name)
     end
 
     def item_id=(id)
