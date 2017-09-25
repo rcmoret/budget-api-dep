@@ -22,6 +22,8 @@ ActiveRecord::Schema.define(version: 20170925041519) do
     t.boolean  "health_savings_account", default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "deleted_at"
+    t.integer  "priority"
   end
 
   create_table "budget_items", force: :cascade do |t|

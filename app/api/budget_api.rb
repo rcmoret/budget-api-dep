@@ -4,7 +4,7 @@ class ItemsApi < Sinatra::Base
   include Helpers::ItemsApiHelpers
 
   get '/' do
-    render_collection(Budget::Item.search_order(budget_month.piped))
+    render_collection(Budget::Item.active.search_order(budget_month.piped))
   end
 
   post '/' do

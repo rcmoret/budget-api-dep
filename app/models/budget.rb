@@ -5,11 +5,13 @@ module Budget
     has_many :weekly_amounts, foreign_key: :budget_item_id
     has_many :monthly_amounts, foreign_key: :budget_item_id
     has_many :transactions, through: :amounts
+    validates :name, uniqueness: true
 
     scope :monthly,  -> { where(monthly: true) }
     scope :weekly,   -> { where(monthly: false) }
     scope :expenses, -> { where(expense: true) }
     scope :revenues, -> { where(expense: false) }
+    scope :active,   -> { where(archived_at: nil) }
     scope :search_order, -> (month=nil) {
       month ||= BudgetMonth.piped
       order(
@@ -35,6 +37,14 @@ module Budget
 
     def to_hash
       attributes.slice(*PUBLIC_ATTRS).merge('default_amount' => default_amount)
+    end
+
+    def archived?
+      archived_at.nil?
+    end
+
+    def archive!
+      update(archived_at: Time.now)
     end
   end
 
