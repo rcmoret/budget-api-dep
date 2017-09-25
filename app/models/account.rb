@@ -1,6 +1,8 @@
 class Account < ActiveRecord::Base
   has_many :transactions, class_name: 'Transaction::View'
   has_many :primary_transactions, class_name: 'Primary::Transaction'
+  scope :active, -> { where(deleted_at: nil) }
+  scope :by_priority, -> { order('priority asc') }
 
   PUBLIC_ATTRS = %w(name cash_flow health_savings_account).freeze
 
@@ -49,5 +51,9 @@ class Account < ActiveRecord::Base
 
   def oldest_clearance_date
     primary_transactions.cleared.minimum(:clearance_date)
+  end
+
+  def deleted?
+    deleted_at.present?
   end
 end

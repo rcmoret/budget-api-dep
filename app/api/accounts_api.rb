@@ -4,7 +4,7 @@ class AccountsApi < Sinatra::Base
   include Helpers::AccountApiHelpers
 
   get '/' do
-    render_collection(Account.order('id ASC'))
+    render_collection(Account.active.by_priority)
   end
 
   post '/' do
