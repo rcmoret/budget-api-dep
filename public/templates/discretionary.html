@@ -5,22 +5,27 @@
       <div class='name'><%= name %></div>
     </div>
     <div class='right-side'>
-      <div class='label'></div>
-      <div class='amount' data-value='<%= parseFloat(remaining).toFixed(2) %>'>
-        <span>$<%= parseFloat(remaining).toFixed(2) %></span>
+      <div class='budgeted'>
+        <div class='label small-text'>Budgeted:</div>
+        <div class='amount' data-name='amount' data-value='<%= parseFloat(amount).toFixed(2) %>'>
+          $<%= parseFloat(amount).toFixed(2) %>
+        </div>
       </div>
-    </div>
-  </div>
-</script>
-<script type='text/template' id='discretionary-template'>
-  <div class='budget-amount'>
-    <div class='left-side'>
-      <div class='left-icon'><i class='fa fa-caret-right' aria-=true></i></div>
-      <div class='name'><%= name %></div>
-    </div>
-    <div class='right-side'>
+
+      <div class='spent'>
+        <div class='label small-text '>
+          <% if(amount > remaining) { %>
+            Spent:
+          <% } else { %>
+            Deposited:
+          <% } %>
+        </div>
+        <div class='amount small-text underlined' data-spent=<%= parseFloat(spent) %>>
+          -$<%= parseFloat(spent).toFixed(2) %>
+        </div>
+      </div>
       <div class='remaining'>
-        <div class='label small-text'></div>
+        <div class='label small-text'><span class='hidden'>Remaining:</span></div>
         <div class='remaining amount' data-remaining=<%= remaining %>>
           $<%= parseFloat(remaining).toFixed(2) %>
         </div>

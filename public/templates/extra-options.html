@@ -1,4 +1,16 @@
 <script type='text/template' id='extra-options-template'>
-  <%= foo %>
-
+    <div>
+      <label>Check #</label>
+      <input class= 'update-check-number' name='check_number' type='text' value='<%= check_number %>'></input>
+    </div>
+    <div>
+      <label>Notes</label>
+      <textarea name='notes'><%= notes %></textarea>
+    </div>
+  </div>
+  <a class='add-subtransactions'><i class='fa fa-plus-circle' aria-hidden='true'></i>
+    add subtransaction
+  </a>
+  <i class='fa fa-check update-save'></i>
+  <i class='fa fa-times update-cancel'></i>
 </script>

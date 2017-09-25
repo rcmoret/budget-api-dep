@@ -17,7 +17,10 @@ app.TransactionView = Backbone.View.extend({
     'keyup .subtransaction .editable input': 'updateSubTransaction',
     'click i.fa-chevron-down': 'collapseSubtransctions',
     'click a.delete-transaction': 'deleteTransaction',
-    'click i.fa-edit': 'extraOptions'
+    'click i.fa-edit': 'extraOptions',
+    'click i.update-cancel': 'cancelUpdate',
+    'click i.update-save': 'update',
+    'keyup input.update-check-number': 'update'
   },
   initialize: function(transaction, balance) {
     this.model = transaction;
@@ -94,7 +97,7 @@ app.TransactionView = Backbone.View.extend({
       this.resetEl(e)
     } else if ($(e.target).attr('name') === 'clearance_date') {
       return // datepicker has a callback for updating
-    } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type == 'focusout') {
+    } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type === 'focusout' || e.type === 'click') {
       var input = this.$el.find('.primary.transaction input')
       this.model.set($(input).attr('name'), $(input).val())
       this.updateModel(e)
@@ -200,6 +203,8 @@ app.TransactionView = Backbone.View.extend({
   },
   extraOptions: function(e) {
     var optionForm = _.template($('#extra-options-template').html())
+    var html = optionForm(this.attributes)
+    this.$el.find('.extra-options').replaceWith(html)
   },
   deleteTransaction: function(e) {
     var msg =  "Are you sure you want to delete this transaction?\n"
@@ -210,5 +215,8 @@ app.TransactionView = Backbone.View.extend({
       this.remove()
       this.model.destroy()
     }
+  },
+  cancelUpdate: function(e) {
+    this.render()
   },
 });

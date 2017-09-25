@@ -27,13 +27,15 @@
     <% } else { %>
       <div class='budget-items'><a class='items'><i class='fa fa-list-ul' aria-hidden='true'></a></i></div>
     <% } %>
-    <% if (check_number) { %>
-      <div class='check_number editable' data-name='check_number' data-value='<%= check_number%>'>
-        <span>Ck #: <%= check_number %></span>
+    <div class='extra-options'>
+      <% if (check_number) { %>
+        <div class='check_number editable' data-name='check_number' data-value='<%= check_number%>'>
+          <span>Ck #: <%= check_number %></span>
+        </div>
+      <% } %>
+      <div class='notes editable' data-name='notes' data-value='<%= notes %>'>
+        <span><%= notes %></span>
       </div>
-    <% } %>
-    <div class='notes editable' data-name='notes' data-value='<%= notes %>'>
-      <span><%= notes %></span>
     </div>
     <div class='delete-transaction'>
       <a class='clickable delete-transaction'>
