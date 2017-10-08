@@ -47,6 +47,10 @@ class ItemsApi < Sinatra::Base
         render_error(400)
       end
     end
+
+    get %r{/amounts/(?<amount_id>\d+)/transactions/?} do
+      render_collection(amount.transactions)
+    end
   end
 
   namespace '/amounts' do

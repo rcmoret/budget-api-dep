@@ -71,6 +71,16 @@ module Transaction
     belongs_to :budget_amount, foreign_key: :monthly_amount_id, class_name: 'Budget::Amount'
     has_one :item, through: :budget_amount, class_name: 'Budget::Item'
     validates :account, presence: true
+    scope :pending_last, -> { order("clearance_date IS NULL") }
+    scope :by_clearnce_date, -> { order(clearance_date: :asc) }
+    scope :ordered,  -> { pending_last.by_clearnce_date }
+    delegate :name, to: :account, prefix: true
+
+    def to_hash
+      attributes.symbolize_keys.merge(
+        amount: amount, clearance_date: clearance_date, description: description, account: account_name
+      )
+    end
   end
 end
 

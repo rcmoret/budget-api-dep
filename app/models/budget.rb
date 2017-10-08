@@ -54,7 +54,8 @@ module Budget
 
   class Amount < ActiveRecord::Base
     self.table_name = 'monthly_amounts'
-    has_many :transactions, class_name: 'Transaction::Record', foreign_key: :monthly_amount_id
+    has_many :transactions, -> { includes(:account).ordered },
+      class_name: 'Transaction::Record', foreign_key: :monthly_amount_id
 
     belongs_to :item, class_name: 'Budget::Item', foreign_key: :budget_item_id
     validates :item, presence: true

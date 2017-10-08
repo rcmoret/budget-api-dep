@@ -12,9 +12,16 @@ app.BudgetAmountView = Backbone.View.extend({
     this.model = record
     this.listenTo(this.model, 'rerender', this.render)
     this.listenTo(this.model, 'toggleShow', this.toggleShow)
+    this.listenTo(this.model.transactions, 'reset', this.addTransactions)
   },
   textInput: function(name) {
     return $('<input type="text" name="' + name + '">');
+  },
+  addTransactions: function(data) {
+    _.each(data.models, function(transaction) {
+      var tview = new app.BudgetAmountTransactionView(transaction)
+      this.$el.find('.transactions').append(tview.render())
+    }, this)
   }
 });
 
