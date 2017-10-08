@@ -100,7 +100,7 @@ module Budget
     end
 
     def to_hash
-      { id: id, name: name, amount: amount, remaining: remaining,
+      { id: id, name: name, amount: amount, remaining: remaining, spent: spent,
         month: month, item_id: item_id, deletable: deletable? }
     end
 
@@ -114,6 +114,10 @@ module Budget
 
     def remaining
       amount.to_f
+    end
+
+    def spent
+      transactions.sum(:amount).to_f
     end
 
     def destroy

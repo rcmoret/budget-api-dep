@@ -81,17 +81,23 @@ app.WeeklyAmountView = app.BudgetAmountView.extend({
   },
   toggleDetail: function() {
     this.$el.toggleClass('show-detail');
+    this.$el.find('.transactions').toggleClass('hidden')
     this.$el.find('.remaining .label span').toggleClass('hidden');
     this.$el.find('i.fa').toggleClass('fa-caret-right')
     this.$el.find('i.fa').toggleClass('fa-caret-down')
     this.$el.find('.budgeted, .spent').slideToggle();
+    if (this.$el.hasClass('show-detail')) {
+      this.model.transactions.fetch({reset: true})
+    } else {
+      this.$el.find('.budget-amount-transaction:not(:first)').html('')
+    }
   },
   detailAttributes: function() {
     return _.extendOwn(this.model.attributes, { spent: this.model.spent() })
   },
   render: function() {
     this.$el.html('')
-    this.$el.html(this.template(this.detailAttributes()))
+    this.$el.html(this.template(this.model.attributes))
     if (this.$el.hasClass('show-detail')) {
       this.$el.find('.budgeted, .spent').css('display', 'inline-block')
       this.$el.find('.hidden').removeClass('hidden')
