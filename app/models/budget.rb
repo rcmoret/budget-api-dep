@@ -46,6 +46,10 @@ module Budget
     def archive!
       update(archived_at: Time.now)
     end
+
+    def unarchive!
+      update(archived_at: nil)
+    end
   end
 
   class Amount < ActiveRecord::Base
