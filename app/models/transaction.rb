@@ -3,10 +3,15 @@ module Transaction
     extend ActiveSupport::Concern
     included do
       belongs_to :account
+      alias to_hash :attributes
     end
 
     def amount
       self[:amount].to_f unless self[:amount].nil?
+    end
+
+    def clearance_date
+      self[:clearance_date].present? ? self[:clearance_date].strftime('%m/%d/%Y') : 'pending'
     end
   end
 
@@ -51,12 +56,13 @@ module Transaction
     end
 
     def attributes
-      attrs = super
-      attrs['subtransactions_attributes'] = self.subtransactions_attributes.map do |h|
-        { h['id'] => h }
-      end.inject(&:merge)
-      attrs
+      super.merge('subtransactions_attributes' => sub_attrs, 'clearance_date' => clearance_date)
     end
+
+    def sub_attrs
+      subtransactions_attributes.each_with_object({}) { |attrs, hash| hash[attrs['id']] = attrs }
+    end
+
   end
 
   class Record < ActiveRecord::Base
@@ -95,23 +101,24 @@ module Primary
     before_validation :set_amount_to_nil!, if: :has_subtransactions?
     accepts_nested_attributes_for :subtransactions
 
+    delegate :to_hash, to: :view
+
     WHITELISTED_ATTRS = %w(description monthly_amount_id amount
                            clearance_date tax_deduction receipt notes
                            check_number subtransactions_attributes).freeze
 
-    PUBLIC_ATTRS = (WHITELISTED_ATTRS.dup << { 'subtransactions_attributes' => Sub::Transaction::PUBLIC_ATTRS }
+    PUBLIC_ATTRS = (
+      WHITELISTED_ATTRS.dup << { 'subtransactions_attributes' => Sub::Transaction::PUBLIC_ATTRS }
                    ).freeze
 
     default_scope do
       where(primary_transaction_id: nil).includes(:subtransactions)
     end
 
+    scope :pending, -> { where(clearance_date: nil) }
+
     def has_subtransactions?
       subtransactions.any?
-    end
-
-    def to_hash
-      view.to_hash
     end
 
     private
