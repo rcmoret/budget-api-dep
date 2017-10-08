@@ -9,8 +9,7 @@
       <select name='monthly_amount_id'>
         <option selected disabled value=''></option>
         <% _.each(opts, function(option) { %>
-          <option value=<%= option.id %>><%= option.get('name') %> ($<%= parseFloat(option.get('amount')).toFixed(2) %>)</option>
-          <% console.log(option) %>
+          <option value=<%= option.id %>><%= option.get('name') %> ($<%= parseFloat(option.get('remaining')).toFixed(2) %>)</option>
         <% }) %>
       </select>
     </div>
