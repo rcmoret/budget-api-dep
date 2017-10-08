@@ -6,6 +6,16 @@ module Transaction
       alias to_hash :attributes
     end
 
+    def description
+      if self[:description].present?
+        self[:description]
+      elsif budget_amount
+        budget_amount.name
+      else
+        ''
+      end
+    end
+
     def amount
       self[:amount].to_f unless self[:amount].nil?
     end
@@ -52,17 +62,16 @@ module Transaction
     end
 
     def to_hash
-      attributes.symbolize_keys.merge(amount: amount)
+      attributes.symbolize_keys.merge(amount: amount, clearance_date: clearance_date)
     end
 
     def attributes
-      super.merge('subtransactions_attributes' => sub_attrs, 'clearance_date' => clearance_date)
+      super.merge('subtransactions_attributes' => sub_attrs)
     end
 
     def sub_attrs
       subtransactions_attributes.each_with_object({}) { |attrs, hash| hash[attrs['id']] = attrs }
     end
-
   end
 
   class Record < ActiveRecord::Base
