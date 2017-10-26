@@ -3,10 +3,10 @@ Budget API
 
 Top Level Resources
 -------------------
-- Accounts
--- Transactions
-- BudgetItems
--- Monthly Amounts
+* Accounts
+  * Transactions
+* BudgetItems
+  * Monthly Amounts
 
 Endpoints
 ---------
