@@ -19,10 +19,6 @@ module Transaction
     def amount
       self[:amount].to_f unless self[:amount].nil?
     end
-
-    def clearance_date
-      self[:clearance_date].present? ? self[:clearance_date].strftime('%m/%d/%Y') : 'pending'
-    end
   end
 
   module Scopes
@@ -61,12 +57,8 @@ module Transaction
       true
     end
 
-    def to_hash
-      attributes.symbolize_keys.merge(amount: amount, clearance_date: clearance_date)
-    end
-
     def attributes
-      super.merge('subtransactions_attributes' => sub_attrs)
+      super.symbolize_keys.merge(amount: amount, subtransactions_attributes: sub_attrs)
     end
 
     def sub_attrs
@@ -80,15 +72,13 @@ module Transaction
     belongs_to :budget_amount, foreign_key: :monthly_amount_id, class_name: 'Budget::Amount'
     has_one :item, through: :budget_amount, class_name: 'Budget::Item'
     validates :account, presence: true
-    scope :pending_last, -> { order("clearance_date IS NULL") }
+    scope :pending_last, -> { order('clearance_date IS NULL') }
     scope :by_clearnce_date, -> { order(clearance_date: :asc) }
     scope :ordered,  -> { pending_last.by_clearnce_date }
     delegate :name, to: :account, prefix: true
 
-    def to_hash
-      attributes.symbolize_keys.merge(
-        amount: amount, clearance_date: clearance_date, description: description, account: account_name
-      )
+    def attributes
+      super.symbolize_keys.merge(amount: amount, description: description, account: account_name)
     end
   end
 end
@@ -115,9 +105,7 @@ module Primary
     has_one :view, class_name: 'Transaction::View', foreign_key: :id
     validates :amount, presence: true, unless: :has_subtransactions?
     validates :amount, absence: true, if: :has_subtransactions?
-    before_validation :set_account_id!, if: :has_subtransactions?
-    before_validation :set_monthly_amount_id!, if: :has_subtransactions?
-    before_validation :set_amount_to_nil!, if: :has_subtransactions?
+    before_validation :set_amount_to_nil!, :set_monthly_amount_id!, :update_subtransactions!, if: :has_subtransactions?
     accepts_nested_attributes_for :subtransactions
 
     delegate :to_hash, to: :view
@@ -142,8 +130,11 @@ module Primary
 
     private
 
-    def set_account_id!
-      subtransactions.each { |sub| sub.account_id = account_id }
+    def update_subtransactions!
+      subtransactions.each do |sub|
+        sub.account_id = account_id
+        sub.clearance_date = clearance_date
+      end
     end
 
     def set_amount_to_nil!

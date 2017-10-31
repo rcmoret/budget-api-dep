@@ -15,7 +15,7 @@ app.InitialBalanceView = Backbone.View.extend({
     return {
       id: '0',
       balance: this.metadata.prior_balance,
-      clearance_date: this.date[1] + '/' + this.date[2] + '/' + this.date[0],
+      clear_date: this.date[1] + '/' + this.date[2] + '/' + this.date[0],
       displayDescription: 'Initial Balance',
       amount: this.metadata.prior_balance
     }

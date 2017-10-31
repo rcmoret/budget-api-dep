@@ -34,6 +34,7 @@ app.TransactionView = Backbone.View.extend({
     return _.extendOwn(this.model.attributes, {
       displayDescription: this.model.displayDescription(),
       budgetItems: this.model.items(),
+      clear_date: this.model.displayDate(),
       balance: this.balance,
     })
   },
