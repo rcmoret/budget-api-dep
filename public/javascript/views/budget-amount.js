@@ -89,7 +89,7 @@ app.WeeklyAmountView = app.BudgetAmountView.extend({
     if (this.$el.hasClass('show-detail')) {
       this.model.transactions.fetch({reset: true})
     } else {
-      this.$el.find('.budget-amount-transaction:not(:first)').html('')
+      this.$el.find('.budget-amount-transaction').html('')
     }
   },
   detailAttributes: function() {
