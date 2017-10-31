@@ -42,9 +42,9 @@ app.AccountView = Backbone.View.extend({
     })
     $('#content').html('')
     this.renderInitialBalance()
-    var balance = this.initialBalance();
+    var balance = Number(this.initialBalance());
     _.each(this.transactions.models, function(transaction) {
-      balance += transaction.get('amount');
+      balance += Number(transaction.get('amount'));
       var view = new app.TransactionView(transaction, balance);
       var expanded = _.contains(expandedIds, view.id)
       $('#content').append(view.render(expanded));

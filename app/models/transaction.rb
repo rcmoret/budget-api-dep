@@ -37,7 +37,7 @@ module Transaction
 
     class_methods do
       def total
-        sum(:amount).to_f
+        sum(:amount).to_f.round(2)
       end
 
       def as_collection
