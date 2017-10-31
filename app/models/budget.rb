@@ -5,7 +5,7 @@ module Budget
     has_many :weekly_amounts, foreign_key: :budget_item_id
     has_many :monthly_amounts, foreign_key: :budget_item_id
     has_many :transactions, through: :amounts
-    validates :name, uniqueness: true
+    validates :name, uniqueness: true, presence: true
 
     scope :monthly,  -> { where(monthly: true) }
     scope :weekly,   -> { where(monthly: false) }
