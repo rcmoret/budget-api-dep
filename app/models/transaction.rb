@@ -3,7 +3,6 @@ module Transaction
     extend ActiveSupport::Concern
     included do
       belongs_to :account
-      alias to_hash :attributes
     end
 
     def description
@@ -57,8 +56,8 @@ module Transaction
       true
     end
 
-    def attributes
-      super.symbolize_keys.merge(amount: amount, subtransactions_attributes: sub_attrs)
+    def to_hash
+      attributes.symbolize_keys.merge(amount: amount, account: account_name, subtransactions_attributes: sub_attrs)
     end
 
     def sub_attrs
@@ -76,9 +75,10 @@ module Transaction
     scope :by_clearnce_date, -> { order(clearance_date: :asc) }
     scope :ordered,  -> { pending_last.by_clearnce_date }
     delegate :name, to: :account, prefix: true
+    delegate :to_json, to: :to_hash
 
-    def attributes
-      super.symbolize_keys.merge(amount: amount, description: description, account: account_name)
+    def to_hash
+      attributes.symbolize_keys.merge(amount: amount, description: description, account: account_name)
     end
   end
 end

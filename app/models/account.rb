@@ -23,13 +23,7 @@ class Account < ActiveRecord::Base
   end
 
   def to_hash
-    {
-      id: id,
-      name: name,
-      balance: balance.to_f.round(2),
-      cash_flow: cash_flow,
-      health_savings_account: health_savings_account
-    }
+    attributes.symbolize_keys.merge(balance: balance.to_f.round(2))
   end
 
   def balance(prior_to: nil)

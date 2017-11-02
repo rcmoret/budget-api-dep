@@ -20,6 +20,7 @@ module Budget
         }
       )
     }
+    delegate :to_json, to: :to_hash
 
     PUBLIC_ATTRS = %w(id name expense monthly default_amount)
 
@@ -31,12 +32,8 @@ module Budget
       !expense?
     end
 
-    def to_json
-      to_hash.to_json
-    end
-
     def to_hash
-      attributes.slice(*PUBLIC_ATTRS).merge('default_amount' => default_amount)
+      attributes.slice(*PUBLIC_ATTRS).symbolize_keys.merge(default_amount: default_amount)
     end
 
     def archived?
@@ -75,6 +72,7 @@ module Budget
     scope :monthly,  -> { joins(:item).merge(Budget::Item.monthly) }
 
     alias_attribute :item_id, :budget_item_id
+    delegate :to_json, to: :to_hash
 
     PUBLIC_ATTRS = %w(amount month).freeze
 
@@ -102,10 +100,6 @@ module Budget
     def to_hash
       { id: id, name: name, amount: amount, remaining: remaining, spent: spent,
         month: month, item_id: item_id, deletable: deletable? }
-    end
-
-    def to_json
-      to_hash.to_json
     end
 
     def amount
