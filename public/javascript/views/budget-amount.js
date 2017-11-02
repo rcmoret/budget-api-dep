@@ -22,6 +22,14 @@ app.BudgetAmountView = Backbone.View.extend({
       var tview = new app.BudgetAmountTransactionView(transaction)
       this.$el.find('.transactions').append(tview.render())
     }, this)
+  },
+  deleteAmount: function(e) {
+    var confirmation = confirm('Are you sure you want to remove ' + this.model.get('name') + '?')
+    if(confirmation) {
+      this.model.destroy()
+      this.remove()
+      this.collection.trigger('change')
+    }
   }
 });
 
@@ -89,7 +97,7 @@ app.WeeklyAmountView = app.BudgetAmountView.extend({
     if (this.$el.hasClass('show-detail')) {
       this.model.transactions.fetch({reset: true})
     } else {
-      this.$el.find('.budget-amount-transaction').html('')
+      this.$el.find('.budget-amount-transaction:not(:first)').html('')
     }
   },
   detailAttributes: function() {
