@@ -1,20 +1,26 @@
 class BudgetMonth
-  attr_accessor :month
+
+  def self.piped(*args)
+    new(*args).piped
+  end
+
+  attr_reader :date, :month
+
   def initialize method = :to_date, **options
     @date = determine(options).send(method)
-    @month = Date.new(@date.year, @date.mon, 1)
+    @month = Date.new(date.year, date.mon, 1)
   end
 
   def first_day
-    Date.new(@month.year, @month.month, 1)
+    month
   end
 
   def last_day
-    Date.new(@month.year, @month.month, -1)
+    @last_day ||= Date.new(month.year, month.month, -1)
   end
 
   def days_remaining
-    (last_day - @date + 1).to_i
+    (last_day - date + 1).to_i
   end
 
   def date_range
@@ -22,29 +28,25 @@ class BudgetMonth
   end
 
   def puts_current_month
-    @month.strftime('%B')
+    month.strftime('%B')
   end
 
   def current?
-    @month.year == today.year && @month.month == today.month
+    month.year == today.year && month.month == today.month
   end
 
   def piped
-    @month.strftime('%m|%Y')
-  end
-
-  def self.piped(*args)
-    new(*args).piped
+    month.strftime('%m|%Y')
   end
 
   private
 
   def budget_year
-    @month.year
+    @budget_year ||= month.year
   end
 
   def budget_month
-    @month.mon
+    @budget_month ||= month.mon
   end
 
   def determine(date: nil, month: nil, year: nil)
@@ -54,6 +56,6 @@ class BudgetMonth
   end
 
   def today
-    Date.today
+    @today ||= Date.today
   end
 end
