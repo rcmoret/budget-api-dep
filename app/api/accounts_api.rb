@@ -3,6 +3,10 @@ class AccountsApi < Sinatra::Base
   include SharedHelpers
   include Helpers::AccountApiHelpers
 
+  before do
+    backup! if backup_out_of_date?
+  end
+
   get '/' do
     render_collection(Account.active.by_priority)
   end
@@ -53,5 +57,16 @@ class AccountsApi < Sinatra::Base
     delete %r{/transactions/(?<id>\d+)} do
       transaction.destroy ? [200, {}.to_json] : render_error(400)
     end
+  end
+
+  private
+
+  def backup_out_of_date?
+    return true unless File.exists?('./db/dumps/current')
+    24.hours.ago > File.mtime('./db/dumps/current')
+  end
+
+  def backup!
+    Rake.application['pg:dump'].invoke
   end
 end
