@@ -39,6 +39,22 @@ class BudgetMonth
     month.strftime('%m|%Y')
   end
 
+  def previous
+    if month.month == 1
+      BudgetMonth.new(year: (month.year - 1), month: 12)
+    else
+      BudgetMonth.new(year: month.year, month: (month.month - 1))
+    end
+  end
+
+  def next
+    if month.month == 12
+      BudgetMonth.new(year: (month.year + 1), month: 1)
+    else
+      BudgetMonth.new(year: month.year, month: (month.month + 1))
+    end
+  end
+
   private
 
   def budget_year

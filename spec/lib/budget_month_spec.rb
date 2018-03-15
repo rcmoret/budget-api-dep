@@ -52,8 +52,8 @@ RSpec.describe BudgetMonth do
     describe '#days_remaining' do
       it { expect(subject.days_remaining).to be 1 }
     end
-    describe '#puts_current_month' do
-      it { expect(subject.puts_current_month).to eq 'March' }
+    describe '#print_month' do
+      it { expect(subject.print_month).to eq 'March' }
     end
     describe '#current?' do
       it { should be_current }
