@@ -65,7 +65,7 @@ class BudgetMonth
     @budget_month ||= month.mon
   end
 
-  def determine(date: nil, month: nil, year: nil)
+  def determine(date: nil, month: nil, year: nil, **_opts)
     return today if date.nil? && month.nil?
     return date if date.is_a?(Date)
     Date.new((year || today.year).to_i, month.to_i, 1)
