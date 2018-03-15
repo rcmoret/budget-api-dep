@@ -78,8 +78,8 @@ module Budget
 
     def self.discretionary(month)
       if month.current?
-        (Account.available_cash + MonthlyAmount.current.remaining +
-         WeeklyAmount.remaining + Account.charged).round(2)
+        (Account.available_cash + MonthlyAmount.in(month.piped).remaining +
+         WeeklyAmount.in(month.piped).remaining + Account.charged).round(2)
       else
         self.in(month.piped).sum(:amount)
       end
@@ -90,7 +90,7 @@ module Budget
     end
 
     def self.active(month = nil)
-      (WeeklyAmount.all + MonthlyAmount.in(month).anticipated).sort_by(&:name)
+      (WeeklyAmount.in(month) + MonthlyAmount.in(month).anticipated).sort_by(&:name)
     end
 
     def item_id=(id)
@@ -152,7 +152,7 @@ module Budget
 
   class WeeklyAmount < Amount
 
-    default_scope { current.weekly }
+    default_scope { weekly }
 
     def self.remaining
       all.inject(0) { |total, amount| total += amount.remaining }.to_f

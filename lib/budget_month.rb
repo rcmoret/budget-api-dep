@@ -27,7 +27,7 @@ class BudgetMonth
     (first_day.to_date..last_day.to_date)
   end
 
-  def puts_current_month
+  def print_month
     month.strftime('%B')
   end
 

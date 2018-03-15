@@ -59,11 +59,7 @@ class ItemsApi < Sinatra::Base
     end
 
     get '/weekly' do
-      render_collection(if month.current?
-                          Budget::WeeklyAmount.all
-                        else
-                          Budget::Amount.weekly.in(month.piped)
-                        end)
+      render_collection(Budget::WeeklyAmount.in(month.piped))
     end
 
     get '/discretionary' do

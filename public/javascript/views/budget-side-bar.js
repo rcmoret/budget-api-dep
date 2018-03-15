@@ -10,7 +10,7 @@ app.BudgetSidebarView = Backbone.View.extend({
   },
   events: {
     'change #budget-items': 'populateDefaultVal',
-    'click span.submit': 'addBudgetAmount',
+    // 'click span.submit': 'addBudgetAmount',
     'keyup input#budget-items': 'renderResults',
     'click span.see-more': 'renderResults',
     'click nav .tab': 'toggleItems',
