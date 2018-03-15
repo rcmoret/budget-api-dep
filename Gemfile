@@ -4,13 +4,12 @@ group :development do
   gem 'sinatra'
   gem 'sinatra-contrib'
 
-  gem 'activerecord'
-  gem 'pg'
+  gem 'activerecord', '~>4.2.7.1'
+  gem 'pg', '~> 0.18'
   gem 'rack-cors'
   gem 'rb-readline'
   gem 'sinatra-activerecord'
   gem 'squeel'
-  gem 'standalone_migrations'
 end
 
 group :assets do

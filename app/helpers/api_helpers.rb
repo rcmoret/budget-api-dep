@@ -72,7 +72,7 @@ module Helpers
     end
 
     def budget_month
-      BudgetMonth.new(params.symbolize_keys)
+      BudgetMonth.new(params.reduce({}) { |memo, (k,v)| memo.merge(k.to_sym => v) })
     end
   end
 end

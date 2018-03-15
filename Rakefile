@@ -1,13 +1,10 @@
 require 'rake'
-require 'standalone_migrations'
 require './lib/colorize'
 Dir.glob('lib/tasks/*.rake').each { |r| load r }
 
 task :default => 'app:start'
 task :console => 'app:console'
 task :server  => 'app:start'
-
-StandaloneMigrations::Tasks.load_tasks
 
 namespace :app do
   desc 'Start application in development'
@@ -26,7 +23,6 @@ namespace :app do
     ENV['RACK_ENV'] ||= 'development'
     require 'bundler/setup'
     Bundler.require(:development)
-    require 'action_view'
     Bundler.require(:assets)
     require './config/environments'
     Dir['./app/*.rb'].each { |f| require f }

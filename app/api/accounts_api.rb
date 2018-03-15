@@ -33,7 +33,8 @@ class AccountsApi < Sinatra::Base
     end
 
     get '/transactions' do
-      transaction_template = TransactionTemplate.new(account, request_params.slice('month', 'year').symbolize_keys)
+      params = request_params.slice('month', 'year').reduce({}) { |memo, (k,v)| memo.merge(k.to_sym => v) }
+      transaction_template = TransactionTemplate.new(account, params)
       {
         account: account.to_hash,
         metadata: transaction_template.metadata,
