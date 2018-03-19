@@ -1,4 +1,4 @@
-require './lib/colorize'
+require_relative '../colorize'
 include Colorize
 
 namespace :pg do
