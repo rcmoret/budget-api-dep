@@ -3,11 +3,15 @@ include Colorize
 
 namespace :pg do
   desc 'importing a database dump'
-  task :import => :environment do
+  task :import do
+    ENV['RACK_ENV'] ||= 'development'
+    require 'bundler/setup'
+    Bundler.require(:development)
+    require './config/environments'
     file = if ENV['file']
-             "#{Rails.root}/db/dumps/#{ENV['file']}"
+             "#{`pwd`.chomp}/db/dumps/#{ENV['file']}"
            else
-             "#{Rails.root}/db/dumps/current"
+             "#{`pwd`.chomp}/db/dumps/current"
            end
     db_name = ActiveRecord::Base.connection.current_database
     command = "psql -d #{db_name} -f #{file}"

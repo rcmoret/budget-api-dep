@@ -3,15 +3,19 @@ include Colorize
 
 namespace :pg do
   desc 'dumping the database'
-  task :dump => :environment do
-    dir = "#{Rails.root}/db/dumps"
+  task :dump do
+    ENV['RACK_ENV'] ||= 'development'
+    require 'bundler/setup'
+    Bundler.require(:development)
+    require './config/environments'
+    dir = "#{`pwd`.chomp}/db/dumps"
     date = Date.today.strftime('%Y_%m_%d')
     file_name = if ENV['file_name']
                   "#{ENV['file_name']}.sql"
-                elsif Rails.env.development?
+                elsif ENV['RACK_ENV'] == 'development'
                   "#{date}-dump.sql"
                 else
-                  "#{date}-#{Rails.env}-dump.sql"
+                  "#{date}-#{ENV['RACK_ENV']}-dump.sql"
                 end
     file = "#{dir}/#{file_name}"
     db_name = ActiveRecord::Base.connection.current_database
