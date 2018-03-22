@@ -34,7 +34,8 @@ class AccountsApi < Sinatra::Base
 
     get '/transactions' do
       params = request_params.slice('month', 'year').reduce({}) { |memo, (k,v)| memo.merge(k.to_sym => v) }
-      transaction_template = TransactionTemplate.new(account, params)
+      include_pending = BudgetMonth.new(params).current?
+      transaction_template = TransactionTemplate.new(account, params.merge(include_pending: include_pending))
       {
         account: account.to_hash,
         metadata: transaction_template.metadata,
