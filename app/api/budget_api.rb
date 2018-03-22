@@ -1,7 +1,6 @@
 class ItemsApi < Sinatra::Base
   register Sinatra::Namespace
   include SharedHelpers
-  include Helpers::ItemsApiHelpers
 
   get '/' do
     render_collection(Budget::Item.active.search_order(budget_month.piped))
@@ -106,5 +105,30 @@ class ItemsApi < Sinatra::Base
 
   def amount_params
     @amt_param ||= filtered_params(Budget::Amount)
+  end
+
+  def item_id
+    params['item_id']
+  end
+
+  def item
+    @item ||= find_or_create_item!
+  end
+
+  def find_or_create_item!
+    if item_id.present?
+      Budget::Item.find_by_id(item_id) || render_404('budget_item', item_id)
+    else
+      Budget::Item.new(create_params)
+    end
+  end
+
+  def create_params
+    require_parameters!('name', 'default_amount', 'monthly', 'expense')
+    filtered_params(Budget::Item)
+  end
+
+  def update_params
+    filtered_params(Budget::Item)
   end
 end

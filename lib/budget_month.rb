@@ -6,8 +6,8 @@ class BudgetMonth
 
   attr_reader :date, :month
 
-  def initialize method = :to_date, **options
-    @date = determine(options).send(method)
+  def initialize **options
+    @date = determine(options)
     @month = Date.new(date.year, date.mon, 1)
   end
 

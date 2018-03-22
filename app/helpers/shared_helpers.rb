@@ -5,6 +5,10 @@ module SharedHelpers
     end
   end
 
+  def sym_params
+    @sym_params ||= params.reduce({}) { |memo, (k,v)| memo.merge(k.to_sym => v) }
+  end
+
   %w(post get put delete).each do |http_verb|
     define_method "#{http_verb}_request?" do
       request.request_method == http_verb.upcase
@@ -36,18 +40,6 @@ module SharedHelpers
     klass == Primary::Transaction ? filtered_transaction_params : request_params.slice(*klass::PUBLIC_ATTRS)
   end
 
-  def filtered_transaction_params
-    params = request_params.slice(*Primary::Transaction::PUBLIC_ATTRS)
-    if request_params['subtransactions_attributes'].blank?
-      params['subtransactions_attributes'] = []
-    else
-      params['subtransactions_attributes'] = request_params['subtransactions_attributes'].map do |id, attrs|
-        attrs.slice(*Sub::Transaction::PUBLIC_ATTRS)
-      end
-    end
-    params
-  end
-
   def request_params
     params.merge(request_body)
   end
@@ -73,5 +65,9 @@ module SharedHelpers
     return if args.all? { |key| request_params[key].present? }
     missing_keys = args.select { |key| request_params[key].blank? }
     render_error(422, "Missing required paramater(s): '#{missing_keys.join(', ')}'")
+  end
+
+  def budget_month
+    @budget_month ||= BudgetMonth.new(sym_params)
   end
 end

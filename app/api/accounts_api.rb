@@ -1,11 +1,6 @@
 class AccountsApi < Sinatra::Base
   register Sinatra::Namespace
   include SharedHelpers
-  include Helpers::AccountApiHelpers
-
-  before do
-    backup! if backup_out_of_date?
-  end
 
   get '/' do
     render_collection(Account.active.by_priority)
@@ -33,9 +28,6 @@ class AccountsApi < Sinatra::Base
     end
 
     get '/transactions' do
-      params = request_params.slice('month', 'year').reduce({}) { |memo, (k,v)| memo.merge(k.to_sym => v) }
-      include_pending = BudgetMonth.new(params).current?
-      transaction_template = TransactionTemplate.new(account, params.merge(include_pending: include_pending))
       {
         account: account.to_hash,
         metadata: transaction_template.metadata,
@@ -63,12 +55,64 @@ class AccountsApi < Sinatra::Base
 
   private
 
-  def backup_out_of_date?
-    return true unless File.exists?('./db/dumps/current')
-    24.hours.ago > File.mtime('./db/dumps/current')
+  def account_id
+    @account_id ||= params[:account_id]
   end
 
-  def backup!
-    Rake.application['pg:dump'].invoke
+  def transaction_id
+    @transaction_id ||= params[:id]
+  end
+
+  def account
+    @account ||= find_or_build_account!
+  end
+
+  def find_or_build_account!
+    if account_id.present?
+      Account.find_by_id(account_id) || render_404('account', account_id)
+    else
+      Account.new(create_params)
+    end
+  end
+
+  def create_params
+    require_parameters!('name')
+    filtered_params(Account)
+  end
+
+  def transaction
+    @transaction ||= find_or_build_transaction!
+  end
+
+  def find_or_build_transaction!
+    transaction = account.primary_transactions.find_or_initialize_by(id: transaction_id)
+    return transaction if transaction.persisted?
+    transaction.assign_attributes(filtered_params(Primary::Transaction))
+    transaction
+  end
+
+  def selectable_months
+    beginning_date = account.oldest_clearance_date
+    ending_date = [Date.today.next_month, account.newest_clearance_date].map(&:beginning_of_month).max
+    (beginning_date.to_month..ending_date.to_month).to_a.reverse.map do |month|
+      { string: month.strftime('%B, %Y'), value: "#{month.month}|#{month.year}" }
+    end
+  end
+
+  def filtered_transaction_params
+    params = request_params.slice(*Primary::Transaction::PUBLIC_ATTRS)
+    if request_params['subtransactions_attributes'].blank?
+      params['subtransactions_attributes'] = []
+    else
+      params['subtransactions_attributes'] = request_params['subtransactions_attributes'].map do |id, attrs|
+        attrs.slice(*Sub::Transaction::PUBLIC_ATTRS)
+      end
+    end
+    params
+  end
+
+  def transaction_template
+    @transaction_template ||=
+      TransactionTemplate.new(account, sym_params.merge(include_pending: budget_month.current?))
   end
 end
