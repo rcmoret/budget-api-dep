@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170925041519) do
+ActiveRecord::Schema.define(version: 20180322162531) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,11 +28,9 @@ ActiveRecord::Schema.define(version: 20170925041519) do
 
   create_table "budget_items", force: :cascade do |t|
     t.string   "name"
-    t.decimal  "default_amount",                        null: false
-    t.boolean  "monthly",               default: true
-    t.boolean  "expense",               default: true
-    t.boolean  "sink_fund",             default: false
-    t.boolean  "show_if_zero_budgeted", default: false
+    t.decimal  "default_amount",                null: false
+    t.boolean  "monthly",        default: true
+    t.boolean  "expense",        default: true
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "archived_at"
