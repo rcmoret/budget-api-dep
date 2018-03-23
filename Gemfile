@@ -5,6 +5,7 @@ group :development do
   gem 'sinatra-contrib'
 
   gem 'activerecord', '~>4.2.7.1'
+  gem 'carrierwave', '~>1.0.0'
   gem 'pg', '~> 0.18'
   gem 'rack-cors'
   gem 'rb-readline'
