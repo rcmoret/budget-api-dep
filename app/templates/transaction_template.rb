@@ -1,8 +1,16 @@
-class TransactionTemplate
+class TransactionTemplate < Hash
   attr_reader :account, :options
   def initialize(account, **options)
     @account = account
     @options = options
+  end
+
+  delegate :to_json, to: :hash
+
+  private
+
+  def hash
+    { account: account.to_hash, metadata: metadata, transactions: collection }
   end
 
   def metadata
@@ -18,8 +26,6 @@ class TransactionTemplate
       date_range, include_pending: options[:include_pending]
     ).as_collection
   end
-
-  private
 
   def date_range
     @date_range ||= case

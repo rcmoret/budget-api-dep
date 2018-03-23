@@ -7,13 +7,12 @@ module Budget
     has_many :transactions, through: :amounts
     validates :name, uniqueness: true, presence: true
 
-    scope :monthly,  -> { where(monthly: true) }
-    scope :weekly,   -> { where(monthly: false) }
-    scope :expenses, -> { where(expense: true) }
-    scope :revenues, -> { where(expense: false) }
-    scope :active,   -> { where(archived_at: nil) }
-    scope :search_order, -> (month=nil) {
-      month ||= BudgetMonth.piped
+    scope :monthly,      -> { where(monthly: true) }
+    scope :weekly,       -> { where(monthly: false) }
+    scope :expenses,     -> { where(expense: true) }
+    scope :revenues,     -> { where(expense: false) }
+    scope :active,       -> { where(archived_at: nil) }
+    scope :search_order, -> (month = BudgetMonth.piped) {
       order(
         %Q{ (select count(*) from monthly_amounts where month = '#{month}' AND budget_item_id = "budget_items".id) = 0 DESC,
             (select count(*) from monthly_amounts where budget_item_id = "budget_items".id) DESC
@@ -76,16 +75,7 @@ module Budget
 
     PUBLIC_ATTRS = %w(amount month).freeze
 
-    def self.discretionary(month)
-      if month.current?
-        (Account.available_cash + MonthlyAmount.in(month.piped).remaining +
-         WeeklyAmount.in(month.piped).remaining + Account.charged).round(2)
-      else
-        self.in(month.piped).sum(:amount)
-      end
-    end
-
-    def self.budgeted(month=nil)
+    def self.budgeted(month = nil)
       self.in(month).sum(:amount).to_f
     end
 
@@ -182,7 +172,11 @@ module Budget
     end
 
     def remaining
-      @remaining ||= Budget::Amount.discretionary(month)
+      @remaining ||= if month.current?
+                       (Account.available_cash + MonthlyAmount.in(month.piped).remaining + WeeklyAmount.in(month.piped).remaining + Account.charged).round(2)
+                     else
+                       Amount.in(month.piped).sum(:amount)
+                     end
     end
 
     def amount

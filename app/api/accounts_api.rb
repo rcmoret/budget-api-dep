@@ -28,11 +28,7 @@ class AccountsApi < Sinatra::Base
     end
 
     get '/transactions' do
-      {
-        account: account.to_hash,
-        metadata: transaction_template.metadata,
-        transactions: transaction_template.collection
-      }.to_json
+      transaction_template.to_json
     end
 
     post '/transactions' do
@@ -40,8 +36,7 @@ class AccountsApi < Sinatra::Base
     end
 
     put %r{/transactions/(?<id>\d+)} do
-      update_params = filtered_params(Primary::Transaction)
-      if transaction.update_attributes(update_params)
+      if transaction.update_attributes(filtered_params(Primary::Transaction))
         render_updated(transaction.to_hash)
       else
         render_error(400)
