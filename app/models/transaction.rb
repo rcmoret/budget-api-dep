@@ -74,6 +74,7 @@ module Transaction
     scope :pending_last, -> { order('clearance_date IS NULL') }
     scope :by_clearnce_date, -> { order(clearance_date: :asc) }
     scope :ordered,  -> { pending_last.by_clearnce_date }
+    scope :search, -> (term) { where("description like '%#{term}%'") }
     delegate :name, to: :account, prefix: true
     delegate :to_json, to: :to_hash
 
