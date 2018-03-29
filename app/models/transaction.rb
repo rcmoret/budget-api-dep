@@ -24,13 +24,11 @@ module Transaction
     extend ActiveSupport::Concern
     included do
       scope :cleared,  -> { where.not(clearance_date: nil) }
-      scope :prior_to, -> (date) { cleared.where{ clearance_date < date } }
+      scope :pending,  -> { where(clearance_date: nil) }
+      scope :prior_to, -> (date) { cleared.where("clearance_date < ?", date) }
+      scope :in,       -> (range) { where(clearance_date: range) }
       scope :between,  -> (range, include_pending: false) do
-        if include_pending
-          where { clearance_date.in(range) | clearance_date.eq(nil) }
-        else
-          where { clearance_date.in(range) }
-        end
+        include_pending ? self.in(range).or(self.pending) : self.in(range)
       end
     end
 
@@ -117,13 +115,11 @@ module Primary
 
     PUBLIC_ATTRS = (
       WHITELISTED_ATTRS.dup << { 'subtransactions_attributes' => Sub::Transaction::PUBLIC_ATTRS }
-                   ).freeze
+     ).freeze
 
     default_scope do
       where(primary_transaction_id: nil).includes(:subtransactions)
     end
-
-    scope :pending, -> { where(clearance_date: nil) }
 
     def has_subtransactions?
       subtransactions.any?
