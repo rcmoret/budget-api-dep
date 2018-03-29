@@ -87,9 +87,9 @@ class AccountsApi < Sinatra::Base
   end
 
   def selectable_months
-    beginning_date = account.oldest_clearance_date
-    ending_date = [Date.today.next_month, account.newest_clearance_date].map(&:beginning_of_month).max
-    (beginning_date.to_month..ending_date.to_month).to_a.reverse.map do |month|
+    beginning_date = account.oldest_clearance_date.to_month
+    ending_date = [Date.today.next_month, account.newest_clearance_date].max.to_month
+    (beginning_date..ending_date).to_a.reverse.map do |month|
       { string: month.strftime('%B, %Y'), value: "#{month.month}|#{month.year}" }
     end
   end

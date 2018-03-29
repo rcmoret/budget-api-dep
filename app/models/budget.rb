@@ -162,8 +162,8 @@ module Budget
   class Discretionary
     attr_reader :month
 
-    def initialize(month = nil)
-      @month = month || BudgetMonth.new
+    def initialize(month = BudgetMonth.new)
+      @month = month
     end
 
     def to_hash

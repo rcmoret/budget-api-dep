@@ -41,7 +41,7 @@ module SharedHelpers
   end
 
   def request_params
-    params.merge(request_body)
+    @request_params ||= params.merge(request_body)
   end
 
   def request_body
