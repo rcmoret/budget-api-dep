@@ -1,4 +1,4 @@
-class CreateMonthlyAmounts < ActiveRecord::Migration
+class CreateMonthlyAmounts < ActiveRecord::Migration[5.1]
   def change
     create_table :monthly_amounts do |t|
       t.string :month

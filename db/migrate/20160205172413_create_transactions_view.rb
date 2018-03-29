@@ -1,4 +1,4 @@
-class CreateTransactionsView < ActiveRecord::Migration
+class CreateTransactionsView < ActiveRecord::Migration[5.1]
   SUM_QRY = %Q{COALESCE((SELECT sum(amount) FROM transactions WHERE primary_transaction_id = t.id), t.amount)}
 
   SUB_QRY = <<-SQL

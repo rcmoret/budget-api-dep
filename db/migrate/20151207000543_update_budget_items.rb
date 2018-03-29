@@ -1,4 +1,4 @@
-class UpdateBudgetItems < ActiveRecord::Migration
+class UpdateBudgetItems < ActiveRecord::Migration[5.1]
   def up
     rename_column :budget_items, :amount, :default_amount
     remove_column :budget_items, :previously_accrued

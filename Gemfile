@@ -9,6 +9,7 @@ group :development do
   gem 'rack-cors'
   gem 'rb-readline'
   gem 'sinatra-activerecord'
+  gem 'standalone_migrations'
 end
 
 group :assets do

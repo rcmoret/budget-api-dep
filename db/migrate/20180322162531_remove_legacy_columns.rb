@@ -1,4 +1,4 @@
-class RemoveLegacyColumns < ActiveRecord::Migration
+class RemoveLegacyColumns < ActiveRecord::Migration[5.1]
   def up
     remove_column :budget_items, :sink_fund
     remove_column :budget_items, :show_if_zero_budgeted

@@ -1,4 +1,4 @@
-class CreateBudgetItems < ActiveRecord::Migration
+class CreateBudgetItems < ActiveRecord::Migration[5.1]
   def change
     create_table :budget_items do |t|
       t.string   :name

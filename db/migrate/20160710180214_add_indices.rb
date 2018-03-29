@@ -1,4 +1,4 @@
-class AddIndices < ActiveRecord::Migration
+class AddIndices < ActiveRecord::Migration[5.1]
   def change
     add_index :transactions, :account_id
     add_index :transactions, :primary_transaction_id
