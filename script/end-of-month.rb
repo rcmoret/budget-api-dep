@@ -21,7 +21,7 @@ MONTH_PROMT = "Finshing:\n #{current_month.print_month}\nPress any key to contin
 prompt(MONTH_PROMT).chomp
 
 def target_month
-  current_month.next
+  @target_month ||= current_month.next
 end
 
 def monthly_amounts
@@ -112,7 +112,7 @@ weekly_amounts.each do |wa|
 end
 
 def remaining_discretionary
-  @remaining_discretionary ||= Budget::Amount.discretionary(current_month)
+  @remaining_discretionary ||= Budget::Discretionary.new(current_month).remaining
 end
 
 def add_discretionary_to_snowball?
@@ -142,12 +142,27 @@ def primary_transaction
                                                     description: 'Debt Payment')
 end
 
-snowball.each do |amt_hash|
-  primary_transaction.subtransactions.build(account_id: primary_account.id,
-                                            amount: amt_hash[:amount],
-                                            monthly_amount_id: amt_hash[:amount_id])
+def update_primary(amount_hash)
+  primary_transaction.update(monthly_amount_id: amount_hash[:amount_id], amount: amount_hash[:amount])
 end
 
-primary_transaction.save
+def update_primary_with_subs(snowball)
+  snowball.each do |amt_hash|
+    primary_transaction.subtransactions.build(account_id: primary_account.id,
+                                              amount: amt_hash[:amount],
+                                              monthly_amount_id: amt_hash[:amount_id])
+  end
+  primary_transaction.save
+end
+
+case snowball.size
+when 0
+  exit 1
+when 1
+  update_primary(snowball.first)
+else
+  update_primary_with_subs(snowball)
+end
+
 
 exit 1
