@@ -100,6 +100,8 @@ app.TransactionView = Backbone.View.extend({
     } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type === 'focusout' || e.type === 'click') {
       var input = this.$el.find('.primary.transaction input')
       this.model.set($(input).attr('name'), $(input).val())
+      var notes = this.$el.find('.primary textarea').val()
+      if (!_.isEmpty(notes)) { this.model.set('notes', notes) }
       this.updateModel(e)
     }
   },

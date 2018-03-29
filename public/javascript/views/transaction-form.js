@@ -41,6 +41,11 @@ app.TransactionFormView = Backbone.View.extend({
         newTransaction.set(input.name, input.value)
       }
     }, this)
+    newTransaction.set('receipt', file)
+    notes = this.$el.find('.primary textarea').val()
+    if (!_.isEmpty(notes)) {
+      newTransaction.set('notes', notes)
+    }
     newTransaction.set('subtransactions_attributes', this.subtransactionsAttrs())
     newTransaction.save(null, {
       success: function(data) {
