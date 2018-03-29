@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180322162531) do
+ActiveRecord::Schema.define(version: 20180329205553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,10 +52,10 @@ ActiveRecord::Schema.define(version: 20180322162531) do
     t.integer "primary_transaction_id"
     t.text "notes"
     t.string "receipt"
-    t.boolean "qualified_medical_expense", default: false
-    t.boolean "tax_deduction", default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean "budget_exemption", default: false
+    t.boolean "budget_exclusion", default: false
     t.index ["account_id"], name: "index_transactions_on_account_id"
     t.index ["monthly_amount_id"], name: "index_transactions_on_monthly_amount_id"
     t.index ["primary_transaction_id"], name: "index_transactions_on_primary_transaction_id"

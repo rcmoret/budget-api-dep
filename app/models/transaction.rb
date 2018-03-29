@@ -30,6 +30,7 @@ module Transaction
       scope :between,  -> (range, include_pending: false) do
         include_pending ? self.in(range).or(self.pending) : self.in(range)
       end
+      scope :budget_included, -> { where(budget_exclusion: false) }
     end
 
     class_methods do
@@ -65,6 +66,7 @@ module Transaction
 
   class Record < ActiveRecord::Base
     include Transaction::SharedMethods
+    include Transaction::Scopes
     self.table_name = 'transactions'
     belongs_to :budget_amount, foreign_key: :monthly_amount_id, class_name: 'Budget::Amount'
     has_one :item, through: :budget_amount, class_name: 'Budget::Item'
