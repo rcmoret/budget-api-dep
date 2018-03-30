@@ -54,7 +54,6 @@ ActiveRecord::Schema.define(version: 20180329205553) do
     t.string "receipt"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean "budget_exemption", default: false
     t.boolean "budget_exclusion", default: false
     t.index ["account_id"], name: "index_transactions_on_account_id"
     t.index ["monthly_amount_id"], name: "index_transactions_on_monthly_amount_id"
