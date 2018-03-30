@@ -89,7 +89,7 @@ module Budget
 
     def to_hash
       { id: id, name: name, amount: amount, remaining: remaining, spent: spent,
-        month: month, item_id: item_id, deletable: deletable? }
+        month: month, item_id: item_id, deletable: deletable?, expense: expense? }
     end
 
     def amount
