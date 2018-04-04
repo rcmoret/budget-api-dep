@@ -111,7 +111,7 @@ module Primary
 
     delegate :to_hash, to: :view
 
-    WHITELISTED_ATTRS = %w(description monthly_amount_id amount
+    WHITELISTED_ATTRS = %w(description monthly_amount_id amount budget_exclusion
                            clearance_date tax_deduction receipt notes
                            check_number subtransactions_attributes).freeze
 

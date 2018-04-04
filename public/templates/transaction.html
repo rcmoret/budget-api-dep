@@ -36,6 +36,9 @@
       <div class='notes editable' data-name='notes' data-value='<%= notes %>'>
         <span><%= notes %></span>
       </div>
+      <% if (budget_exclusion) { %>
+        <div class='budget-exclusion' style='padding-top: 3px'>budget exclusion</div>
+      <% } %>
     </div>
     <div class='delete-transaction'>
       <a class='clickable delete-transaction'>

@@ -9,6 +9,10 @@
         <label>Notes</label>
         <textarea name='notes'><%= notes %></textarea>
       </div>
+      <div class='budget-exclusion'>
+        <label>Budget Exclusion</label>
+        <input type='checkbox' name='budget_exclusion' <%= budget_exclusion ? "checked" : "" %> value='true'/>
+      </div>
     </div>
   </div>
   <i class='fa fa-save update-save'></i>
