@@ -15,34 +15,34 @@ ActiveRecord::Schema.define(version: 20180329205553) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "accounts", id: :serial, force: :cascade do |t|
+  create_table "accounts", force: :cascade do |t|
     t.string "name"
     t.boolean "cash_flow", default: true
     t.boolean "health_savings_account", default: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.integer "priority"
   end
 
-  create_table "budget_items", id: :serial, force: :cascade do |t|
+  create_table "budget_items", force: :cascade do |t|
     t.string "name"
     t.decimal "default_amount", null: false
     t.boolean "monthly", default: true
     t.boolean "expense", default: true
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "archived_at"
   end
 
-  create_table "monthly_amounts", id: :serial, force: :cascade do |t|
+  create_table "monthly_amounts", force: :cascade do |t|
     t.string "month"
     t.decimal "amount"
     t.integer "budget_item_id"
     t.index ["budget_item_id"], name: "index_monthly_amounts_on_budget_item_id"
   end
 
-  create_table "transactions", id: :serial, force: :cascade do |t|
+  create_table "transactions", force: :cascade do |t|
     t.string "description"
     t.decimal "amount"
     t.date "clearance_date"
@@ -52,15 +52,15 @@ ActiveRecord::Schema.define(version: 20180329205553) do
     t.integer "primary_transaction_id"
     t.text "notes"
     t.string "receipt"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "budget_exclusion", default: false
     t.index ["account_id"], name: "index_transactions_on_account_id"
     t.index ["monthly_amount_id"], name: "index_transactions_on_monthly_amount_id"
     t.index ["primary_transaction_id"], name: "index_transactions_on_primary_transaction_id"
   end
 
-  create_table "users", id: :serial, force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "user_name", default: "", null: false
@@ -72,8 +72,8 @@ ActiveRecord::Schema.define(version: 20180329205553) do
     t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
