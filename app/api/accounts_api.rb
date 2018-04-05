@@ -7,7 +7,7 @@ class AccountsApi < Sinatra::Base
   end
 
   post '/' do
-    account.save ? render_new(account.to_hash) : render_error(400)
+    account.save ? render_new(account.to_hash) : render_error(400, account.errors.inspect)
   end
 
   namespace %r{/(?<account_id>\d+)} do
@@ -19,7 +19,7 @@ class AccountsApi < Sinatra::Base
       if account.update_attributes(filtered_params(Account))
         render_updated(account.to_hash)
       else
-        render_error(400)
+        render_error(400, account.errors.inspect)
       end
     end
 
@@ -32,19 +32,19 @@ class AccountsApi < Sinatra::Base
     end
 
     post '/transactions' do
-      transaction.save ? render_new(transaction.to_hash) : render_error(400)
+      transaction.save ? render_new(transaction.to_hash) : render_error(400, transaction.errors.inspect)
     end
 
     put %r{/transactions/(?<id>\d+)} do
       if transaction.update_attributes(filtered_params(Primary::Transaction))
         render_updated(transaction.to_hash)
       else
-        render_error(400)
+        render_error(400, transaction.errors.inspect)
       end
     end
 
     delete %r{/transactions/(?<id>\d+)} do
-      transaction.destroy ? [200, {}.to_json] : render_error(400)
+      transaction.destroy ? [200, {}.to_json] : render_error(400, transaction.errors.inspect)
     end
   end
 
