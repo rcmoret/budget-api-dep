@@ -3,40 +3,35 @@ class Account < ActiveRecord::Base
   has_many :primary_transactions, class_name: 'Primary::Transaction'
   scope :active, -> { where(deleted_at: nil) }
   scope :by_priority, -> { order('priority asc') }
+  scope :cash_flow, -> { where(cash_flow: true) }
+  scope :non_cash_flow, -> { where(cash_flow: false) }
 
   PUBLIC_ATTRS = %w(name cash_flow health_savings_account).freeze
 
   def self.available_cash
-    where(cash_flow: true).joins(:transactions).sum(:amount).to_f
+    cash_flow.joins(:transactions).sum(:amount).to_f
   end
 
-  def self.charged
-    where(cash_flow: false).joins(:transactions).merge(
-      Transaction::View.between(BudgetMonth.new.date_range, include_pending: true).budget_included
+  def self.charged(budget_month = BudgetMonth.new)
+    non_cash_flow.joins(:transactions).merge(
+      transactions.between(budget_month.date_range, include_pending: budget_month.current?).budget_included
     ).sum(:amount).to_f
   end
 
   def self.balance_prior_to(date)
-    where(cash_flow: true).joins(:transactions).merge(
-      Transaction::View.cleared.prior_to(date)
-    ).sum(:amount).to_f
+    cash_flow.joins(:transactions).merge(Transaction::View.cleared.prior_to(date)).sum(:amount).to_f
   end
 
   def to_hash
-    attributes.symbolize_keys.merge(balance: balance.to_f.round(2))
+    attributes.symbolize_keys.merge(balance: balance)
   end
 
   def balance(prior_to: nil)
     if prior_to.nil?
-      transactions.sum(:amount).to_f
+      transactions.total
     else
-      transactions.prior_to(prior_to).sum(:amount).to_f
+      transactions.prior_to(prior_to).total
     end
-  end
-
-  def transaction_collection(**query_opts)
-    return transactions.in_month if query_opts.empty?
-    transactions.query_with(query_opts)
   end
 
   def newest_clearance_date

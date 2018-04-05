@@ -28,7 +28,7 @@ module Transaction
       scope :prior_to, -> (date) { cleared.where("clearance_date < ?", date) }
       scope :in,       -> (range) { where(clearance_date: range) }
       scope :between,  -> (range, include_pending: false) do
-        include_pending ? self.in(range).or(self.pending) : self.in(range)
+        include_pending ? self.in(range).or(pending) : self.in(range)
       end
       scope :budget_included, -> { where(budget_exclusion: false) }
     end

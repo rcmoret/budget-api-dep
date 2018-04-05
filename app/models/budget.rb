@@ -66,7 +66,7 @@ module Budget
     scope :current,  -> { where(month: BudgetMonth.piped) }
     scope :expenses, -> { joins(:item).merge(Budget::Item.expenses).order('amount ASC') }
     scope :revenues, -> { joins(:item).merge(Budget::Item.revenues).order('amount DESC') }
-    scope :in, lambda   { |month=nil| month.nil? ? current : where(month: month) }
+    scope :in,       -> (month = BudgetMonth.piped) { where(month: month) }
     scope :weekly,   -> { joins(:item).merge(Budget::Item.weekly) }
     scope :monthly,  -> { joins(:item).merge(Budget::Item.monthly) }
 
