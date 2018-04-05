@@ -106,6 +106,7 @@ module Primary
     has_one :view, class_name: 'Transaction::View', foreign_key: :id
     validates :amount, presence: true, unless: :has_subtransactions?
     validates :amount, absence: true, if: :has_subtransactions?
+    validate :eligible_for_exclusion?, if: :budget_exclusion?
     before_validation :set_amount_to_nil!, :set_monthly_amount_id!, :update_subtransactions!, if: :has_subtransactions?
     accepts_nested_attributes_for :subtransactions
 
@@ -142,6 +143,11 @@ module Primary
 
     def set_monthly_amount_id!
       self[:monthly_amount_id] = nil
+    end
+
+    def eligible_for_exclusion?
+      return unless account.cash_flow?
+      errors.add(:budget_exclusion, 'Budget Exclusions only applicable for non-cashflow accounts')
     end
   end
 end
