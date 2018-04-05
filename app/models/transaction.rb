@@ -56,7 +56,7 @@ module Transaction
     end
 
     def to_hash
-      attributes.symbolize_keys.merge(amount: amount, account: account_name, subtransactions_attributes: sub_attrs)
+      attributes.symbolize_keys.merge(amount: amount, subtransactions_attributes: sub_attrs)
     end
 
     def sub_attrs

@@ -21,8 +21,7 @@ module SharedExamples
         expect(subject.fetch('receipt')).to be_nil
       end
       it 'should have tax deduction and qme flags' do
-        expect(subject['tax_deduction']).to be_a_boolean
-        expect(subject['qualified_medical_expense']).to be_a_boolean
+        expect(subject['budget_exclusion']).to be_a_boolean
       end
     end
     shared_examples_for 'JSON transaction' do
@@ -45,8 +44,8 @@ module SharedExamples
       end
       it 'should return the subtransactions' do
         subtransaction = subject['subtransactions_attributes'].values.first
-        expect(subtransaction['description']).to eq 'Clothes'
-        expect(subtransaction['amount']).to eq -20.0
+        expect(subtransaction['description']).to eq 'Food'
+        expect(subtransaction['amount']).to eq -35.0
       end
     end
   end

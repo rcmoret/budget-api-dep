@@ -9,12 +9,12 @@ RSpec.describe ItemsApi do
     let(:request) { get endpoint }
     subject { JSON.parse(request.body) }
     describe '/items (index)' do
-      it { should eq items.map(&:to_hash) }
+      it { should eq items.map(&:to_hash).map(&:stringify_keys) }
     end
     describe 'items/:id' do
       context 'requesting an existing resource' do
         let(:endpoint) { super() + grocery.id.to_s }
-        it { should eq grocery.to_hash }
+        it { should eq grocery.to_hash.stringify_keys }
       end
       context 'request should result in a 404' do
         let(:endpoint) { super() + "404#{grocery.id}" }
@@ -137,7 +137,7 @@ RSpec.describe ItemsApi do
         allow(Account).to receive(:available_cash) { 300 }
       end
       let(:expected_hash) do
-        { 'id' => 0, 'name' => 'Discretionary', 'amount' => 50.0, 'remaining' => 50.0,
+        { 'id' => 0, 'name' => 'Discretionary', 'amount' => 0, 'remaining' => 50.0, 'spent' => -50.0,
           'month' => month.piped, 'item_id' => 0, 'days_remaining' => month.days_remaining }
       end
       let(:endpoint) { 'items/amounts/discretionary' }

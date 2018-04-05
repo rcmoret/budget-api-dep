@@ -9,10 +9,6 @@ RSpec.describe 'AccountsApi', type: :request do
     let(:body) { subject.body }
     describe '/accounts (index)' do
       let(:endpoint) { 'accounts/' }
-      it 'should call #all on Account model' do
-        expect(Account).to receive(:all) { accounts }
-        subject
-      end
       it 'should return the accounts as JSON' do
         expect(body).to eq accounts.to_json
       end

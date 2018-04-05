@@ -4,7 +4,6 @@ RSpec.describe BudgetMonth do
   let(:today) { Date.new(2099, 3, 14) }
   let(:first_of_march) { Date.new(2099, 3, 1) }
   let(:first_of_april) { first_of_march.next_month }
-  let(:first_of_may) { first_of_march.next_month(2) }
   before { Timecop.travel(today) }
   describe 'the various ways a budget month can be instantiated' do
     context 'default' do
@@ -26,11 +25,6 @@ RSpec.describe BudgetMonth do
         subject { BudgetMonth.new(args).month }
         let(:args) { { month: '3' } }
         it { should eq first_of_march }
-      end
-      context 'it also takes a method!' do
-        subject { BudgetMonth.new(*args).month }
-        let(:args) { [:next_month, { month: 4 }] }
-        it { should eq first_of_may }
       end
     end
   end
@@ -57,7 +51,6 @@ RSpec.describe BudgetMonth do
     end
     describe '#current?' do
       it { should be_current }
-      it { expect(BudgetMonth.new(:last_month).current?).to be false }
     end
     describe 'piped' do
       it { expect(subject.piped).to eq '03|2099' }

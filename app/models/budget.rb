@@ -171,6 +171,8 @@ module Budget
         month: month.piped, item_id: 0, days_remaining: month.days_remaining }
     end
 
+    private
+
     def remaining
       @remaining ||= if month.current?
                        (Account.available_cash + MonthlyAmount.in(month.piped).remaining + WeeklyAmount.in(month.piped).remaining + Account.charged).round(2)

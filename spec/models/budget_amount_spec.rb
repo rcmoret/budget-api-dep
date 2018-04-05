@@ -15,39 +15,6 @@ RSpec.describe Budget::Amount, type: :model do
     it { should include %Q{WHERE "monthly_amounts"."month" = '#{budget_month}'} }
   end
 
-  describe '#discretionary' do
-    context 'current month' do
-      before do
-        allow(Budget::MonthlyAmount).to receive(:remaining).and_return(10)
-        allow(Budget::WeeklyAmount).to receive(:remaining).and_return(20)
-        allow(Account).to receive(:available_cash).and_return(0)
-        allow(Account).to receive(:charged).and_return(-2)
-      end
-      let(:month) { BudgetMonth.new }
-      subject { Budget::Amount.discretionary(month) }
-      it { should eq 28 }
-    end
-    context 'another month' do
-      let(:month) { BudgetMonth.new(:prev_month) }
-      before do
-        allow(Budget::Amount).to receive(:in).with(month.piped)
-      end
-    end
-  end
-
-  describe '#for_select' do
-    let!(:groceries) { FactoryGirl.create(:weekly_expense) }
-    let(:nes) { FactoryGirl.create(:monthly_expense) }
-    before do
-      allow(Budget::MonthlyAmount).to receive(:anticipated) { [nes] }
-      allow(Budget::WeeklyAmount).to receive(:all) { [groceries] }
-    end
-    subject { Budget::Amount.active }
-    it 'should return the expected array' do
-      expect(subject).to include nes
-      expect(subject).to include groceries
-    end
-  end
   describe 'after_create callbacks' do
     describe '.set_default_amount!' do
       let(:default_amount) { -200 }
@@ -195,20 +162,6 @@ RSpec.describe Budget::WeeklyAmount, type: :model do
         let(:amounts) { [-100, 300] }
         it { should eq -1200 } # -1000 - (-100 + 300)
       end
-    end
-  end
-end
-
-RSpec.describe Budget::Discretionary do
-  describe '#to_hash' do
-    before { allow(Budget::Amount).to receive(:discretionary) { 100 } }
-    let(:month) { BudgetMonth.new }
-    let(:discretionary) do
-      { id: 0, name: 'Discretionary', amount: 100, remaining: 100,
-        month: BudgetMonth.piped, item_id: 0, days_remaining: month.days_remaining }
-    end
-    it 'should return discretionary income as a hash' do
-      expect(Budget::Discretionary.new(month).to_hash).to eq discretionary
     end
   end
 end

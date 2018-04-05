@@ -10,8 +10,8 @@ RSpec.describe Account, type: :model do
     before { allow(account).to receive(:transactions).and_return(transactions) }
     context 'without any args' do
       subject { account.balance }
-      it 'should call sum(:amount) on the transactions' do
-        expect(transactions).to receive(:sum).with(:amount)
+      it 'should call `total` on the transactions' do
+        expect(transactions).to receive(:total)
         subject
       end
     end
@@ -19,8 +19,8 @@ RSpec.describe Account, type: :model do
       let(:date) { BudgetMonth.new.first_day }
       before { allow(transactions).to receive(:sum) }
       subject { account.balance(prior_to: date) }
-      it 'should call sum(:amount) on transactions' do
-        expect(transactions).to receive(:prior_to).with(date) { transactions }
+      it 'should call `total` on transactions' do
+        expect(transactions).to receive(:prior_to).with(date) { double(total: 0) }
         subject
       end
     end
@@ -34,11 +34,12 @@ RSpec.describe Account, type: :model do
         name: account.name,
         balance: 0.0,
         cash_flow: true,
-        health_savings_account: false
+        health_savings_account: false,
+        deleted_at: nil,
       }
     end
     it 'should return a simplified hash representation' do
-      expect(account.to_hash).to eq expected_hash
+      expect(account.to_hash).to include expected_hash
     end
   end
 end

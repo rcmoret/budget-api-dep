@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :item, class: Budget::Item do
     default_amount 0
-    name 'Stuff'
+    sequence(:name) { |n| "Stuff - #{n}" }
 
     trait :monthly do
       monthly true
@@ -12,12 +12,12 @@ FactoryGirl.define do
     end
 
     trait :expense do
-      name 'Expenditures'
+      sequence(:name) { |n| "Expenditures - #{n}" }
       expense true
     end
 
     trait :revenue do
-      name 'Income!'
+      sequence(:name) { |n| "Income - #{n}" }
       expense false
     end
   end
