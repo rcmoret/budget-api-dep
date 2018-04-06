@@ -1,4 +1,4 @@
-class TransactionTemplate < Hash
+class TransactionTemplate
   attr_reader :account, :options
   def initialize(account, **options)
     @account = account
