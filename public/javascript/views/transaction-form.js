@@ -1,7 +1,7 @@
 var app = app || {};
 
 app.TransactionFormView = Backbone.View.extend({
-  template: _.template( $('#transaction-form-template').html() ),
+  template: _.template($('#transaction-form-template').html()),
   plusButton: _.template($('#plus-button').html()),
   events: {
     'click .render-form': 'renderForm',
@@ -10,7 +10,8 @@ app.TransactionFormView = Backbone.View.extend({
     'click a.add-subtransactions': 'addSubtransactions',
     'keyup .subtransaction-form input[name="amount"]': 'updateAmount',
     'click i.fa-edit': 'showOptionalFields',
-    'click .clearance-date input': 'renderDatePicker'
+    'click .clearance-date input': 'renderDatePicker',
+    'change input[name="budget_exclusion"]': 'toggleBudgetExclusion',
   },
   initialize: function(accountId) {
     this.collection = app.Accounts.get(accountId).transactions
@@ -74,8 +75,12 @@ app.TransactionFormView = Backbone.View.extend({
   },
   renderForm: function() {
     this.$el.html('')
-    this.$el.html(this.template);
+    this.$el.html(this.template({exclusionEligible: this.exclusionEligible()}));
     app.ActiveItems.fetch({reset: true})
+  },
+  exclusionEligible: function() {
+    var account = app.Accounts.get(this.accountId)
+    return !account.attributes['cash_flow']
   },
   closeForm: function() {
     this.$el.html('')
@@ -116,5 +121,14 @@ app.TransactionFormView = Backbone.View.extend({
         dateFormat: 'yy-mm-dd'
     })
     $('.clearance-date input').datepicker('show')
-  }
+  },
+  toggleBudgetExclusion: function(e) {
+    if (e.target.value === 'true') {
+      $(e.target).val('false')
+      $(e.target).removeAttr('checked')
+    } else {
+      $(e.target).val('true')
+      $(e.target).attr('checked', 'checked')
+    }
+  },
 });

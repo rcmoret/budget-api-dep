@@ -20,7 +20,8 @@ app.TransactionView = Backbone.View.extend({
     'click i.fa-edit': 'extraOptions',
     'click i.update-cancel': 'cancelUpdate',
     'click i.update-save': 'update',
-    'keyup input.update-check-number': 'update'
+    'keyup input.update-check-number': 'update',
+    'change input[name="budget_exclusion"]': 'toggleBudgetExclusion',
   },
   initialize: function(transaction, balance) {
     this.model = transaction;
@@ -36,7 +37,12 @@ app.TransactionView = Backbone.View.extend({
       budgetItems: this.model.items(),
       clear_date: this.model.displayDate(),
       balance: this.balance,
+      exclusionEligible: this.exclusionEligible(),
     })
+  },
+  exclusionEligible: function() {
+    var account = app.Accounts.get(this.model.attributes['account_id'])
+    return !account.attributes['cash_flow']
   },
   render: function(expanded = false) {
     this.$el.html(this.template(this.displayAttrs()));
@@ -98,10 +104,10 @@ app.TransactionView = Backbone.View.extend({
     } else if ($(e.target).attr('name') === 'clearance_date') {
       return // datepicker has a callback for updating
     } else if ((e.type === 'keyup' && e.keyCode == ENTER_KEY) || e.type === 'focusout' || e.type === 'click') {
-      var input = this.$el.find('.primary.transaction input')
-      this.model.set($(input).attr('name'), $(input).val())
-      var notes = this.$el.find('.primary textarea').val()
-      if (!_.isEmpty(notes)) { this.model.set('notes', notes) }
+      var inputs = this.$el.find('.primary.transaction input, .primary textarea')
+      _.each(inputs, function(input) {
+        this.model.set($(input).attr('name'), $(input).val())
+      }, this)
       this.updateModel(e)
     }
   },
@@ -220,5 +226,14 @@ app.TransactionView = Backbone.View.extend({
   },
   cancelUpdate: function(e) {
     this.render()
+  },
+  toggleBudgetExclusion: function(e) {
+    if (e.target.value === 'true') {
+      $(e.target).val('false')
+      $(e.target).removeAttr('checked')
+    } else {
+      $(e.target).val('true')
+      $(e.target).attr('checked', 'checked')
+    }
   },
 });

@@ -25,6 +25,12 @@
           <label>Notes</label>
           <textarea name='notes'></textarea>
         </div>
+        <% if (exclusionEligible) { %>
+          <div class='budget-exclusion'>
+            <label>Budget Exclusion</label>
+            <input type='checkbox' name='budget_exclusion' value='false'/>
+          </div>
+        <% } %>
         <a class='add-subtransactions'><i class='fa fa-plus-circle' aria-hidden='true'></i>
           add subtransaction
         </a>
