@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe ItemsApi do
-  let(:grocery) { FactoryGirl.create(:item, :weekly, :expense, default_amount: -100) }
-  let(:paycheck) { FactoryGirl.create(:item, :monthly, :revenue, default_amount: 100) }
+  let(:grocery) { FactoryBot.create(:item, :weekly, :expense, default_amount: -100) }
+  let(:paycheck) { FactoryBot.create(:item, :monthly, :revenue, default_amount: 100) }
   let!(:items) { [grocery, paycheck] }
   describe 'GET routes' do
     let(:endpoint) { 'items/' }
@@ -84,7 +84,7 @@ RSpec.describe ItemsApi do
     describe 'PUT to /items/:item_id/amount/:id' do
       include_context 'request specs'
       let(:method) { 'put' }
-      let(:weekly) { FactoryGirl.create(:weekly_expense) }
+      let(:weekly) { FactoryBot.create(:weekly_expense) }
       let(:grocery) { weekly.item }
       let(:endpoint) { "/items/#{grocery.id}/amount/#{weekly.id}" }
       let(:amount) { -232 }
@@ -95,7 +95,7 @@ RSpec.describe ItemsApi do
     describe 'DELETE to /items/:item_id/amount/:id' do
       include_context 'request specs'
       let(:method) { 'delete' }
-      let(:weekly) { FactoryGirl.create(:weekly_expense) }
+      let(:weekly) { FactoryBot.create(:weekly_expense) }
       let(:grocery) { weekly.item }
       let(:endpoint) { "/items/#{grocery.id}/amount/#{weekly.id}" }
       its(:status) { should be 200 }
@@ -113,13 +113,13 @@ RSpec.describe ItemsApi do
       include_context 'request specs'
       let(:method) { 'get' }
       context 'monthly' do
-        let!(:monthly_amount) { FactoryGirl.create(:monthly_expense) }
+        let!(:monthly_amount) { FactoryBot.create(:monthly_expense) }
         let(:endpoint) { '/items/amounts/monthly' }
         its(:status) { should be 200 }
         it { expect(subject.body).to include monthly_amount.to_hash.stringify_keys }
       end
       context 'weekly' do
-        let!(:weekly_amount) { FactoryGirl.create(:weekly_expense) }
+        let!(:weekly_amount) { FactoryBot.create(:weekly_expense) }
         let(:endpoint) { '/items/amounts/weekly' }
         its(:status) { should be 200 }
         its(:body) { should include weekly_amount.to_hash.stringify_keys }
@@ -150,8 +150,8 @@ RSpec.describe ItemsApi do
     let(:request) { proc { get(endpoint) } }
     let(:response) { request.call }
     subject { JSON.parse(response.body) }
-    let!(:groceries) { FactoryGirl.create(:weekly_expense) }
-    let!(:nes) { FactoryGirl.create(:monthly_expense) }
+    let!(:groceries) { FactoryBot.create(:weekly_expense) }
+    let!(:nes) { FactoryBot.create(:monthly_expense) }
     it do
       expect(subject).to include nes.to_hash.stringify_keys
       expect(subject).to include groceries.to_hash.stringify_keys

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe 'AccountsApi /transactions/:id', type: :request do
-  let(:checking) { FactoryGirl.create(:account, cash_flow: true, name: '1st Tenn') }
+  let(:checking) { FactoryBot.create(:account, cash_flow: true, name: '1st Tenn') }
   let(:endpoint) { "/accounts/#{checking.id}/transactions" }
   describe 'transactions POST' do
     let(:response) { post endpoint, transaction_attributes }
@@ -34,7 +34,7 @@ RSpec.describe 'AccountsApi /transactions/:id', type: :request do
     end
   end
   describe 'transactions PUT' do
-    let(:transaction) { FactoryGirl.create(:transaction, attrs) }
+    let(:transaction) { FactoryBot.create(:transaction, attrs) }
     let(:endpoint) { super() + "/#{transaction.id}" }
     let(:response) { put endpoint, update_attributes }
     subject { JSON.parse(response.body) }

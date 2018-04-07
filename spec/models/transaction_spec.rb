@@ -4,7 +4,7 @@ RSpec.describe Transaction::View, type: :model do
   it { should belong_to(:account) }
   it { should be_readonly }
   describe '.attributes' do
-    let(:transaction) { FactoryGirl.create(:transaction, amount: -20, description: 'Kmart') }
+    let(:transaction) { FactoryBot.create(:transaction, amount: -20, description: 'Kmart') }
     let(:expected_hash) do
       {
         id: transaction.id,
@@ -47,11 +47,11 @@ RSpec.describe Primary::Transaction, type: :model do
   describe 'amount validation' do
     context 'primary without subtransactions' do
       context 'amount is nil' do
-        subject { FactoryGirl.build(:transaction, amount: nil) }
+        subject { FactoryBot.build(:transaction, amount: nil) }
         it { should_not be_valid }
       end
       context 'amount is an empty string' do
-        subject { FactoryGirl.build(:transaction, amount: '') }
+        subject { FactoryBot.build(:transaction, amount: '') }
         it { should_not be_valid }
       end
     end
@@ -63,13 +63,13 @@ RSpec.describe Primary::Transaction, type: :model do
     end
     context 'new transaction' do
       let(:transaction) do
-        FactoryGirl.create(:transaction, amount: -200, subtransactions_attributes: sub_attrs)
+        FactoryBot.create(:transaction, amount: -200, subtransactions_attributes: sub_attrs)
       end
       it { expect(transaction.amount).to be_nil }
       it { expect(transaction.view.amount).to eq -45 }
     end
     context 'updating existing' do
-      let(:transaction) { FactoryGirl.create(:transaction, amount: -200) }
+      let(:transaction) { FactoryBot.create(:transaction, amount: -200) }
       before { transaction.update_attributes(subtransactions_attributes: sub_attrs) }
       it { expect(transaction.amount).to be_nil }
       it { expect(transaction.view.amount).to eq -45 }
@@ -78,18 +78,18 @@ RSpec.describe Primary::Transaction, type: :model do
 
   describe '.between' do
     before { Timecop.travel(Date.new(2016, 3, 14)) }
-    let(:account) { FactoryGirl.create(:account) }
+    let(:account) { FactoryBot.create(:account) }
     let!(:old_transactions) do
-      FactoryGirl.create_list(:transaction, 2, clearance_date: 2.months.ago, account: account)
+      FactoryBot.create_list(:transaction, 2, clearance_date: 2.months.ago, account: account)
     end
     let!(:this_months) do
-      FactoryGirl.create_list(:transaction, 2, clearance_date: 2.days.ago, account: account)
+      FactoryBot.create_list(:transaction, 2, clearance_date: 2.days.ago, account: account)
     end
     let!(:next_months) do
-      FactoryGirl.create_list(:transaction, 2, clearance_date: 2.days.from_now, account: account)
+      FactoryBot.create_list(:transaction, 2, clearance_date: 2.days.from_now, account: account)
     end
     let(:pending) do
-      FactoryGirl.create_list(:transaction, 2, clearance_date: nil, account: account)
+      FactoryBot.create_list(:transaction, 2, clearance_date: nil, account: account)
     end
     let(:dates) { (2.months.ago..Date.today) }
     context 'pending false (default)' do

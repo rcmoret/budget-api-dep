@@ -27,8 +27,8 @@ RSpec.configure do |config|
     config.default_formatter = 'doc'
   end
 
-  FactoryGirl.definition_file_paths = %w{./spec/factories}
-  FactoryGirl.find_definitions
+  FactoryBot.definition_file_paths = %w{./spec/factories}
+  FactoryBot.find_definitions
   config.before(:suite) do
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean

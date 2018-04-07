@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe 'AccountsApi', type: :request do
-  let(:checking) { FactoryGirl.create(:account, cash_flow: true, name: '1st Tenn') }
-  let(:savings) { FactoryGirl.create(:account, cash_flow: false, name: 'Savings') }
+  let(:checking) { FactoryBot.create(:account, cash_flow: true, name: '1st Tenn') }
+  let(:savings) { FactoryBot.create(:account, cash_flow: false, name: 'Savings') }
   let!(:accounts) { [checking, savings].map(&:to_hash) }
   describe 'GET routes' do
     subject { get endpoint }
@@ -50,7 +50,7 @@ RSpec.describe 'AccountsApi', type: :request do
       include_examples 'account/transactions metadata JSON'
     end
     describe 'the transaction collection' do
-      let(:transaction) { FactoryGirl.create(:transaction, account: checking).view }
+      let(:transaction) { FactoryBot.create(:transaction, account: checking).view }
       let!(:transaction_hash) do
         h = transaction.to_hash.merge(amount: transaction.amount.to_f).stringify_keys
         h.delete_if { |k, v| k == 'updated_at' }
@@ -86,7 +86,7 @@ RSpec.describe 'AccountsApi', type: :request do
     end
   end
   describe 'PUT /accounts/:id' do
-    let!(:account) { FactoryGirl.create(:account, cash_flow: true, name: checking.name) }
+    let!(:account) { FactoryBot.create(:account, cash_flow: true, name: checking.name) }
     let(:endpoint) { "/accounts/#{account.id}" }
     let(:request_body) { { cash_flow: false } }
     let(:response) { put endpoint, request_body }

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :item, class: Budget::Item do
     default_amount 0
     sequence(:name) { |n| "Stuff - #{n}" }

@@ -3,9 +3,9 @@ require 'spec_helper'
 RSpec.describe Account, type: :model do
   it { should have_many(:transactions) }
   it { should have_many(:primary_transactions) }
-  let(:account) { FactoryGirl.create(:checking_account) }
+  let(:account) { FactoryBot.create(:checking_account) }
   describe '.balance' do
-    let(:primary_transactions) { FactoryGirl.create_list(:transaction, 2, account: account) }
+    let(:primary_transactions) { FactoryBot.create_list(:transaction, 2, account: account) }
     let(:transactions) { double(primary_transactions.map(&:view)) }
     before { allow(account).to receive(:transactions).and_return(transactions) }
     context 'without any args' do
@@ -27,7 +27,7 @@ RSpec.describe Account, type: :model do
   end
 
   describe '.to_hash' do
-    let(:account) { FactoryGirl.create(:checking_account) }
+    let(:account) { FactoryBot.create(:checking_account) }
     let(:expected_hash) do
       {
         id: account.id,

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe 'account.balance' do
-  let(:primary_account) { FactoryGirl.create(:account) }
+  let(:primary_account) { FactoryBot.create(:account) }
   context 'account without transactions' do
     it 'should return 0' do
       expect(primary_account.transactions.count).to be 0

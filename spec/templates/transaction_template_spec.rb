@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 RSpec.describe TransactionTemplate do
-  let(:account) { FactoryGirl.create(:account) }
+  let(:account) { FactoryBot.create(:account) }
   let!(:transaction) do
-    FactoryGirl.create(:transaction, account: account, clearance_date: '2000-01-01'.to_date)
+    FactoryBot.create(:transaction, account: account, clearance_date: '2000-01-01'.to_date)
   end
   let(:template) { TransactionTemplate.new(account).to_json }
   let(:budget_month) { BudgetMonth.new }
