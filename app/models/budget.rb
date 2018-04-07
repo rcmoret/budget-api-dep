@@ -158,35 +158,4 @@ module Budget
       (amount - transactions.sum(:amount)).to_f.round(2)
     end
   end
-
-  class Discretionary
-    attr_reader :month
-
-    def initialize(month = BudgetMonth.new)
-      @month = month
-    end
-
-    def to_hash
-      { id: 0, name: 'Discretionary', amount: amount, remaining: remaining, spent: spent,
-        month: month.piped, item_id: 0, days_remaining: month.days_remaining }
-    end
-
-    private
-
-    def remaining
-      @remaining ||= if month.current?
-                       (Account.available_cash + MonthlyAmount.in(month.piped).remaining + WeeklyAmount.in(month.piped).remaining + Account.charged).round(2)
-                     else
-                       Amount.in(month.piped).sum(:amount)
-                     end
-    end
-
-    def amount
-      @amount ||= Account.balance_prior_to(month.first_day) + Amount.budgeted
-    end
-
-    def spent
-      @spent ||= amount - remaining
-    end
-  end
 end

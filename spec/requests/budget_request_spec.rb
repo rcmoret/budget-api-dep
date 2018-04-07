@@ -137,7 +137,7 @@ RSpec.describe ItemsApi do
         allow(Account).to receive(:available_cash) { 300 }
       end
       let(:expected_hash) do
-        { 'id' => 0, 'name' => 'Discretionary', 'amount' => 0, 'remaining' => 50.0, 'spent' => -50.0,
+        { 'id' => 0, 'name' => 'Discretionary', 'amount' => '50.0', 'remaining' => 50.0, 'spent' => '0.0',
           'month' => month.piped, 'item_id' => 0, 'days_remaining' => month.days_remaining }
       end
       let(:endpoint) { 'items/amounts/discretionary' }

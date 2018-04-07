@@ -62,7 +62,7 @@ class ItemsApi < Sinatra::Base
     end
 
     get '/discretionary' do
-      [200, Budget::Discretionary.new(month).to_hash.to_json]
+      [200, Discretionary.new(month).to_json]
     end
   end
 
