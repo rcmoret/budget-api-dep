@@ -4,6 +4,7 @@
       <div class='left-icon'><i class='fa fa-caret-right' aria-hidden=true></i></div>
       <div class='name'><%= name %></div>
     </div>
+
     <div class='right-side'>
       <div class='budgeted'>
         <div class='label small-text'>Budgeted:</div>
@@ -11,7 +12,6 @@
           $<%= parseFloat(amount).toFixed(2) %>
         </div>
       </div>
-
       <div class='spent'>
         <div class='label small-text '>
           <% if(amount > remaining) { %>
@@ -29,6 +29,16 @@
         <div class='amount' data-remaining=<%= remaining %>>
           $<%= parseFloat(remaining).toFixed(2) %>
         </div>
+      </div>
+    </div>
+    <div class='transactions hidden'>
+      <div class='budget-amount-transaction'>
+        <hr/>
+        <div class='clearance-date'>Date</div>
+        <div class='account-name'>Account</div>
+        <div class='description'>Description</div>
+        <div class='amount'>Amount</div>
+        <hr/>
       </div>
     </div>
   </div>

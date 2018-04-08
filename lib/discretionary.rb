@@ -11,7 +11,10 @@ class Discretionary
   end
 
   def transactions
-    @transactions ||= Transaction::Record.between(month.date_range, include_pending: month.current?).discretionary
+    @transactions ||=
+      Transaction::Record.between(month.date_range, include_pending: month.current?)
+        .discretionary
+        .ordered
   end
 
   private

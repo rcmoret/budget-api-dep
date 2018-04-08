@@ -64,6 +64,10 @@ class ItemsApi < Sinatra::Base
     get '/discretionary' do
       [200, Discretionary.new(month).to_json]
     end
+
+    get '/discretionary/transactions' do
+      render_collection(Discretionary.new(month).transactions)
+    end
   end
 
   def amount_id
