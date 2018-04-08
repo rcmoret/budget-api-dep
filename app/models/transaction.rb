@@ -31,7 +31,7 @@ module Transaction
         include_pending ? self.in(range).or(pending) : self.in(range)
       end
       scope :budget_inclusions, -> { where(budget_exclusion: false) }
-      scope :discretionary, -> { budget_included.where(monthly_amount_id: nil) }
+      scope :discretionary, -> { budget_inclusions.where(monthly_amount_id: nil).where('amount IS NOT NULL') }
     end
 
     class_methods do

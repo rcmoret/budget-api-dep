@@ -10,6 +10,10 @@ class Discretionary
       month: month.piped, item_id: 0, days_remaining: month.days_remaining }
   end
 
+  def transactions
+    @transactions ||= Transaction::Record.between(month.date_range, include_pending: month.current?).discretionary
+  end
+
   private
 
   def remaining
@@ -38,7 +42,6 @@ class Discretionary
   end
 
   def spent
-    @spent ||=
-      Transaction::Record.between(month.date_range, include_pending: month.current?).discretionary.sum(:amount)
+    @spent ||= transactions.sum(:amount)
   end
 end
