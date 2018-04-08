@@ -14,7 +14,7 @@ class Account < ActiveRecord::Base
 
   def self.charged(budget_month = BudgetMonth.new)
     non_cash_flow.joins(:transactions).merge(
-      Transaction::View.between(budget_month.date_range, include_pending: budget_month.current?).budget_included
+      Transaction::View.between(budget_month.date_range, include_pending: budget_month.current?).budget_inclusions
     ).sum(:amount).to_f
   end
 

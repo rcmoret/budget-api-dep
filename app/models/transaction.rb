@@ -30,7 +30,7 @@ module Transaction
       scope :between,  -> (range, include_pending: false) do
         include_pending ? self.in(range).or(pending) : self.in(range)
       end
-      scope :budget_included, -> { where(budget_exclusion: false) }
+      scope :budget_inclusions, -> { where(budget_exclusion: false) }
       scope :discretionary, -> { budget_included.where(monthly_amount_id: nil) }
     end
 
