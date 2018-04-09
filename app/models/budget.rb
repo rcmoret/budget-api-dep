@@ -129,7 +129,9 @@ module Budget
     default_scope { monthly }
 
     scope :anticipated, -> { joins("LEFT JOIN (#{::Transaction::Record.all.to_sql}) t " +
-                             'ON t.monthly_amount_id = "monthly_amounts".id').where('t.id IS NULL') }
+                                   'ON t.monthly_amount_id = "monthly_amounts".id').where('t.id IS NULL') }
+    scope :cleared, -> { joins("LEFT JOIN (#{::Transaction::Record.all.to_sql}) t " +
+                               'ON t.monthly_amount_id = "monthly_amounts".id').where('t.id IS NOT NULL') }
 
     def self.remaining
       anticipated.sum(:amount).to_f
@@ -151,8 +153,6 @@ module Budget
     def remaining
       expense? ? [difference, 0].min : [difference, 0].max
     end
-
-    private
 
     def difference
       (amount - transactions.sum(:amount)).to_f.round(2)

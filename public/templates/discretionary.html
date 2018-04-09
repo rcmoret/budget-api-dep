@@ -13,15 +13,27 @@
         </div>
       </div>
       <div class='spent'>
+        <div class='label small-text'>
+          <% if(over_under_budget < 0) { %>
+            Over Budget:
+          <% } else { %>
+            Under Budget:
+          <% } %>
+        </div>
+        <div class='amount small-text'>
+          $<%= parseFloat(over_under_budget).toFixed(2) %>
+        </div>
+      </div>
+      <div class='spent'>
         <div class='label small-text '>
-          <% if(amount > remaining) { %>
+          <% if(parseFloat(spent) < 0) { %>
             Spent:
           <% } else { %>
             Deposited:
           <% } %>
         </div>
         <div class='amount small-text underlined' data-spent=<%= parseFloat(spent) %>>
-          -$<%= parseFloat(spent).toFixed(2) %>
+          $<%= parseFloat(spent).toFixed(2) %>
         </div>
       </div>
       <div class='remaining'>

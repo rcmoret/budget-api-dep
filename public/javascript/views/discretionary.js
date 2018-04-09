@@ -24,8 +24,7 @@ app.DiscretionaryView = Backbone.View.extend({
     return this.$el
   },
   updateDiscretionary: function(resp) {
-    var spent = (resp.attributes['amount'] - resp.attributes['remaining'])
-    var attrs = _.extendOwn(resp.attributes, { deletable: false, spent: spent })
+    var attrs = _.extendOwn(resp.attributes, { deletable: false })
     this.$el.html(this.template(attrs));
     this.$el.find('.editable').removeClass('editable')
   },

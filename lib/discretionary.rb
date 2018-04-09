@@ -6,8 +6,17 @@ class Discretionary
   end
 
   def to_hash
-    { id: 0, name: 'Discretionary', amount: amount, remaining: remaining, spent: spent,
-      month: month.piped, item_id: 0, days_remaining: month.days_remaining }
+    {
+      id: 0,
+      item_id: 0,
+      name: 'Discretionary',
+      amount: amount,
+      spent: spent,
+      over_under_budget: over_under_budget,
+      remaining: remaining,
+      month: month.piped,
+      days_remaining: month.days_remaining,
+    }
   end
 
   def transactions
@@ -41,10 +50,36 @@ class Discretionary
   end
 
   def amount
-    @amount ||= remaining - spent
+    @amount ||= (remaining - spent - over_under_budget).to_f.round(2)
   end
 
   def spent
-    @spent ||= transactions.sum(:amount)
+    @spent ||= transactions.sum(:amount).to_f.round(2)
+  end
+
+  def cleared_monthly_amounts
+    @cleared_monthly_amounts ||= Budget::MonthlyAmount.in(month.piped).cleared
+  end
+
+  def cleared_monthly_amount_transactions
+    @cleared_monthly_amount_transactions ||=
+      Transaction::Record.where(monthly_amount_id: cleared_monthly_amounts.map(&:id))
+  end
+
+  def over_under_budget
+    @over_under_budget ||= (over_under_budget_monthly + over_under_budget_weekly).to_f.round(2)
+  end
+
+  def over_under_budget_monthly
+    cleared_monthly_amount_transactions.sum(:amount) - cleared_monthly_amounts.sum(:amount)
+  end
+
+  def over_under_budget_weekly
+    Budget::WeeklyAmount.in(month.piped).reduce(0) do |total, wa|
+      if (wa.expense? && wa.difference > 0) || (wa.revenue? && wa.difference < 0)
+        total -= wa.difference
+      end
+      total
+    end
   end
 end
