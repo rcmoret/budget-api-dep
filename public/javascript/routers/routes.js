@@ -10,7 +10,7 @@ var Workspace = Backbone.Router.extend({
     '': 'pageLoad',
     'accounts': 'renderAccounts',
     'accounts/:id(/:month)(/:year)': 'renderAccount',
-    'budget-items(/:month)(/:year)': 'renderBudget',
+    'budget(/:month)(/:year)': 'renderBudget',
   },
   pageLoad: function() {
   },
