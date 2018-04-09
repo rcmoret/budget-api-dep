@@ -3,6 +3,7 @@ module Transaction
     extend ActiveSupport::Concern
     included do
       belongs_to :account
+      belongs_to :transfer
     end
 
     def description
@@ -32,8 +33,9 @@ module Transaction
       end
       scope :budget_inclusions, -> { where(budget_exclusion: false) }
       scope :discretionary, -> {
-        budget_inclusions.where(monthly_amount_id: nil).where('amount IS NOT NULL')
+        budget_inclusions.non_transfers.where(monthly_amount_id: nil).where('amount IS NOT NULL')
       }
+      scope :non_transfers, -> { where(transfer_id: nil) }
     end
 
     class_methods do
