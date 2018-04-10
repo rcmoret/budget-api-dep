@@ -53,5 +53,5 @@ var Workspace = Backbone.Router.extend({
     var month = parseInt(mon) || (today.getMonth() + 1)
     var year = parseInt(yr) || today.getFullYear()
     app.dateParams = { month: month, year: year }
-  }
+  },
 });

@@ -93,6 +93,7 @@ app.WeeklyAmountView = app.BudgetAmountView.extend({
     this.$el.find('.remaining .label span').toggleClass('hidden');
     this.$el.find('i.fa').toggleClass('fa-caret-right')
     this.$el.find('i.fa').toggleClass('fa-caret-down')
+    this.$el.find('.detail').toggleClass('hidden')
     this.$el.find('.budgeted, .spent').slideToggle();
     if (this.$el.hasClass('show-detail')) {
       this.model.transactions.fetch({reset: true})

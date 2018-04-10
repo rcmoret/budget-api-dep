@@ -34,6 +34,7 @@ app.DiscretionaryView = Backbone.View.extend({
     this.$el.find('.remaining .label span').toggleClass('hidden');
     this.$el.find('i.fa').toggleClass('fa-caret-right')
     this.$el.find('i.fa').toggleClass('fa-caret-down')
+    this.$el.find('.detail').toggleClass('hidden')
     if (this.$el.hasClass('show-detail')) {
       this.model.transactions.fetch({reset: true})
     } else {

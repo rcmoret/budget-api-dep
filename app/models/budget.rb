@@ -145,17 +145,48 @@ module Budget
   class WeeklyAmount < Amount
 
     default_scope { weekly }
+    delegate :current?, to: :budget_month
 
     def self.remaining
       all.inject(0) { |total, amount| total += amount.remaining }.to_f
     end
 
     def remaining
-      expense? ? [difference, 0].min : [difference, 0].max
+      @remaining ||= expense? ? [difference, 0].min : [difference, 0].max
     end
 
     def difference
       (amount - transactions.sum(:amount)).to_f.round(2)
+    end
+
+    def to_hash
+      super.merge(
+        budgeted_per_day: budgeted_per_day,
+        remaining_per_day: remaining_per_day,
+        remaining_per_week: remaining_per_week,
+      )
+    end
+
+    private
+
+    def budgeted_per_day
+      (amount / budget_month.total_days).to_f.round(2)
+    end
+
+    def remaining_per_day
+      (remaining / budget_month.days_remaining).to_f.round(2)
+    end
+
+    def remaining_per_week
+      (remaining_per_day * 7).to_f.round(2)
+    end
+
+    def budget_month
+      @budget_month ||=
+        begin
+          mon, year = month.split('|')
+          BudgetMonth.new(month: mon, year: year)
+        end
     end
   end
 end

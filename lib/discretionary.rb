@@ -7,15 +7,14 @@ class Discretionary
 
   def to_hash
     {
-      id: 0,
-      item_id: 0,
       name: 'Discretionary',
       amount: amount,
       spent: spent,
       over_under_budget: over_under_budget,
       remaining: remaining,
-      month: month.piped,
-      days_remaining: month.days_remaining,
+      budgeted_per_day: budgeted_per_day,
+      remaining_per_day: remaining_per_day,
+      remaining_per_week: remaining_per_week,
     }
   end
 
@@ -81,5 +80,17 @@ class Discretionary
       end
       total
     end
+  end
+
+  def budgeted_per_day
+    @budgeted_per_day ||= (amount / month.total_days).to_f.round(2)
+  end
+
+  def remaining_per_day
+    @remaining_per_day ||= (remaining / month.days_remaining).to_f.round(2)
+  end
+
+  def remaining_per_week
+    @remaining_per_week ||= (remaining_per_day * 7).to_f.round(2)
   end
 end

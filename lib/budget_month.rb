@@ -20,7 +20,12 @@ class BudgetMonth
   end
 
   def days_remaining
-    (last_day - date + 1).to_i
+    return total_days unless current?
+    (last_day - today + 1).to_i
+  end
+
+  def total_days
+    last_day.day
   end
 
   def date_range

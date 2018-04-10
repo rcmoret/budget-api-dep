@@ -43,6 +43,23 @@
         </div>
       </div>
     </div>
+    <div class='detail hidden'>
+      <hr/>
+      <div class='label'>
+        Budgeted Per Day:
+      </div>
+      <div class='amount'>$<%= parseFloat(Math.abs(budgeted_per_day)).toFixed(2) %></div>
+      <br>
+      <div class='label'>
+        Remaining Per Day:
+      </div>
+      <div class='amount'>$<%= parseFloat(Math.abs(remaining_per_day)).toFixed(2) %></div>
+      <br>
+      <div class='label'>
+        Remaining Per Week:
+      </div>
+      <div class='amount'>$<%= parseFloat(Math.abs(remaining_per_week)).toFixed(2) %></div>
+    </div>
     <div class='transactions hidden'>
       <div class='budget-amount-transaction'>
         <hr/>
