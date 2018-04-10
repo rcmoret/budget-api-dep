@@ -10,8 +10,7 @@ app.BudgetAmountView = Backbone.View.extend({
   },
   initialize: function(record) {
     this.model = record
-    this.listenTo(this.model, 'rerender', this.render)
-    this.listenTo(this.model, 'toggleShow', this.toggleShow)
+    this.listenTo(this.model, 'rerender', this.rerender)
     this.listenTo(this.model.transactions, 'reset', this.addTransactions)
   },
   textInput: function(name) {
@@ -40,10 +39,11 @@ app.MonthlyAmountView = app.BudgetAmountView.extend({
     })
   },
   render: function() {
-    this.$el.html('')
     this.$el.html(this.template(this.model.attributes))
-    this.$el.find('.amount').addClass('editable')
     return this.$el
+  },
+  rerender: function() {
+    this.render()
   },
   renderAmountField: function(e) {
     var el = $(e.toElement).parent()
@@ -106,13 +106,20 @@ app.WeeklyAmountView = app.BudgetAmountView.extend({
   render: function() {
     this.$el.html('')
     this.$el.html(this.template(this.model.attributes))
-    if (this.$el.hasClass('show-detail')) {
-      this.$el.find('.budgeted, .spent').css('display', 'inline-block')
-      this.$el.find('.hidden').removeClass('hidden')
-      this.$el.find('i.fa').toggleClass('fa-caret-right')
-      this.$el.find('i.fa').toggleClass('fa-caret-down')
-    }
     return this.$el
+  },
+  rerender: function() {
+    this.$el.find('.budgeted .amount').html('$' + parseFloat(Math.abs(this.model.get('amount'))).toFixed(2))
+    this.$el.find('.budgeted .amount').data('value', parseFloat(this.model.get('amount')).toFixed(2))
+    this.$el.find('.budgeted .amount').addClass('editable')
+    if (this.model.get('spent') < 0) {
+      this.$el.find('.spent .amount').html('-$' + parseFloat(Math.abs(this.model.get('spent'))).toFixed(2))
+    } else {
+      this.$el.find('.spent .amount').html('$' + parseFloat(Math.abs(this.model.get('spent'))).toFixed(2))
+    }
+    this.$el.find('.spent .amount').data('spent', parseFloat(this.model.get('spent')).toFixed(2))
+    this.$el.find('.remaining .amount').html('$' + parseFloat(Math.abs(this.model.get('remaining'))).toFixed(2))
+    this.$el.find('.remaining .amount').data('remaining', parseFloat(this.model.get('remaining')).toFixed(2))
   },
   renderAmountField: function(e) {
     var data = this.$el.find('.editable.amount').data()
