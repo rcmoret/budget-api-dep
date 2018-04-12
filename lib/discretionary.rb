@@ -13,6 +13,7 @@ class Discretionary
       over_under_budget: over_under_budget,
       remaining: remaining,
       budgeted_per_day: budgeted_per_day,
+      budgeted_per_week: budgeted_per_week,
       remaining_per_day: remaining_per_day,
       remaining_per_week: remaining_per_week,
     }
@@ -53,7 +54,7 @@ class Discretionary
   end
 
   def spent
-    @spent ||= transactions.sum(:amount).to_f.round(2)
+    @spent ||= transactions.total
   end
 
   def cleared_monthly_amounts
@@ -92,5 +93,9 @@ class Discretionary
 
   def remaining_per_week
     @remaining_per_week ||= (remaining_per_day * 7).to_f.round(2)
+  end
+
+  def budgeted_per_week
+    @budgeted_per_week ||= (budgeted_per_day * 7).to_f.round(2)
   end
 end

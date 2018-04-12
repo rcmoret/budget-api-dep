@@ -13,18 +13,6 @@
         </div>
       </div>
       <div class='spent'>
-        <div class='label small-text'>
-          <% if(over_under_budget < 0) { %>
-            Over Budget:
-          <% } else { %>
-            Under Budget:
-          <% } %>
-        </div>
-        <div class='amount small-text'>
-          $<%= parseFloat(over_under_budget).toFixed(2) %>
-        </div>
-      </div>
-      <div class='spent'>
         <div class='label small-text '>
           <% if(parseFloat(spent) < 0) { %>
             Spent:
@@ -32,8 +20,20 @@
             Deposited:
           <% } %>
         </div>
-        <div class='amount small-text underlined' data-spent=<%= parseFloat(spent) %>>
+        <div class='amount' data-spent=<%= parseFloat(spent) %>>
           $<%= parseFloat(spent).toFixed(2) %>
+        </div>
+      </div>
+      <div class='spent'>
+        <div class='label small-text'>
+          <% if(over_under_budget < 0) { %>
+            Over Budget:
+          <% } else { %>
+            Under Budget:
+          <% } %>
+        </div>
+        <div class='amount underlined'>
+          $<%= parseFloat(over_under_budget).toFixed(2) %>
         </div>
       </div>
       <div class='remaining'>
@@ -43,22 +43,30 @@
         </div>
       </div>
     </div>
-    <div class='detail hidden'>
-      <hr/>
-      <div class='label'>
-        Budgeted Per Day:
+    <div class='details hidden'>
+      <hr>
+      <div class='detail'>
+        <div class='label'>
+          Budgeted Per Day:
+        </div>
+        <div class='amount'>$<%= parseFloat(Math.abs(budgeted_per_day)).toFixed(2) %></div>
+        <br>
+        <div class='label'>
+          Remaining Per Day:
+        </div>
+        <div class='amount'>$<%= parseFloat(Math.abs(remaining_per_day)).toFixed(2) %></div>
       </div>
-      <div class='amount'>$<%= parseFloat(Math.abs(budgeted_per_day)).toFixed(2) %></div>
-      <br>
-      <div class='label'>
-        Remaining Per Day:
+      <div class='detail'>
+        <div class='label'>
+          Budgeted Per Week:
+        </div>
+        <div class='amount'>$<%= parseFloat(Math.abs(budgeted_per_week)).toFixed(2) %></div>
+        <br>
+        <div class='label'>
+          Remaining Per Week:
+        </div>
+        <div class='amount'>$<%= parseFloat(Math.abs(remaining_per_week)).toFixed(2) %></div>
       </div>
-      <div class='amount'>$<%= parseFloat(Math.abs(remaining_per_day)).toFixed(2) %></div>
-      <br>
-      <div class='label'>
-        Remaining Per Week:
-      </div>
-      <div class='amount'>$<%= parseFloat(Math.abs(remaining_per_week)).toFixed(2) %></div>
     </div>
     <div class='transactions hidden'>
       <div class='budget-amount-transaction'>

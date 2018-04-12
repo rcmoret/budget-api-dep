@@ -162,6 +162,7 @@ module Budget
     def to_hash
       super.merge(
         budgeted_per_day: budgeted_per_day,
+        budgeted_per_week: budgeted_per_week,
         remaining_per_day: remaining_per_day,
         remaining_per_week: remaining_per_week,
       )
@@ -179,6 +180,10 @@ module Budget
 
     def remaining_per_week
       (remaining_per_day * 7).to_f.round(2)
+    end
+
+    def budgeted_per_week
+      @budgeted_per_week ||= (budgeted_per_day * 7).to_f.round(2)
     end
 
     def budget_month

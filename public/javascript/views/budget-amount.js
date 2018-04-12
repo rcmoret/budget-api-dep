@@ -87,14 +87,18 @@ app.WeeklyAmountView = app.BudgetAmountView.extend({
       'click .clickable': 'renderAmountField'
     })
   },
-  toggleDetail: function() {
+  toggleDetail: function(_e, slideToggle = true) {
     this.$el.toggleClass('show-detail');
     this.$el.find('.transactions').toggleClass('hidden')
     this.$el.find('.remaining .label span').toggleClass('hidden');
     this.$el.find('i.fa').toggleClass('fa-caret-right')
     this.$el.find('i.fa').toggleClass('fa-caret-down')
-    this.$el.find('.detail').toggleClass('hidden')
-    this.$el.find('.budgeted, .spent').slideToggle();
+    this.$el.find('.details').toggleClass('hidden')
+    if (slideToggle) {
+      this.$el.find('.budgeted, .spent').slideToggle()
+    } else {
+      this.$el.find('.budgeted, .spent').css('display', 'block')
+    }
     if (this.$el.hasClass('show-detail')) {
       this.model.transactions.fetch({reset: true})
     } else {
@@ -110,17 +114,8 @@ app.WeeklyAmountView = app.BudgetAmountView.extend({
     return this.$el
   },
   rerender: function() {
-    this.$el.find('.budgeted .amount').html('$' + parseFloat(Math.abs(this.model.get('amount'))).toFixed(2))
-    this.$el.find('.budgeted .amount').data('value', parseFloat(this.model.get('amount')).toFixed(2))
-    this.$el.find('.budgeted .amount').addClass('editable')
-    if (this.model.get('spent') < 0) {
-      this.$el.find('.spent .amount').html('-$' + parseFloat(Math.abs(this.model.get('spent'))).toFixed(2))
-    } else {
-      this.$el.find('.spent .amount').html('$' + parseFloat(Math.abs(this.model.get('spent'))).toFixed(2))
-    }
-    this.$el.find('.spent .amount').data('spent', parseFloat(this.model.get('spent')).toFixed(2))
-    this.$el.find('.remaining .amount').html('$' + parseFloat(Math.abs(this.model.get('remaining'))).toFixed(2))
-    this.$el.find('.remaining .amount').data('remaining', parseFloat(this.model.get('remaining')).toFixed(2))
+    this.render()
+    this.toggleDetail({}, false)
   },
   renderAmountField: function(e) {
     var data = this.$el.find('.editable.amount').data()
