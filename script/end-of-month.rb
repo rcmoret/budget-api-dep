@@ -112,7 +112,7 @@ weekly_amounts.each do |wa|
 end
 
 def remaining_discretionary
-  @remaining_discretionary ||= Budget::Discretionary.new(current_month).remaining
+  @remaining_discretionary ||= Discretionary.new(current_month).to_hash[:remaining].freeze
 end
 
 def add_discretionary_to_snowball?
@@ -134,12 +134,12 @@ end
 puts snowball.inspect
 
 def primary_account
-  @primary_account ||= Account.by_priority.first
+  @primary_account ||= Account.cash_flow.by_priority.first
 end
 
 def primary_transaction
   @primary_transaction ||= Primary::Transaction.new(account_id: primary_account.id,
-                                                    description: 'Debt Payment')
+                                                    description: "Payment to #{payment_account.name}")
 end
 
 def update_primary(amount_hash)
@@ -155,14 +155,44 @@ def update_primary_with_subs(snowball)
   primary_transaction.save
 end
 
+def payment_account
+  @payment_account ||= get_payment_account
+end
+
+def non_cashflow_accounts
+  @non_cashflow_accounts ||= Account.active.non_cash_flow
+end
+
+def prompt_payment_accounts
+  length = non_cashflow_accounts.pluck(:name).max_by(&:length).length
+  puts "|  id | #{'Account'.center(length, ' ')} |"
+  non_cashflow_accounts.each do |account|
+    puts "| #{account.id.to_s.rjust(3, ' ')} | #{account.name.ljust(length, ' ')} |"
+  end
+end
+
+def get_payment_account
+  prompt_payment_accounts
+  id = prompt('Choose account (by id) to make a payment to')
+  non_cashflow_accounts.find(id)
+end
+
+def create_payment
+  Primary::Transaction.create(account_id: payment_account.id,
+                              amount: (-1 * primary_transaction.amount),
+                              budget_exclusion: true,
+                              description: 'Payment')
+end
+
 case snowball.size
 when 0
   exit 1
 when 1
   update_primary(snowball.first)
+  create_payment
 else
   update_primary_with_subs(snowball)
+  create_payment
 end
-
 
 exit 1
