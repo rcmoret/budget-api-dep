@@ -15,6 +15,8 @@ namespace :pg do
     print_green "Beginning database dump from #{db_name} to #{file}"
     print_cyan  "EXECUTING: `#{command}'"
     `#{command}`
+    print_green "Zipping #{file}"
+    `gzip -f #{file}`
     print_green "COMPLETE"
   end
 end
