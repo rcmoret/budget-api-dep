@@ -10,6 +10,7 @@ group :development do
   gem 'rb-readline'
   gem 'sinatra-activerecord'
   gem 'standalone_migrations'
+  gem 'whenever', require: false
 end
 
 group :assets do
