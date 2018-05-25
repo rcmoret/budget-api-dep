@@ -11,3 +11,4 @@
 /public/stylesheets/site.css*
 /public/uploads/*
 /tmp/
+.gitmodules
