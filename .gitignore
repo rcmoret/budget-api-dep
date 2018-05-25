@@ -6,7 +6,7 @@
 .sass-cache
 
 /db/dumps/*
-!/db/dumps/.keep
+/db/dumps
 
 /public/stylesheets/site.css*
 /public/uploads/*
