@@ -177,11 +177,12 @@ def get_payment_account
   non_cashflow_accounts.find(id)
 end
 
-def create_payment
+def create_payment(snowball)
+  amount = snowball.map { |amt| amt[:amount] }.reduce(:+)
   Primary::Transaction.create(account_id: payment_account.id,
-                              amount: (-1 * primary_transaction.amount),
+                              amount: (-1 * amount),
                               budget_exclusion: true,
-                              description: 'Payment')
+                              description: "Payment from #{primary_account.name}")
 end
 
 case snowball.size
@@ -189,10 +190,10 @@ when 0
   exit 1
 when 1
   update_primary(snowball.first)
-  create_payment
 else
   update_primary_with_subs(snowball)
-  create_payment
 end
+
+create_payment(snowball)
 
 exit 1

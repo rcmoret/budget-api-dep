@@ -29,15 +29,26 @@ class Discretionary
   private
 
   def remaining
-    @remaining ||= if month.current?
-                     (available_cash + remaining_budgeted + charged).round(2)
-                   else
-                     Budget::Amount.in(month.piped).sum(:amount)
-                   end
+    @remaining ||= determine_remaining
+  end
+
+  def determine_remaining
+    case month.status
+    when :current
+      (available_cash + remaining_budgeted + charged).round(2)
+    when :future
+      Budget::Amount.in(month.piped).sum(:amount).round(2)
+    when :past
+      (beginning_balance + remaining_budgeted + over_under_budget + spent).to_f.round(2)
+    end
   end
 
   def available_cash
     @available_cash ||= Account.available_cash
+  end
+
+  def beginning_balance
+    @beginning_balance ||= Account.balance_prior_to(month.first_day)
   end
 
   def remaining_budgeted
@@ -88,7 +99,11 @@ class Discretionary
   end
 
   def remaining_per_day
-    @remaining_per_day ||= (remaining / month.days_remaining).to_f.round(2)
+    @remaining_per_day ||= if month.current?
+                             (remaining / month.days_remaining).to_f.round(2)
+                           else
+                             budgeted_per_day
+                           end
   end
 
   def remaining_per_week

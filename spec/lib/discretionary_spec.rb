@@ -13,8 +13,5 @@ RSpec.describe Discretionary do
     it { expect(subject[:remaining]).to eq 28 }
     it { expect(subject[:name]).to eq 'Discretionary' }
     it { expect(subject[:amount]).to eq 28 }
-    it { expect(subject[:month]).to eq month.piped }
-    it { expect(subject[:item_id]).to eq 0 }
-    it { expect(subject[:days_remaining]).to eq month.days_remaining }
   end
 end

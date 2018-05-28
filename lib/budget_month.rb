@@ -4,7 +4,57 @@ class BudgetMonth
     new(*args).piped
   end
 
+  # def self.piped(*args)
+  #   create(*args).piped
+  # end
+
   attr_reader :date, :month
+
+  # def create(**args)
+  #   today = Date.today
+  #   hash = { month: today.month, year: today.year, day: today.day }.merge(args)
+  #   new(hash.slice(:month, :day, :year))
+  # end
+
+  # def initialize(method: :to_date, day:, month:, year:)
+  #   @date = Date.new(year, month, day).send(method)
+  #   @adjusted_date = determine(day: day, month: month, year: year)
+  #   @month = Date.new(date.year, date.mon, 1)
+  # end
+  #
+  # def first_day
+  #   @first_day = determine_first_day
+  # end
+  #
+  # def
+  # def determine(day:, month:, year:)
+  #   if in_next_month?(date)
+  #     increment(date)
+  #   else
+  #     date
+  #   end
+  # end
+  #
+  # def in_next_month?(date)
+  #   date > adjusted_for_weekend(date.year, date.month, -1)
+  # end
+  #
+  # def increment(date)
+  #   increment month & year (if needed)
+  #   Date.new(...)
+  # end
+  #
+  # def adjust_for_weekend(year, month, day)
+  #   test_date = Date.new(year, month, day)
+  #   case
+  #   when test_date.saturday?
+  #     test_date - 1.day
+  #   when test_date.sunday?
+  #     test_date - 2.days
+  #   else
+  #     test_date
+  #   end
+  #  end
 
   def initialize **options
     @date = determine(options)
@@ -38,6 +88,17 @@ class BudgetMonth
 
   def current?
     month.year == today.year && month.month == today.month
+  end
+
+  def status
+    case
+    when current?
+      :current
+    when today < first_day
+      :future
+    when today > first_day
+      :past
+    end
   end
 
   def piped

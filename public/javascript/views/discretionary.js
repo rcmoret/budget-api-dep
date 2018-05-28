@@ -36,7 +36,7 @@ app.DiscretionaryView = Backbone.View.extend({
     this.$el.find('i.fa').toggleClass('fa-caret-down')
     this.$el.find('.details').toggleClass('hidden')
     if (this.$el.hasClass('show-detail')) {
-      this.model.transactions.fetch({reset: true})
+      this.model.transactions.fetch({reset: true, data: app.dateParams})
     } else {
       this.$el.find('.budget-amount-transaction:not(:first)').html('')
     }
