@@ -10,7 +10,6 @@ namespace :pg do
     require './config/environments'
     dir = "#{`pwd`.chomp}/db/dumps"
     file = "#{dir}/current.sql"
-    `mv #{file} #{dir}/previous.sql` if File.exists?(file)
     db_name = ActiveRecord::Base.connection.current_database
     command = "pg_dump -a -O --exclude-table=schema_migrations -f #{file} #{db_name}"
     print_green "Beginning database dump from #{db_name} to #{file}"
