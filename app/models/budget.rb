@@ -146,6 +146,7 @@ module Budget
 
     default_scope { weekly }
     delegate :current?, to: :budget_month
+    validates_uniqueness_of :budget_item_id, scope: :month
 
     def self.remaining
       all.inject(0) { |total, amount| total += amount.remaining }.to_f
