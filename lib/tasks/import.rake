@@ -11,7 +11,7 @@ namespace :pg do
     file = if ENV['file']
              "#{`pwd`.chomp}/db/dumps/#{ENV['file']}"
            else
-             "#{`pwd`.chomp}/db/dumps/current"
+             "#{`pwd`.chomp}/db/dumps/current.sql"
            end
     db_name = ActiveRecord::Base.connection.current_database
     command = "psql -d #{db_name} -f #{file}"
