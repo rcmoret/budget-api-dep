@@ -6,6 +6,7 @@ group :development do
 
   gem 'activerecord'
   gem 'pg', '~> 0.18'
+  gem 'pkg-config', '~> 1.1'
   gem 'rack-cors'
   gem 'rb-readline'
   gem 'sinatra-activerecord'
