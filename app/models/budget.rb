@@ -55,7 +55,8 @@ module Budget
 
     belongs_to :item, class_name: 'Budget::Item', foreign_key: :budget_item_id
     validates :item, presence: true
-    delegate :name, :default_amount, :expense?, :revenue?, to: :item
+    delegate :to_json, to: :to_hash
+    delegate :name, :default_amount, :expense?, :revenue?, :icon, to: :item
 
     validates :amount, numericality: { less_than_or_equal_to: 0 }, if: :expense?
     validates :amount, numericality: { greater_than_or_equal_to: 0 }, if: :revenue?
@@ -71,7 +72,6 @@ module Budget
     scope :monthly,  -> { joins(:item).merge(Budget::Item.monthly) }
 
     alias_attribute :item_id, :budget_item_id
-    delegate :to_json, to: :to_hash
 
     PUBLIC_ATTRS = %w(amount month).freeze
 
@@ -88,7 +88,7 @@ module Budget
     end
 
     def to_hash
-      { id: id, name: name, amount: amount, remaining: remaining, spent: spent,
+      { id: id, name: name, amount: amount, remaining: remaining, spent: spent, icon: icon,
         month: month, item_id: item_id, deletable: deletable?, expense: expense? }
     end
 
