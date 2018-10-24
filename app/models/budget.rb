@@ -50,19 +50,17 @@ module Budget
 
   class Amount < ActiveRecord::Base
     self.table_name = 'monthly_amounts'
+
     has_many :transactions, -> { includes(:account).ordered },
       class_name: 'Transaction::Record', foreign_key: :monthly_amount_id
-
     belongs_to :item, class_name: 'Budget::Item', foreign_key: :budget_item_id
-    validates :item, presence: true
+
     delegate :to_json, to: :to_hash
     delegate :name, :default_amount, :expense?, :revenue?, :icon, to: :item
 
+    validates :item, presence: true
     validates :amount, numericality: { less_than_or_equal_to: 0 }, if: :expense?
     validates :amount, numericality: { greater_than_or_equal_to: 0 }, if: :revenue?
-
-    before_validation :set_month!
-    before_validation :set_default_amount!, if: 'amount.nil?'
 
     scope :current,  -> { where(month: BudgetMonth.piped) }
     scope :expenses, -> { joins(:item).merge(Budget::Item.expenses).order('amount ASC') }
@@ -105,19 +103,11 @@ module Budget
     end
 
     def destroy
-      return false if transactions.any?
+      return false unless deletable?
       super
     end
 
     private
-
-    def set_default_amount!
-      self.amount = default_amount
-    end
-
-    def set_month!
-      self.month ||= BudgetMonth.piped
-    end
 
     def deletable?
       transactions.none?
@@ -138,7 +128,7 @@ module Budget
     end
 
     def remaining
-      transactions.any? ? 0 : amount.to_f
+      transactions.any? ? 0 : super
     end
   end
 
@@ -149,7 +139,7 @@ module Budget
     validates_uniqueness_of :budget_item_id, scope: :month
 
     def self.remaining
-      all.inject(0) { |total, amount| total += amount.remaining }.to_f
+      all.reduce(0) { |total, amount| total += amount.remaining }.to_f
     end
 
     def remaining
