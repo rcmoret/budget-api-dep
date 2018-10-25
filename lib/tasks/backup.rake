@@ -15,7 +15,7 @@ namespace :backup do
         print_green 'no change'
       else
         print_green 'pushing the backup to bitbucket'
-        `git add . && git commit --amend -m "update to dump (#{Time.now.strftime('%Y-%m-%d %H:%M')})" && git push -f`
+        `git add . && git commit -m "update to dump (#{Time.now.strftime('%Y-%m-%d %H:%M')})" && git push -f`
       end
     end
   end
