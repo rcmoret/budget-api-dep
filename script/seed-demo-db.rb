@@ -57,6 +57,14 @@ item_attrs = [
     monthly: true,
     icon: 'fas fa-home',
   },
+  {
+    key: 'electric_bill',
+    name: 'Electric',
+    default_amount: -100,
+    expense: true,
+    monthly: true,
+    icon: 'fas fa-plug',
+  },
   # monthly revenue
   {
     key: 'full_time_job',
@@ -76,6 +84,14 @@ item_attrs = [
     icon: 'fas fa-car',
   },
   # weekly expense
+  {
+    key: 'clothes',
+    name: 'Clothes and Shoes',
+    default_amount: -200,
+    expense: true,
+    monthly: false,
+    icon: 'fas fa-tshirt',
+  },
   {
     key: 'grocery',
     name: 'Grocery',
