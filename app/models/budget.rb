@@ -61,6 +61,7 @@ module Budget
     validates :item, presence: true
     validates :amount, numericality: { less_than_or_equal_to: 0 }, if: :expense?
     validates :amount, numericality: { greater_than_or_equal_to: 0 }, if: :revenue?
+    validates :month, format: { with: /\A(01|02|03|04|05|06|07|08|09|10|11|12)\|20\d{2}\Z/ }
 
     scope :current,  -> { where(month: BudgetMonth.piped) }
     scope :expenses, -> { joins(:item).merge(Budget::Item.expenses).order('amount ASC') }
