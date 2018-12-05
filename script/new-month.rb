@@ -37,7 +37,7 @@ end
 # end
 
 def prompt_include_monthly_amount(ma)
-  prompt("Do you want to include #{ma.name.upcase} in #{@target_month.print_month.upcase}'s budget?").chomp
+  prompt("Do you want to include #{ma.name.upcase} (#{ma.budget_item_id}) in #{@target_month.print_month.upcase}'s budget?").chomp
 end
 
 def get_monthly_amount(ma)
@@ -62,7 +62,7 @@ end
 
 puts "**** Let's do monthly budget items"
 monthly_amounts.each do |ma|
-  next unless prompt_include_monthly_amount(ma).match(/^y(es)?$/i)
+  next unless prompt_include_monthly_amount(ma).match(/^(y(es)?|1)$/i)
   amt = get_monthly_amount(ma)
   Budget::Amount.create(budget_item_id: ma.budget_item_id, amount: amt, month: @target_month.piped)
 end
