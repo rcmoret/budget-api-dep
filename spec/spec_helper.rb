@@ -11,7 +11,6 @@ RSpec.configure do |config|
   config.include(Helpers::CustomMatchers)
   config.include(Helpers::RequestHelpers)
   config.include(Rack::Test::Methods)
-  config.include(SharedExamples::AccountExamples)
   config.include(SharedExamples::TransactionExamples)
   config.include(Shoulda::Matchers::ActiveModel, type: :model)
   config.include(Shoulda::Matchers::ActiveRecord, type: :model)
@@ -41,6 +40,6 @@ end
 def app
   Rack::URLMap.new(
     '/accounts' => AccountsApi.new,
-    '/items' => ItemsApi.new
+    '/budget' => BudgetApi.new
   )
 end

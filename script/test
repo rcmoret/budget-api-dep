@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+RACK_ENV=test bundle exec rspec $@

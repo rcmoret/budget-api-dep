@@ -1,7 +1,13 @@
+require 'logger'
+
 module SharedHelpers
   def self.included(base)
     base.class_eval do
       before { content_type 'application/json' }
+      configure do
+        $logger = Logger.new(STDOUT)
+        $logger.level = Logger::INFO
+      end
     end
   end
 
@@ -21,11 +27,11 @@ module SharedHelpers
 
   def render_error(code, message = nil)
     $logger.warn message
-    halt code, { error: message }.to_json
+    halt code, { errors: message }.to_json
   end
 
   def render_404(resource, id)
-    render_error(404, "Could not find a(n) #{resource} with id: #{id}")
+    halt(404, "Could not find a(n) #{resource} with id: #{id}")
   end
 
   def render_new(resource)
@@ -36,8 +42,13 @@ module SharedHelpers
     [200, resource.to_json]
   end
 
-  def filtered_params(klass)
-    klass == Primary::Transaction ? filtered_transaction_params : request_params.slice(*klass::PUBLIC_ATTRS)
+  def params_for(klass)
+    case klass.to_s
+    when 'Primary::Transaction'
+      filtered_transaction_params
+    else
+      request_params.slice(*klass::PUBLIC_ATTRS)
+    end
   end
 
   def request_params
@@ -59,12 +70,6 @@ module SharedHelpers
     end
   rescue => e
     {}
-  end
-
-  def require_parameters! *args
-    return if args.all? { |key| request_params[key].present? }
-    missing_keys = args.select { |key| request_params[key].blank? }
-    render_error(422, "Missing required paramater(s): '#{missing_keys.join(', ')}'")
   end
 
   def budget_month

@@ -5,21 +5,33 @@ class Account < ActiveRecord::Base
   scope :by_priority, -> { order('priority asc') }
   scope :cash_flow, -> { where(cash_flow: true) }
   scope :non_cash_flow, -> { where(cash_flow: false) }
+  validates_presence_of :name, :priority
+  validates_uniqueness_of :name, :priority
 
-  PUBLIC_ATTRS = %w(name cash_flow health_savings_account).freeze
+  PUBLIC_ATTRS = %w(name cash_flow priority).freeze
 
-  def self.available_cash
-    cash_flow.joins(:transactions).sum(:amount).to_f
-  end
+  class << self
+    def total
+      sum(:amount)
+    end
 
-  def self.charged(budget_month = BudgetMonth.new)
-    non_cash_flow.joins(:transactions).merge(
-      Transaction::View.between(budget_month.date_range, include_pending: budget_month.current?).budget_inclusions
-    ).sum(:amount).to_f
-  end
+    def available_cash
+      cash_flow.joins(:transactions).total
+    end
 
-  def self.balance_prior_to(date)
-    cash_flow.joins(:transactions).merge(Transaction::View.cleared.prior_to(date)).sum(:amount).to_f
+    def charged(budget_month = BudgetMonth.new)
+      non_cash_flow.joins(:transactions).merge(
+        Transaction::View.budget_inclusions.between(
+          budget_month.date_range, include_pending: budget_month.current?
+        )
+      ).total
+    end
+
+    def balance_prior_to(date)
+      cash_flow.joins(:transactions).merge(
+        Transaction::View.cleared.prior_to(date)
+      ).total
+    end
   end
 
   def to_hash
@@ -44,5 +56,9 @@ class Account < ActiveRecord::Base
 
   def deleted?
     deleted_at.present?
+  end
+
+  def destroy
+    primary_transactions.any? ? update(deleted_at: Time.current) : super
   end
 end

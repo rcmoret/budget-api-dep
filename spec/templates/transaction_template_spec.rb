@@ -7,20 +7,73 @@ RSpec.describe TransactionTemplate do
   end
   let(:template) { TransactionTemplate.new(account).to_json }
   let(:budget_month) { BudgetMonth.new }
+
   describe '#to_json' do
     subject { JSON.parse(template) }
-    describe 'account' do
-      subject { super()['account'].except('created_at', 'updated_at') }
-      it { should eq account.to_hash.stringify_keys.except('created_at', 'updated_at') }
-    end
 
     describe 'metadata' do
       subject { super()['metadata'] }
       it 'should return some metadata' do
-        expect(subject['date_range'].first.to_date).to eq budget_month.first_day
-        expect(subject['date_range'].last.to_date).to eq budget_month.last_day
         expect(subject['prior_balance']).to eq transaction.amount
         expect(subject['query_options']).to be_empty
+      end
+
+      describe 'date range' do
+        let(:template) { TransactionTemplate.new(account, query).to_json }
+        let(:beginning_date) { Date.new(year, month, 1) }
+        let(:ending_date) { Date.new(year, month, -1) }
+
+        subject { super()['date_range'] }
+
+        let(:month) { (1..12).to_a.sample }
+        let(:year) { (2000..2099).to_a.sample }
+
+        context 'neither specified' do
+          let(:query) { {} }
+          before { Timecop.travel(Date.new(year, month, rand(28))) }
+          it { should eq [beginning_date, ending_date].map(&:to_s) }
+        end
+
+        context 'specified month/year' do
+          let(:query) { { month: month, year: year } }
+          it { should eq [beginning_date, ending_date].map(&:to_s) }
+        end
+
+        context 'specified month' do
+          let(:query) { { month: month } }
+          before { Timecop.travel(Date.new(year, month, rand(28))) }
+          it { should eq [beginning_date, ending_date].map(&:to_s) }
+        end
+
+        context 'a date is specified' do
+          before { Timecop.travel(Date.new(year, month, rand(28))) }
+          let(:query) { { date: Date.today.to_s } }
+          it { should eq [beginning_date, ending_date].map(&:to_s) }
+        end
+
+        context 'a range is specified' do
+          let(:query) { { first: first_date, last: last_date } }
+          let(:first_date) { Date.new(2000, 1, rand(31)) }
+          let(:last_date) { Date.new(2002, 12, rand(31)) }
+          it { should eq [first_date, last_date].map(&:to_s) }
+        end
+      end
+    end
+
+    describe 'transactions' do
+      let(:collection) { double(total: 0, as_collection: []) }
+      let(:transactions) { double('transactions', between: collection, prior_to: collection) }
+      before { allow(account).to receive(:transactions) { transactions } }
+      it 'calls between and as_collection' do
+        expect(transactions).to receive(:between)
+        expect(collection).to receive(:as_collection)
+        subject
+      end
+
+      it 'calls prior_to and total' do
+        expect(transactions).to receive(:prior_to)
+        expect(collection).to receive(:total)
+        subject
       end
     end
   end

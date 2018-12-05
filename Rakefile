@@ -34,6 +34,19 @@ namespace :app do
     Dir['./app/helpers/*_helpers.rb'].each { |f| require f }
     Dir['./app/api/*.rb'].each { |f| require f }
     Dir['./app/concerns/*.rb'].each { |f| require f }
+    # transaction modules and classes
+    require './app/models/transaction/shared'
+    require './app/models/transaction/view'
+    require './app/models/transaction/record'
+    require './app/models/transaction/sub_transaction'
+    require './app/models/transaction/primary_transaction'
+    # budget module and classes
+    require './app/models/budget/budget'
+    require './app/models/budget/shared'
+    require './app/models/budget/category'
+    require './app/models/budget/item'
+    require './app/models/budget/monthly_item'
+    require './app/models/budget/weekly_item'
     Dir['./app/models/*.rb'].each { |f| require f }
     Dir['./app/templates/*.rb'].each { |f| require f }
     Dir['./lib/*.rb'].each { |f| require f }

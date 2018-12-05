@@ -1,13 +1,4 @@
 class BudgetMonth
-
-  def self.piped(*args)
-    new(*args).piped
-  end
-
-  # def self.piped(*args)
-  #   create(*args).piped
-  # end
-
   attr_reader :date, :month
 
   # def create(**args)
@@ -90,6 +81,14 @@ class BudgetMonth
     month.year == today.year && month.month == today.month
   end
 
+  def self.date_hash(*args)
+    new(*args).date_hash
+  end
+
+  def date_hash
+    { month: budget_month, year: budget_year }
+  end
+
   def status
     case
     when current?
@@ -99,10 +98,6 @@ class BudgetMonth
     when today > first_day
       :past
     end
-  end
-
-  def piped
-    month.strftime('%m|%Y')
   end
 
   def previous
@@ -133,7 +128,7 @@ class BudgetMonth
 
   def determine(date: nil, month: nil, year: nil, **_opts)
     return today if date.nil? && month.nil?
-    return date if date.is_a?(Date)
+    return date.to_date if date.is_a?(Date) || date.to_s.match(/^\d{4}-\d{2}-\d{2}$/)
     Date.new((year || today.year).to_i, month.to_i, 1)
   end
 

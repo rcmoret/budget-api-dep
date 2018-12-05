@@ -10,7 +10,7 @@ app.Transaction = Backbone.Model.extend({
     'amount': null,
     'notes': null,
     'check_number': null,
-    'monthly_amount_id': null,
+    'budget_item_id': null,
     'subtransactions_attributes': []
   },
   urlRoot: function() {
@@ -36,15 +36,16 @@ app.Transaction = Backbone.Model.extend({
   },
   items: function() {
     if (_.isEmpty(this.subtransactions())) {
-      return this.get('budget_item')
+      return this.get('budget_category')
     } else {
       var itemArray = _.map(this.subtransactions(), function (sub) {
-        return sub.budget_item
+        return sub.budget_category
       })
-      var filteredItems = _.filter(itemArray, function(item) {
-        return item
-      })
-      return filteredItems.join(', ')
+      return itemArray.join(', ')
+      // var filteredItems = _.filter(itemArray, function(item) {
+      //   return category
+      // })
+      // return filteredItems.join(', ')
     }
   }
 });

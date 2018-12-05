@@ -1,5 +1,7 @@
 class TransactionTemplate
+
   attr_reader :account, :options
+
   def initialize(account, **options)
     @account = account
     @options = options
@@ -10,7 +12,7 @@ class TransactionTemplate
   private
 
   def hash
-    { account: account.to_hash, metadata: metadata, transactions: collection }
+    { metadata: metadata, transactions: collection }
   end
 
   def metadata
@@ -30,11 +32,11 @@ class TransactionTemplate
   def date_range
     @date_range ||= case
                     when options[:date]
-                      BudgetMonth.new(options[:date]).date_range
+                      BudgetMonth.new(date: options[:date]).date_range
                     when options[:month]
                       BudgetMonth.new(options).date_range
                     when options[:first] && options[:last]
-                      (options[:first]..options[:last])
+                      (options[:first].to_date..options[:last].to_date)
                     else
                       BudgetMonth.new.date_range
                     end

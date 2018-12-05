@@ -99,8 +99,8 @@ app.TransactionFormView = Backbone.View.extend({
   },
   disableFormFields: function() {
     this.$el.find('input[name="amount"]').attr('disabled', true)
-    this.$el.find('select[name="monthly_amount_id"]').attr('disabled', true)
-    this.$el.find('select[name="monthly_amount_id"]').val('')
+    this.$el.find('select[name="budget_item_id"]').attr('disabled', true)
+    this.$el.find('select[name="budget_item_id"]').val('')
   },
   updateAmount: function() {
     var targetInput = this.$el.find('.primary input[name="amount"]')

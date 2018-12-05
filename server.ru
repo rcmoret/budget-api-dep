@@ -14,8 +14,8 @@ map '/' do
   run Index.new
 end
 
-map '/items' do
-  run ItemsApi.new
+map '/budget' do
+  run BudgetApi.new
 end
 
 map '/accounts' do

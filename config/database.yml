@@ -1,6 +1,6 @@
 development:
   adapter: postgresql
-  database: checkbook_development
+  database: checkbook_new
   pool: 5
   timeout: 10
 

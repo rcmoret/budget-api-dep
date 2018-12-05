@@ -1,138 +1,154 @@
-class ItemsApi < Sinatra::Base
+class BudgetApi < Sinatra::Base
   register Sinatra::Namespace
   include SharedHelpers
 
-  get '/' do
-    render_collection(Budget::Item.active.search_order(budget_month.piped))
-  end
-
-  post '/' do
-    item.save ? render_new(item) : render_error(400, item.errors.join('; '))
-  end
-
-  get '/active' do
-    render_collection(Budget::Amount.active(budget_month.piped))
-  end
-
-  namespace %r{/(?<item_id>\d+)} do
+  namespace '/categories' do
     get '' do
-      item.to_json
+      render_collection(categories)
     end
 
-    put '' do
-      if item.update_attributes(update_params)
-        render_updated(item.to_hash)
+    post '' do
+      if category.save
+        render_new(category)
       else
-        render_error(400)
+        render_error(400, category.errors.to_hash)
       end
     end
 
-    post '/amount' do
-      amount.save ? render_new(amount) : render_error(400)
-    end
+    namespace %r{/(?<category_id>\d+)} do
+      put '' do
+        if category.update(category_params)
+          render_updated(category.to_hash)
+        else
+          render_error(400, category.errors.to_hash)
+        end
+      end
 
-    put %r{/amount/(?<amount_id>\d+)/?} do
-      if amount.update_attributes(amount_params)
-        render_updated(amount.to_hash)
-      else
-        render_error(400)
+      delete '' do
+        if category.destroy
+          [204, {}]
+        else
+          render_error(400, category.errors.to_hash)
+        end
+      end
+
+      namespace '/items' do
+        post '' do
+          item.save ? render_new(item) : render_error(400, item.errors.to_hash)
+        end
+
+        namespace %r{/(?<item_id>\d+)} do
+          put '' do
+            if item.update(item_params)
+              render_updated(item.to_hash)
+            else
+              render_error(400, item.errors.to_hash)
+            end
+          end
+
+          delete '' do
+            render_error(400, "Item with id: #{item.id} could not be deleted") unless item.deletable?
+            item.destroy
+            [204, {}]
+          end
+
+          get '/transactions' do
+            render_collection(item.transactions)
+          end
+        end
       end
     end
-
-    delete %r{/amount/(?<amount_id>\d+)/?} do
-      if amount.destroy
-        [200, {}.to_json]
-      else
-        render_error(400)
-      end
-    end
-
-    get %r{/amounts/(?<amount_id>\d+)/transactions/?} do
-      render_collection(amount.transactions)
-    end
   end
 
-  namespace '/amounts' do
-    get '/monthly' do
-      render_collection(Budget::MonthlyAmount.in(month.piped))
+  get '/monthly_items' do
+    render_collection(monthly_items)
+  end
+
+  get '/weekly_items' do
+    render_collection(weekly_items)
+  end
+
+  namespace '/discretionary' do
+    get '' do
+      [200, discretionary.to_json]
     end
 
-    get '/weekly' do
-      render_collection(Budget::WeeklyAmount.in(month.piped))
-    end
-
-    get '/discretionary' do
-      [200, Discretionary.new(month).to_json]
-    end
-
-    get '/discretionary/transactions' do
-      render_collection(Discretionary.new(month).transactions)
+    get '/transactions' do
+      render_collection(discretionary.transactions)
     end
   end
 
-  def amount_id
-    params['amount_id']
+  get '/selectable' do
+    render_collection(selectable_items)
   end
 
-  def amount
-    @amount ||= find_or_initialize_amount!
-  end
-
-  def amount_class
-    return Budget::Amount unless month.piped == request_params['month']
-    monthly? ? Budget::MonthlyAmount : Budget::WeeklyAmount
-  end
-
-  def month
-    @month ||= BudgetMonth.new(month: params[:month], year: params[:year])
-  end
-
-  def find_or_initialize_amount!
-    if amount_id.present?
-      amount_class.find_by(id: amount_id, item_id: item_id) || render_404('budget amount', amount_id)
-    else
-      initialize_amount!
-    end
-  end
-
-  def initialize_amount!
-    if monthly?
-      item.monthly_amounts.new(amount_params)
-    else
-      item.weekly_amounts.new(amount_params)
-    end
-  end
-
-  def monthly?
-    item.monthly?
-  end
-
-  def amount_params
-    @amt_param ||= filtered_params(Budget::Amount)
-  end
+  private
 
   def item_id
-    params['item_id']
+    @item_id ||= params['item_id']
   end
 
   def item
-    @item ||= find_or_create_item!
+    @item ||= find_or_initialize_item!
+  rescue ActiveRecord::RecordNotFound
+    render_404('budget_item', item_id)
   end
 
-  def find_or_create_item!
+  def find_or_initialize_item!
     if item_id.present?
-      Budget::Item.find_by_id(item_id) || render_404('budget_item', item_id)
+      Budget::Item.find_by(id: item_id, budget_category_id: category_id)
     else
-      Budget::Item.new(create_params)
+      category.items.new(item_params)
     end
   end
 
-  def create_params
-    require_parameters!('name', 'default_amount', 'monthly', 'expense')
-    filtered_params(Budget::Item)
+  def item_params
+    @item_param ||= params_for(Budget::Item)
   end
 
-  def update_params
-    filtered_params(Budget::Item)
+  def category_id
+    @category_id ||= params['category_id']
+  end
+
+  def category
+    @category ||= find_or_build_category!
+  rescue ActiveRecord::RecordNotFound
+    render_404('budget_category', category_id)
+  end
+
+  def find_or_build_category!
+    category_id.present? ? Budget::Category.find_by_id(category_id) : Budget::Category.new(category_params)
+  end
+
+  def category_params
+    @category_params ||= params_for(Budget::Category)
+  end
+
+  def categories
+    @categories ||= Budget::Category.active
+  end
+
+  def monthly_items
+    @monthly_items ||= Budget::MonthlyItem.in(date_hash)
+  end
+
+  def weekly_items
+    @weekly_items ||= Budget::WeeklyItem.in(date_hash)
+  end
+
+  def budget_month
+    @budget_month ||= BudgetMonth.new(params)
+  end
+
+  def discretionary
+    @discretionary ||= Discretionary.new(budget_month)
+  end
+
+  def seletable_items
+    @selectable_items ||= [*weekly_items, *monthly_item.pending].sort(&:name)
+  end
+
+  def date_hash
+    @date_hash ||= budget_month.date_hash
   end
 end

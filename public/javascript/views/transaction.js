@@ -127,7 +127,7 @@ app.TransactionView = Backbone.View.extend({
     }, this)
   },
   selectInput: function(data) {
-    var select = "<select name='monthly_amount_id'><option value=''"
+    var select = "<select name='budget_item_id'><option value=''"
     if (_.isUndefined(data['value'])) {
       select += " selected"
     }
@@ -136,7 +136,7 @@ app.TransactionView = Backbone.View.extend({
   },
   optionEl: function(item) {
     var opt =  '<option value="' + item.id + '"'
-    if (this.model.get('monthly_amount_id') === item.id) {
+    if (this.model.get('budget_item_id') === item.id) {
       opt += ' selected'
     }
     opt += '>'
@@ -158,7 +158,7 @@ app.TransactionView = Backbone.View.extend({
       $(el).html(markup)
     } else {
       var value = e.target.value === '' ? null : e.target.value
-      this.model.set({monthly_amount_id: value})
+      this.model.set({budget_item_id: value})
       this.model.save({wait: true})
     }
   },

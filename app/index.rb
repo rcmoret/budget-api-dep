@@ -5,6 +5,7 @@ class Index < Sinatra::Base
     $logger = Logger.new(STDOUT)
     $logger.level = Logger::INFO
   end
+
   get '/' do
     haml :index
   end
