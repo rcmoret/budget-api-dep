@@ -1,0 +1,4 @@
+#!/bin/bash
+
+RACK_ENV=demo ./script/seed-demo-db.rb
+RACK_ENV=demo rake
