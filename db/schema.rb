@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180806133430) do
+ActiveRecord::Schema.define(version: 20181220042844) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,7 +33,15 @@ ActiveRecord::Schema.define(version: 20180806133430) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "archived_at"
-    t.string "icon"
+    t.bigint "icon_id"
+    t.index ["icon_id"], name: "index_budget_items_on_icon_id"
+  end
+
+  create_table "icons", force: :cascade do |t|
+    t.string "name", limit: 100, null: false
+    t.string "class_name", limit: 100, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "monthly_amounts", force: :cascade do |t|
@@ -87,6 +95,7 @@ ActiveRecord::Schema.define(version: 20180806133430) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "budget_items", "icons"
   add_foreign_key "monthly_amounts", "budget_items"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "monthly_amounts"

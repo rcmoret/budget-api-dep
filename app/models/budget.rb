@@ -5,6 +5,7 @@ module Budget
     has_many :weekly_amounts, foreign_key: :budget_item_id
     has_many :monthly_amounts, foreign_key: :budget_item_id
     has_many :transactions, through: :amounts
+    belongs_to :icon
     validates :name, uniqueness: true, presence: true
 
     scope :monthly,      -> { where(monthly: true) }
@@ -56,7 +57,12 @@ module Budget
     belongs_to :item, class_name: 'Budget::Item', foreign_key: :budget_item_id
 
     delegate :to_json, to: :to_hash
-    delegate :name, :default_amount, :expense?, :revenue?, :icon, to: :item
+    delegate :name, :default_amount, :expense?, :revenue?, to: :item
+
+    def icon
+      return if item.icon.nil?
+      item.icon.class_name
+    end
 
     validates :item, presence: true
     validates :amount, numericality: { less_than_or_equal_to: 0 }, if: :expense?
