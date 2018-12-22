@@ -14,7 +14,7 @@ StandaloneMigrations::Tasks.load_tasks
 namespace :app do
   desc 'Start application in development'
   task start: :setup do
-    Rack::Server.start(config: './server.ru', Host: '0.0.0.0', Port: 8080)
+    Rack::Server.start(config: './server.ru', Host: '0.0.0.0', Port: 8088)
   end
   desc 'Start application console'
   task console: :setup do
