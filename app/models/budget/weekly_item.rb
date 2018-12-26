@@ -2,7 +2,6 @@ module Budget
   class WeeklyItem < ActiveRecord::Base
     include Budget::Shared
 
-    self.table_name = :weekly_items
     self.primary_key = :id
 
     def readonly?

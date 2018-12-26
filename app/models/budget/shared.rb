@@ -1,4 +1,9 @@
 module Budget
+
+  def self.table_name_prefix
+    'budget_'
+  end
+
   module Shared
     extend ActiveSupport::Concern
 

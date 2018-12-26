@@ -1,7 +1,7 @@
 class CreateWeeklyItemsView < ActiveRecord::Migration[5.1]
   def up
     execute <<-SQL
-      CREATE VIEW weekly_items AS
+      CREATE VIEW budget_weekly_items AS
         SELECT i.*,
           c.name AS name,
           c.expense AS expense,
