@@ -9,11 +9,11 @@ module Budget
     validates :default_amount, numericality: { greater_than_or_equal_to: 0 }, if: :revenue?
     validates :name, uniqueness: true, presence: true
 
-    scope :active,       -> { where(archived_at: nil) }
-    scope :monthly,      -> { where(monthly: true) }
-    scope :weekly,       -> { where(monthly: false) }
-    scope :expenses,     -> { where(expense: true) }
-    scope :revenues,     -> { where(expense: false) }
+    scope :active, -> { where(archived_at: nil) }
+    scope :monthly, -> { where(monthly: true) }
+    scope :weekly, -> { where(monthly: false) }
+    scope :expenses, -> { where(expense: true) }
+    scope :revenues, -> { where(expense: false) }
 
     delegate :to_json, to: :to_hash
     delegate :class_name, :name, to: :icon, prefix: true, allow_nil: true
