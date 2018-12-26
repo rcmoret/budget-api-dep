@@ -151,6 +151,6 @@ class AccountsApi < Sinatra::Base
   end
 
   def accounts
-    @accounts ||= Account.active.by_priority
+    @accounts ||= Account.active
   end
 end

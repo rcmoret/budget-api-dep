@@ -161,7 +161,7 @@ class BudgetApi < Sinatra::Base
   end
 
   def seletable_items
-    @selectable_items ||= [*weekly_items, *monthly_item.anticipated].sort(&:name)
+    @selectable_items ||= [*weekly_items, *monthly_item.anticipated]
   end
 
   def date_hash
