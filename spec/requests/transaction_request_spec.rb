@@ -113,8 +113,8 @@ RSpec.describe 'transaction endpoints', type: :request do
           { description: 'Kroger', clearance_date: '2015-01-04', budget_item_id: item.id }
         end
 
-        it 'returns a 400' do
-          expect(response.status).to be 400
+        it 'returns a 422' do
+          expect(response.status).to be 422
         end
 
         it 'returns an error message' do

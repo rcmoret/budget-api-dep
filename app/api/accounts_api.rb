@@ -7,32 +7,23 @@ class AccountsApi < Sinatra::Base
   end
 
   post %r{/?} do
-    if account.save
-      render_new(account.to_hash)
-    else
-      render_error(422, account.errors.to_hash)
-    end
+    create_account!
+    render_new(account)
   end
 
   namespace %r{/(?<account_id>\d+)} do
     get '' do
-      [200, account.to_hash.to_json]
+      [200, account.to_json]
     end
 
     put '' do
-      if account.update_attributes(update_params)
-        render_updated(account.to_hash)
-      else
-        render_error(400, account.errors.to_hash)
-      end
+      update_account!
+      render_updated(account)
     end
 
     delete '' do
-      if account.destroy
-        [204, {}]
-      else
-        render_error(400, account.errors.to_hash)
-      end
+      account.destroy
+      [204, {}]
     end
 
     get '/selectable_months' do
@@ -44,26 +35,20 @@ class AccountsApi < Sinatra::Base
     end
 
     post '/transactions' do
-      if transaction.save
-        render_new(transaction.to_hash)
-      else
-        render_error(400, transaction.errors.to_hash)
-      end
+      create_transaction!
+      render_new(transaction)
     end
 
     put %r{/transactions/(?<id>\d+)} do
-      if transaction.update(params_for(Primary::Transaction))
-        render_updated(transaction.to_hash)
-      else
-        render_error(400, transaction.errors.to_hash)
-      end
+      update_transaction!
+      render_updated(transaction)
     end
 
     delete %r{/transactions/(?<id>\d+)} do
       if transaction.destroy
         [204, {}.to_json]
       else
-        render_error(400, transaction.errors.to_hash)
+        render_error(422, transaction.errors.to_hash)
       end
     end
   end
@@ -93,27 +78,56 @@ class AccountsApi < Sinatra::Base
   end
 
   def find_or_build_account!
-    account_id.present? ? Account.find(account_id) : Account.new(create_params)
+    account_id.present? ? Account.find(account_id) : Account.new(account_params)
   rescue ActiveRecord::RecordNotFound
     render_404('account', account_id)
   end
 
-  def create_params
-    params_for(Account)
+  def create_account!
+    account.save!
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, account.errors.to_hash)
   end
-  alias :update_params :create_params
+
+  def update_account!
+    account.update!(account_params)
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, account.errors.to_hash)
+  end
+
+  def account_params
+    @account_params ||= params_for(Account)
+  end
 
   def transaction
     @transaction ||= find_or_build_transaction!
+  rescue ActiveRecord::RecordNotFound
+    render_404('transaction', transaction_id)
+  end
+
+  def create_transaction!
+    transaction.save!
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, transaction.errors.to_hash)
+  end
+
+  def update_transaction!
+    transaction.update!(transaction_params)
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, transaction.errors.to_hash)
   end
 
   def find_or_build_transaction!
-    transaction = account.primary_transactions.find_or_initialize_by(id: transaction_id)
-    return transaction if transaction.persisted?
-    transaction.assign_attributes(params_for(Primary::Transaction))
-    transaction
+    if transaction_id.present?
+      account.primary_transactions.find(transaction_id)
+    else
+      account.primary_transactions.build(transaction_params)
+    end
   end
 
+  def transaction_params
+    @transaction_params ||= params_for(Primary::Transaction)
+  end
   def selectable_months
     beginning_date = account.oldest_clearance_date.to_month
     ending_date = [Date.today.next_month, account.newest_clearance_date].max.to_month

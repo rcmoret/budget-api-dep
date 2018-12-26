@@ -34,6 +34,8 @@ class Account < ActiveRecord::Base
     end
   end
 
+  delegate :to_json, to: :to_hash
+
   def to_hash
     attributes.symbolize_keys.merge(balance: balance)
   end

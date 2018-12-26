@@ -8,46 +8,38 @@ class BudgetApi < Sinatra::Base
     end
 
     post '' do
-      if category.save
-        render_new(category)
-      else
-        render_error(400, category.errors.to_hash)
-      end
+      create_category!
+      render_new(category)
     end
 
     namespace %r{/(?<category_id>\d+)} do
       put '' do
-        if category.update(category_params)
-          render_updated(category.to_hash)
-        else
-          render_error(400, category.errors.to_hash)
-        end
+        update_category!
+        render_updated(category)
       end
 
       delete '' do
         if category.destroy
           [204, {}]
         else
-          render_error(400, category.errors.to_hash)
+          render_error(422, category.errors.to_hash)
         end
       end
 
       namespace '/items' do
         post '' do
-          item.save ? render_new(item) : render_error(400, item.errors.to_hash)
+          create_item!
+          render_new(item)
         end
 
         namespace %r{/(?<item_id>\d+)} do
           put '' do
-            if item.update(item_params)
-              render_updated(item.to_hash)
-            else
-              render_error(400, item.errors.to_hash)
-            end
+            update_item!
+            render_updated(item)
           end
 
           delete '' do
-            render_error(400, "Item with id: #{item.id} could not be deleted") unless item.deletable?
+            render_error(422, "Item with id: #{item.id} could not be deleted") unless item.deletable?
             item.destroy
             [204, {}]
           end
@@ -102,8 +94,20 @@ class BudgetApi < Sinatra::Base
     end
   end
 
+  def create_item!
+    item.save!
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, item.errors.to_hash)
+  end
+
+  def update_item!
+    item.update!(item_params)
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, item.errors.to_hash)
+  end
+
   def item_params
-    @item_param ||= params_for(Budget::Item)
+    @item_params ||= params_for(Budget::Item)
   end
 
   def category_id
@@ -118,6 +122,18 @@ class BudgetApi < Sinatra::Base
 
   def find_or_build_category!
     category_id.present? ? Budget::Category.find_by_id(category_id) : Budget::Category.new(category_params)
+  end
+
+  def create_category!
+    category.save!
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, category.errors.to_hash)
+  end
+
+  def update_category!
+    category.update!(category_params)
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, category.errors.to_hash)
   end
 
   def category_params
@@ -145,7 +161,7 @@ class BudgetApi < Sinatra::Base
   end
 
   def seletable_items
-    @selectable_items ||= [*weekly_items, *monthly_item.pending].sort(&:name)
+    @selectable_items ||= [*weekly_items, *monthly_item.anticipated].sort(&:name)
   end
 
   def date_hash
