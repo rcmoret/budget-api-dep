@@ -10,10 +10,6 @@ end
 
 use Sass::Plugin::Rack
 
-map '/' do
-  run Index.new
-end
-
 map '/budget' do
   run BudgetApi.new
 end
