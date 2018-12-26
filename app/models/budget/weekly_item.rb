@@ -24,10 +24,6 @@ module Budget
       extra_income? || over_budget? ? -difference : 0
     end
 
-    def difference
-      @difference ||= amount - total
-    end
-
     def to_hash
       super.merge(
         remaining: remaining,
@@ -40,6 +36,10 @@ module Budget
     end
 
     private
+
+    def difference
+      @difference ||= amount - total
+    end
 
     def budgeted_per_day
       @budgeted_per_day ||= amount / budget_month.total_days
