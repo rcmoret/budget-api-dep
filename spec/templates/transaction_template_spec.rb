@@ -30,7 +30,7 @@ RSpec.describe TransactionTemplate do
 
         context 'neither specified' do
           let(:query) { {} }
-          before { Timecop.travel(Date.new(year, month, rand(28))) }
+          before { Timecop.travel(Date.new(year, month, (1..28).to_a.sample)) }
           it { should eq [beginning_date, ending_date].map(&:to_s) }
         end
 
@@ -41,20 +41,20 @@ RSpec.describe TransactionTemplate do
 
         context 'specified month' do
           let(:query) { { month: month } }
-          before { Timecop.travel(Date.new(year, month, rand(28))) }
+          before { Timecop.travel(Date.new(year, month, (1..28).to_a.sample)) }
           it { should eq [beginning_date, ending_date].map(&:to_s) }
         end
 
         context 'a date is specified' do
-          before { Timecop.travel(Date.new(year, month, rand(28))) }
+          before { Timecop.travel(Date.new(year, month, (1..28).to_a.sample)) }
           let(:query) { { date: Date.today.to_s } }
           it { should eq [beginning_date, ending_date].map(&:to_s) }
         end
 
         context 'a range is specified' do
           let(:query) { { first: first_date, last: last_date } }
-          let(:first_date) { Date.new(2000, 1, rand(31)) }
-          let(:last_date) { Date.new(2002, 12, rand(31)) }
+          let(:first_date) { Date.new(2000, 1, (1..31).to_a.sample) }
+          let(:last_date) { Date.new(2002, 12, (1..31).to_a.sample) }
           it { should eq [first_date, last_date].map(&:to_s) }
         end
       end
