@@ -3,8 +3,8 @@ class CreateBudgetCategories < ActiveRecord::Migration[5.1]
     create_table :budget_categories do |t|
       t.string :name
       t.integer :default_amount, null: false
-      t.boolean :monthly, default: true
-      t.boolean :expense, default: true
+      t.boolean :monthly, default: true, null: false
+      t.boolean :expense, default: true, null: false
       t.timestamp :archived_at
 
       t.timestamps

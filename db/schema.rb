@@ -27,8 +27,8 @@ ActiveRecord::Schema.define(version: 20181211015450) do
   create_table "budget_categories", force: :cascade do |t|
     t.string "name"
     t.integer "default_amount", null: false
-    t.boolean "monthly", default: true
-    t.boolean "expense", default: true
+    t.boolean "monthly", default: true, null: false
+    t.boolean "expense", default: true, null: false
     t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
