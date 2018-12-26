@@ -32,11 +32,11 @@ RSpec.describe Primary::Transaction, type: :model do
   end
 
   describe 'column resets when subtransactions present' do
-    describe 'nil-ify amount' do
-      let(:sub_attrs) do
-        [{ description: 'Food', amount: -20 }, { description: 'Stuff', amount: -25 }]
-      end
+    let(:sub_attrs) do
+      [{ description: 'Food', amount: -20 }, { description: 'Stuff', amount: -25 }]
+    end
 
+    describe 'nil-ify amount' do
       context 'new transaction' do
         let(:transaction) do
           FactoryBot.create(:transaction, amount: -200, subtransactions_attributes: sub_attrs)
@@ -56,14 +56,21 @@ RSpec.describe Primary::Transaction, type: :model do
     end
 
     describe 'nil-ify budget_item_id' do
-      let(:sub_attrs) do
-        [{ description: 'Food', amount: -20 }, { description: 'Stuff', amount: -25 }]
-      end
       let(:item) { FactoryBot.create(:budget_item) }
       let(:transaction) { FactoryBot.create(:transaction, budget_item: item, subtransactions_attributes: sub_attrs) }
 
       context 'new transaction' do
         it { expect(transaction.budget_item_id).to be nil }
+      end
+
+      context 'update to transaction' do
+        let(:transaction) { FactoryBot.create(:transaction, budget_item: item) }
+
+        subject { transaction.update(subtransactions_attributes: sub_attrs) }
+
+        it 'nil-ifies the amount' do
+          expect { subject }.to change { transaction.reload.budget_item_id }.to(nil)
+        end
       end
     end
   end
