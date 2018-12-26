@@ -66,7 +66,6 @@ RSpec.describe Budget::MonthlyItem, type: :model do
       end
     end
 
-
     describe 'expense' do
       let(:mortgage_spent) { mortgage_budgeted + expected_amount }
       before { FactoryBot.create(:transaction, amount: mortgage_spent, budget_item: mortgage) }

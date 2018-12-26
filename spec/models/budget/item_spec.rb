@@ -29,12 +29,12 @@ RSpec.describe Budget::Item, type: :model do
       it { should be_valid }
     end
 
-    context 'month is not valid' do
+    context 'month is not valid - greater than 12' do
       let(:month) { 13 }
       it { should_not be_valid }
     end
 
-    context 'month is not valid' do
+    context 'month is not valid - 0' do
       let(:month) { 0 }
       it { should_not be_valid }
     end
@@ -49,12 +49,12 @@ RSpec.describe Budget::Item, type: :model do
       it { should be_valid }
     end
 
-    context 'month is not valid' do
+    context 'year is not valid - too old' do
       let(:year) { 1999 } # party time
       it { should_not be_valid }
     end
 
-    context 'month is not valid' do
+    context 'year is not valid - past some arbitrary date' do
       let(:year) { 2100 } # post apocalypse
       it { should_not be_valid }
     end

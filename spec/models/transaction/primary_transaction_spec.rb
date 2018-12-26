@@ -45,6 +45,13 @@ RSpec.describe Primary::Transaction, type: :model do
       end
 
       context 'update to transaction' do
+        let(:transaction) { FactoryBot.create(:transaction, amount: -200) }
+
+        subject { transaction.update(subtransactions_attributes: sub_attrs) }
+
+        it 'nil-ifies the amount' do
+          expect { subject }.to change { transaction.reload.amount }.to(nil)
+        end
       end
     end
 
@@ -59,7 +66,6 @@ RSpec.describe Primary::Transaction, type: :model do
         it { expect(transaction.budget_item_id).to be nil }
       end
     end
-
   end
 
   describe 'budget item validation (for monthly items)' do
@@ -133,7 +139,6 @@ RSpec.describe Primary::Transaction, type: :model do
     let(:transfer) { FactoryBot.create(:transfer) }
     let(:transaction) { transfer.from_transaction }
     let(:new_amount) { transaction.amount * 2 }
-
 
     subject { transaction.update(amount: new_amount) }
 
