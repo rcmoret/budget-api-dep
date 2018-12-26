@@ -47,7 +47,7 @@ RSpec.describe Account, type: :model do
         name: account.name,
         balance: 0.0,
         cash_flow: true,
-        deleted_at: nil,
+        archived_at: nil,
         priority: account.priority,
         created_at: account.created_at,
         updated_at: account.updated_at,
@@ -64,7 +64,7 @@ RSpec.describe Account, type: :model do
     context 'transactions exist' do
       before { FactoryBot.create(:transaction, account: account) }
       it 'soft deletes the account' do
-        expect { subject }.to change { account.reload.deleted_at? }
+        expect { subject }.to change { account.reload.archived_at }
       end
 
       it 'does not change the number of accounts' do

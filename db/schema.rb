@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20181211015450) do
     t.string "name", null: false
     t.boolean "cash_flow", default: true
     t.integer "priority", null: false
-    t.datetime "deleted_at"
+    t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

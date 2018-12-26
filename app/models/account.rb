@@ -1,7 +1,7 @@
 class Account < ActiveRecord::Base
   has_many :transactions, class_name: 'Transaction::View'
   has_many :primary_transactions, class_name: 'Primary::Transaction'
-  scope :active, -> { where(deleted_at: nil) }
+  scope :active, -> { where(archived_at: nil) }
   scope :by_priority, -> { order('priority asc') }
   scope :cash_flow, -> { where(cash_flow: true) }
   scope :non_cash_flow, -> { where(cash_flow: false) }
@@ -57,10 +57,10 @@ class Account < ActiveRecord::Base
   end
 
   def deleted?
-    deleted_at.present?
+    archived_at.present?
   end
 
   def destroy
-    primary_transactions.any? ? update(deleted_at: Time.current) : super
+    primary_transactions.any? ? update(archived_at: Time.current) : super
   end
 end

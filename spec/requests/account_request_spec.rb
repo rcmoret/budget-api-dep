@@ -168,7 +168,7 @@ RSpec.describe 'AccountsApi', type: :request do
       end
 
       it 'updates deleted_at on the record' do
-        expect { response }.to change { account.reload.deleted_at }
+        expect { response }.to change { account.reload.archived_at }
       end
 
       it 'soft deletes the record' do
