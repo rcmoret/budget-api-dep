@@ -64,17 +64,19 @@ def get_target(amount)
   end
 end
 
-def accrue(amount)
-  target = get_target(amount)
-  target.update(amount: (amount.remaining + target.amount))
+def accrue(weekly_amount, remaining = :all)
+  target = get_target(weekly_amount)
+  accrual_amount = remaining == :all ? weekly_amount.remaining : remaining
+  target.update(amount: (accrual_amount + target.amount))
 end
 
 def snowball
   @snowball ||= []
 end
 
-def add_to_snowball(amount)
-  snowball << { amount_id: amount.id, amount: amount.remaining }
+def add_to_snowball(amount, remaining = :all)
+  to_add = remaining == :all ? amount.remaining : remaining
+  snowball << { amount_id: amount.id, amount: to_add }
 end
 
 monthly_amounts.each do |ma|
@@ -98,7 +100,18 @@ def weekly_amount_prompt(weekly_amount)
   str += "Do you want to:\n"
   str += " (1) Accrue it?\n"
   str += " (2) Include #{weekly_amount.name} in a debt payment?\n"
-  str += " (3) Screw it and let it become discretionary?"
+  str += " (3) Partial debt/partial accrual?\n"
+  str += " (4) Screw it and let it become discretionary?"
+end
+
+def prompt_fraction(weekly_amount)
+  str =  "\n\n\n#{weekly_amount.name} #{sprintf('%.2f', weekly_amount.remaining)} remaining \n"
+  str += "How much should go to the snowball?\n"
+  to_add = prompt(str).to_f
+  add_to_snowball(weekly_amount, to_add)
+  str =  "How much should go to accrual? (remaining: #{sprintf('%.2f', weekly_amount.remaining - to_add)})\n"
+  accrual = prompt(str).to_f
+  accrue(weekly_amount, accrual)
 end
 
 weekly_amounts.each do |wa|
@@ -108,6 +121,8 @@ weekly_amounts.each do |wa|
     accrue(wa)
   when '2'
     add_to_snowball(wa)
+  when '3'
+    prompt_fraction(wa)
   end
 end
 
@@ -165,9 +180,9 @@ end
 
 def prompt_payment_accounts
   length = non_cashflow_accounts.pluck(:name).max_by(&:length).length
-  puts "|  id | #{'Account'.center(length, ' ')} |"
+  puts "|  id | #{'Account'.center(length, ' ')} | Balance   |"
   non_cashflow_accounts.each do |account|
-    puts "| #{account.id.to_s.rjust(3, ' ')} | #{account.name.ljust(length, ' ')} |"
+    puts "| #{account.id.to_s.rjust(3, ' ')} | #{account.name.ljust(length, ' ')} | #{('$' + sprintf('%.2f', account.balance)).rjust(9, ' ')} |"
   end
 end
 
