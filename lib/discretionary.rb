@@ -29,7 +29,7 @@ class Discretionary
   private
 
   def remaining
-    @remaining ||= determine_remaining
+    @remaining ||= determine_remaining.to_i
   end
 
   def determine_remaining
@@ -60,7 +60,7 @@ class Discretionary
   end
 
   def amount
-    @amount ||= (remaining - spent - over_under_budget)
+    @amount ||= (remaining - spent - over_under_budget).to_i
   end
 
   def spent
