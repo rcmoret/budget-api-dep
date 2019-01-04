@@ -21,10 +21,12 @@ RSpec.describe Transaction::View, type: :model do
         amount: record.amount,
         subtransactions: [],
         budget_exclusion: false,
+        icon_class_name: icon.class_name,
         updated_at: record.updated_at,
       }
     end
-    let(:category) { FactoryBot.create(:category, :weekly, :expense, name: 'Grocery') }
+    let(:icon) { FactoryBot.create(:icon) }
+    let(:category) { FactoryBot.create(:category, :weekly, :expense, name: 'Grocery', icon: icon) }
     let(:budget_item) { FactoryBot.create(:budget_item, :expense, category: category) }
     let(:record) do
       FactoryBot.create(:transaction,
@@ -56,6 +58,7 @@ RSpec.describe Transaction::View, type: :model do
           budget_category: category.name,
           amount: subtransaction.amount,
           description: subtransaction.description,
+          icon_class_name: icon.class_name,
         }
       end
       let(:new_total) { subtransaction.amount }
