@@ -83,7 +83,7 @@ RSpec.describe Budget::WeeklyItem, type: :model do
     let(:budget_month) do
       instance_double(BudgetMonth, days_remaining: days_remaining, total_days: total_days)
     end
-    let(:item) { FactoryBot.create(:budget_item) }
+    let(:item) { FactoryBot.create(:weekly_item) }
     let(:category) { item.category }
     let(:remaining) { item.amount - spent }
     let(:spent) { 0 }
@@ -103,7 +103,7 @@ RSpec.describe Budget::WeeklyItem, type: :model do
         budgeted_per_day: (item.amount / total_days),
         budgeted_per_week: ((item.amount / total_days) * 7),
         remaining_per_day: (remaining / days_remaining),
-        remaining_per_week: ((remaining * 7) / days_remaining),
+        remaining_per_week: ((remaining / days_remaining) * 7),
         deletable: deletable?
       }
     end
