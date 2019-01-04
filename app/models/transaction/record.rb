@@ -25,7 +25,7 @@ module Transaction
     end
 
     def to_hash
-      attributes.symbolize_keys
+      attributes.symbolize_keys.merge(account_name: account_name)
     end
   end
 end
