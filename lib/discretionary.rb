@@ -12,6 +12,7 @@ class Discretionary
       spent: spent,
       over_under_budget: over_under_budget,
       remaining: remaining,
+      expense: true,
       budgeted_per_day: budgeted_per_day,
       budgeted_per_week: budgeted_per_week,
       remaining_per_day: remaining_per_day,
