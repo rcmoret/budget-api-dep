@@ -29,7 +29,7 @@ module Budget
     end
 
     def to_hash
-      attributes.slice(*PUBLIC_ATTRS).symbolize_keys
+      attributes.slice(*PUBLIC_ATTRS).symbolize_keys.merge(icon_class_name: icon_class_name)
     end
 
     def archived?

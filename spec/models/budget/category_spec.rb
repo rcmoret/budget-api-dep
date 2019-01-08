@@ -53,7 +53,7 @@ RSpec.describe Budget::Category, type: :model do
     it 'returns a simplified hash' do
       expected_hash = category.attributes.symbolize_keys.except(
         :updated_at, :created_at, :archived_at
-      )
+      ).merge(icon_class_name: nil)
       expect(subject).to eq expected_hash
     end
   end
