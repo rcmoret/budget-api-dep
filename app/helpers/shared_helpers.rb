@@ -26,7 +26,7 @@ module SharedHelpers
   end
 
   def render_error(code, message = nil)
-    $logger.warn message
+    $logger.warn message unless ENV['RACK_ENV'] == 'test'
     halt code, { errors: message }.to_json
   end
 
