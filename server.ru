@@ -12,3 +12,7 @@ end
 map '/accounts' do
   run AccountsApi.new
 end
+
+map '/icons' do
+  run IconsApi.new
+end
