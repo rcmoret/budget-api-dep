@@ -160,8 +160,8 @@ class BudgetApi < Sinatra::Base
     @discretionary ||= Discretionary.new(budget_month)
   end
 
-  def seletable_items
-    @selectable_items ||= [*weekly_items, *monthly_item.anticipated]
+  def selectable_items
+    @selectable_items ||= [*weekly_items, *monthly_items.anticipated]
   end
 
   def date_hash

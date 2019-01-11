@@ -1,5 +1,6 @@
 module Budget
   class MonthlyItem < Item
+
     default_scope { monthly.includes(:category) }
 
     TRANSACTIONS_JOIN = %Q{LEFT JOIN (#{::Transaction::Record.all.to_sql}) t ON t.budget_item_id = "budget_items".id}.freeze
