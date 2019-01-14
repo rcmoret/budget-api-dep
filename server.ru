@@ -5,12 +5,12 @@ use Rack::Cors do
   end
 end
 
-map '/budget' do
-  run BudgetApi.new
-end
-
 map '/accounts' do
   run AccountsApi.new
+end
+
+map '/budget' do
+  run BudgetApi.new
 end
 
 map '/icons' do
