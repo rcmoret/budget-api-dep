@@ -42,5 +42,6 @@ def app
     '/accounts' => AccountsApi.new,
     '/budget' => BudgetApi.new,
     '/icons' => IconsApi.new,
+    '/transfers' => TransfersApi.new,
   )
 end

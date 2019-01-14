@@ -10,6 +10,12 @@ class Transfer < ActiveRecord::Base
     transactions.each(&:destroy)
   end
 
+  def to_hash
+    attributes.merge(
+      to_transaction: to_transaction.to_hash, from_transaction: from_transaction.to_hash
+    )
+  end
+
   private
 
   def update_transactions!(destroy: false)

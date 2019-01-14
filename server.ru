@@ -16,3 +16,7 @@ end
 map '/icons' do
   run IconsApi.new
 end
+
+map '/transfers' do
+  run TransfersApi.new
+end
