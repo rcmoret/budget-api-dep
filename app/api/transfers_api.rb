@@ -10,10 +10,33 @@ class TransfersApi < Sinatra::Base
     [201, transfer.to_json]
   end
 
+  delete %r{/(?<id>\d+)} do
+    transfer.destroy
+    [200, {}]
+  end
+
   private
 
+  def id
+    @id ||= params[:id]
+  end
+
   def transfer
-    @transfer ||= Transfer::Generator.create(
+    @transfer ||= fetch_or_create_transfer
+  end
+
+  def fetch_or_create_transfer
+    id.present? ? fetch_transfer : create_transfer
+  end
+
+  def fetch_transfer
+    Transfer.find(id)
+  rescue ActiveRecord::RecordNotFound
+    render_404('transfer', id.to_s)
+  end
+
+  def create_transfer
+    Transfer::Generator.create(
       to_account: to_account, from_account: from_account, amount: amount
     )
   end

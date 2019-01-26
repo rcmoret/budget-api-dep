@@ -128,6 +128,7 @@ class AccountsApi < Sinatra::Base
   def transaction_params
     @transaction_params ||= params_for(Primary::Transaction)
   end
+
   def selectable_months
     beginning_date = account.oldest_clearance_date.to_month
     ending_date = [Date.today.next_month, account.newest_clearance_date].max.to_month

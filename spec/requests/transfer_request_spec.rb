@@ -156,4 +156,39 @@ RSpec.describe 'transfer requests' do
       end
     end
   end
+
+  describe 'delete' do
+    let!(:transfer) { FactoryBot.create(:transfer) }
+
+    subject { delete "/transfers/#{transfer.id}" }
+
+    it 'deletes the transfer record' do
+      expect { subject }.to change { Transfer.count }.by(-1)
+    end
+
+    it 'deletes the transactions too' do
+      expect { subject }.to change { Transaction::Record.count }.by(-2)
+    end
+
+    it 'returns a 200' do
+      expect(subject.status).to be 200
+    end
+
+    it 'returns an empty body' do
+      expect(subject.body). to be_empty
+    end
+
+    context 'bad id' do
+
+      subject { delete "/transfers/1#{transfer.id}" }
+
+      it 'returns a 404' do
+        expect(subject.status).to be 404
+      end
+
+      it 'includes an error message' do
+        expect(subject.body).to eq "Could not find a(n) transfer with id: 1#{transfer.id}"
+      end
+    end
+  end
 end
