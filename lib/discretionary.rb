@@ -5,18 +5,26 @@ class Discretionary
     @budget_month = budget_month
   end
 
+  delegate :days_remaining, to: :budget_month
+
   def to_hash
     {
       name: 'Discretionary',
       amount: amount,
       spent: spent,
       over_under_budget: over_under_budget,
-      remaining: remaining,
+      remaining: {
+        remaining_budgeted: remaining_budgeted,
+        available_cash: available_cash,
+        charged: charged,
+        total: remaining,
+      },
       expense: true,
       budgeted_per_day: budgeted_per_day,
       budgeted_per_week: budgeted_per_week,
       remaining_per_day: remaining_per_day,
       remaining_per_week: remaining_per_week,
+      days_remaining: days_remaining,
     }
   end
 
