@@ -92,4 +92,68 @@ RSpec.describe 'transfer requests' do
       end
     end
   end
+
+  describe 'post' do
+    let(:endpoint) { '/transfers' }
+    let(:checking_account) { FactoryBot.create(:account) }
+    let(:savings_account) { FactoryBot.create(:account) }
+    let(:to_account_id) { savings_account.id }
+    let(:from_account_id) { checking_account.id }
+    let(:amount) { (100..1000).to_a.sample }
+    let(:body) do
+      { to_account_id: to_account_id, from_account_id: from_account_id, amount: amount }
+    end
+
+    subject { post endpoint, body }
+
+    context 'happy path' do
+      it 'returns a 201' do
+        expect(subject.status).to be 201
+      end
+
+      it 'creates a transfer record' do
+        expect { subject }.to change { Transfer.count }.by(+1)
+      end
+
+      it 'creates to transaction records' do
+        expect { subject }.to change { Transaction::Record.count }.by(+2)
+      end
+    end
+
+    context 'looking for an "to_account" that does not exist' do
+      let(:to_account_id) { "1#{savings_account.id}0" }
+      it 'returns a 404' do
+        expect(subject.status).to be 404
+      end
+
+      it 'responds with an error message' do
+        expect(subject.body).to eq "Could not find a(n) account with id: #{to_account_id}"
+      end
+    end
+
+    context 'looking for an "from_account" that does not exist' do
+      let(:from_account_id) { "1#{checking_account.id}0" }
+      it 'returns a 404' do
+        expect(subject.status).to be 404
+      end
+
+      it 'responds with an error message' do
+        expect(subject.body).to eq "Could not find a(n) account with id: #{from_account_id}"
+      end
+    end
+
+    context 'amount is not passed' do
+      let(:body) do
+        { to_account_id: to_account_id, from_account_id: from_account_id }
+      end
+
+      it 'returns a 422' do
+        expect(subject.status).to be 422
+      end
+
+      it 'responds with an error message' do
+        expect(JSON.parse(subject.body)['errors']).to eq 'Amount not provided'
+      end
+    end
+  end
 end
