@@ -54,19 +54,19 @@ class Discretionary
   end
 
   def available_cash
-    @available_cash ||= Account.available_cash
+    @available_cash ||= Account.available_cash.to_i
   end
 
   def beginning_balance
-    @beginning_balance ||= Account.balance_prior_to(first_day)
+    @beginning_balance ||= Account.balance_prior_to(first_day).to_i
   end
 
   def remaining_budgeted
-    @remaining_budgeted ||= Budget::Item.remaining_for(date_hash)
+    @remaining_budgeted ||= Budget::Item.remaining_for(date_hash).to_i
   end
 
   def charged
-    @charged ||= Account.charged
+    @charged ||= Account.charged.to_i
   end
 
   def amount
@@ -74,27 +74,23 @@ class Discretionary
   end
 
   def spent
-    @spent ||= transactions.total
+    @spent ||= transactions.total.to_i
   end
 
   def over_under_budget
-    @over_under_budget ||= Budget::Item.over_under_budget(date_hash)
+    @over_under_budget ||= Budget::Item.over_under_budget(date_hash).to_i
   end
 
   def budgeted_per_day
-    @budgeted_per_day ||= (amount / total_days)
+    @budgeted_per_day ||= (amount / total_days).to_i
   end
 
   def remaining_per_day
-    @remaining_per_day ||= if current?
-                             (remaining / days_remaining)
-                           else
-                             budgeted_per_day
-                           end
+    @remaining_per_day ||= current? ? (remaining / days_remaining).to_i : budgeted_per_day
   end
 
   def remaining_per_week
-    @remaining_per_week ||= (remaining_per_day * 7)
+    @remaining_per_week ||= (remaining_per_day * 7).to_i
   end
 
   def budgeted_per_week
