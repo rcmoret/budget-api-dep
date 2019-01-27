@@ -5,7 +5,8 @@ class Discretionary
     @budget_month = budget_month
   end
 
-  delegate :days_remaining, to: :budget_month
+  delegate :current?, :date_hash, :date_range, :days_remaining,
+    :first_day, :status, :total_days, to: :budget_month
 
   def to_hash
     {
@@ -30,7 +31,7 @@ class Discretionary
 
   def transactions
     @transactions ||=
-      Transaction::Record.between(budget_month.date_range, include_pending: budget_month.current?)
+      Transaction::Record.between(date_range, include_pending: current?)
         .discretionary
         .ordered
   end
@@ -42,11 +43,11 @@ class Discretionary
   end
 
   def determine_remaining
-    case budget_month.status
+    case status
     when :current
       available_cash + remaining_budgeted + charged
     when :future
-      Budget::Item.in(budget_month.date_hash).sum(:amount)
+      Budget::Item.in(date_hash).sum(:amount)
     when :past
       beginning_balance + remaining_budgeted + over_under_budget + spent
     end
@@ -57,11 +58,11 @@ class Discretionary
   end
 
   def beginning_balance
-    @beginning_balance ||= Account.balance_prior_to(budget_month.first_day)
+    @beginning_balance ||= Account.balance_prior_to(first_day)
   end
 
   def remaining_budgeted
-    @remaining_budgeted ||= Budget::Item.remaining_for(budget_month.date_hash)
+    @remaining_budgeted ||= Budget::Item.remaining_for(date_hash)
   end
 
   def charged
@@ -77,16 +78,16 @@ class Discretionary
   end
 
   def over_under_budget
-    @over_under_budget ||= Budget::Item.over_under_budget(budget_month.date_hash)
+    @over_under_budget ||= Budget::Item.over_under_budget(date_hash)
   end
 
   def budgeted_per_day
-    @budgeted_per_day ||= (amount / budget_month.total_days)
+    @budgeted_per_day ||= (amount / total_days)
   end
 
   def remaining_per_day
-    @remaining_per_day ||= if budget_month.current?
-                             (remaining / budget_month.days_remaining)
+    @remaining_per_day ||= if current?
+                             (remaining / days_remaining)
                            else
                              budgeted_per_day
                            end
