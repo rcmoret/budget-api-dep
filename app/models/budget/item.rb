@@ -17,13 +17,5 @@ module Budget
     PUBLIC_ATTRS = %w(amount month year budget_category_id).freeze
 
     delegate :name, :icon_class_name, :expense?, :monthly?, to: :category
-
-    def self.remaining_for(date_hash)
-      MonthlyItem.in(date_hash).remaining + WeeklyItem.in(date_hash).remaining
-    end
-
-    def self.over_under_budget(date_hash)
-      MonthlyItem.in(date_hash).over_under_budget + WeeklyItem.in(date_hash).over_under_budget
-    end
   end
 end

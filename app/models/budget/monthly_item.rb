@@ -8,16 +8,22 @@ module Budget
     scope :anticipated, -> { joins(TRANSACTIONS_JOIN).where('t.id IS NULL') }
     scope :cleared, -> { joins(TRANSACTIONS_JOIN).where('t.id IS NOT NULL') }
 
-    def self.remaining
-      anticipated.sum(:amount)
-    end
-
-    def self.over_under_budget
-      cleared.sum('t.amount') - cleared.sum(:amount)
-    end
-
     def readonly?
       true
+    end
+
+    def to_hash
+      attributes.merge(spent: spent, deletable: deletable?)
+    end
+
+    private
+
+    def spent
+      transactions.total
+    end
+
+    def deletable?
+      transactions.none?
     end
   end
 end
