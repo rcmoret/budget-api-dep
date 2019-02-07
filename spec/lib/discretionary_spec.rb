@@ -11,9 +11,6 @@ RSpec.describe Discretionary do
       allow(Account).to receive(:charged) { charged }
     end
     let(:budget_month) { BudgetMonth.new }
-    let(:expected_remaining) do
-      [items_remaining, available_cash, charged].reduce(:+)
-    end
     let(:discretionary) { Discretionary.new(budget_month).to_hash }
 
     describe '[:name]' do
@@ -36,21 +33,6 @@ RSpec.describe Discretionary do
       it { should be charged }
     end
 
-    describe '[:remaining][:total]' do
-      subject { discretionary[:remaining][:total] }
-      it { should be expected_remaining }
-    end
-
-    describe '[:amount]' do
-      let(:spent) { (-10000..-1000).to_a.sample }
-      let(:expected_amount) { expected_remaining - spent }
-      before { FactoryBot.create(:transaction, amount: spent) }
-
-      subject { discretionary[:amount] }
-
-      it { expect(subject).to eq expected_amount }
-    end
-
     describe '[:over_under_budget]' do
       let(:amount) { (-1000..1000).to_a.sample }
       before { allow(Budget::Item).to receive(:over_under_budget) { amount } }
@@ -63,6 +45,11 @@ RSpec.describe Discretionary do
     describe '[:days_remaining]' do
       subject { discretionary[:days_remaining] }
       it { should be budget_month.days_remaining }
+    end
+
+    describe '[:total_days]' do
+      subject { discretionary[:total_days] }
+      it { should be budget_month.total_days }
     end
   end
 end
