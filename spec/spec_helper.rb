@@ -1,5 +1,6 @@
 ENV['RACK_ENV'] = 'test'
 require 'rake'
+require 'active_support/testing/time_helpers'
 require 'database_cleaner'
 Bundler.require(:test)
 load ENV['PWD'] + '/Rakefile'
@@ -15,6 +16,7 @@ RSpec.configure do |config|
   config.include(Shoulda::Matchers::ActiveModel, type: :model)
   config.include(Shoulda::Matchers::ActiveRecord, type: :model)
   config.include(Shoulda::Matchers::Independent)
+  config.include(ActiveSupport::Testing::TimeHelpers)
 
   config.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true
@@ -22,11 +24,9 @@ RSpec.configure do |config|
 
   config.disable_monkey_patching!
 
-  if config.files_to_run.one?
-    config.default_formatter = 'doc'
-  end
+  config.default_formatter = 'doc' if config.files_to_run.one?
 
-  FactoryBot.definition_file_paths = %w{./spec/factories}
+  FactoryBot.definition_file_paths = %w[./spec/factories]
   FactoryBot.find_definitions
   config.before(:suite) do
     DatabaseCleaner.strategy = :truncation
