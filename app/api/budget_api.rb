@@ -52,26 +52,14 @@ class BudgetApi < Sinatra::Base
     end
   end
 
-  get '/monthly_items' do
-    render_collection(monthly_items)
-  end
-
-  get '/weekly_items' do
-    render_collection(weekly_items)
+  get '/items' do
+    render_collection(items)
   end
 
   namespace '/discretionary' do
-    get '' do
-      [200, discretionary.to_json]
-    end
-
     get '/transactions' do
       render_collection(discretionary.transactions)
     end
-  end
-
-  get '/selectable' do
-    render_collection(selectable_items)
   end
 
   private
@@ -144,12 +132,8 @@ class BudgetApi < Sinatra::Base
     @categories ||= Budget::Category.active
   end
 
-  def monthly_items
-    @monthly_items ||= Budget::MonthlyItem.in(date_hash)
-  end
-
-  def weekly_items
-    @weekly_items ||= Budget::WeeklyItem.in(date_hash)
+  def items
+    @items ||= Budget::ItemView.in(date_hash)
   end
 
   def budget_month
@@ -158,10 +142,6 @@ class BudgetApi < Sinatra::Base
 
   def discretionary
     @discretionary ||= Discretionary.new(budget_month)
-  end
-
-  def selectable_items
-    @selectable_items ||= [*weekly_items, *monthly_items.anticipated]
   end
 
   def date_hash

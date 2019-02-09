@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 RSpec.describe 'Budget Item request specs' do
-  describe 'GET /budget/monthly_items' do # index
+  describe 'GET /budget/items' do # index
     let(:month) { Date.today.month }
     let(:rent) { FactoryBot.create(:monthly_expense, month: month) }
     let(:phone) { FactoryBot.create(:monthly_expense, month: month) }
-    let!(:items) { [rent, phone] }
+    let!(:items) { Budget::ItemView.find(rent.id, phone.id) }
     before { FactoryBot.create(:weekly_expense) }
-    let(:endpoint) { '/budget/monthly_items' }
+    let(:endpoint) { '/budget/items' }
 
     subject { get endpoint }
 
@@ -16,20 +16,21 @@ RSpec.describe 'Budget Item request specs' do
     end
 
     it 'returns the items as JSON' do
-      parsed_body = JSON.parse(subject.body)
-      expect(parsed_body).to eq items.map(&:to_hash).map(&:stringify_keys)
+      parsed_body = JSON.parse(subject.body).map { |hash| hash.except('created_at', 'updated_at') }
+      expected = items.map(&:to_hash).map(&:stringify_keys).map { |hash| hash.except('created_at', 'updated_at') }
+      expect(parsed_body).to eq expected
     end
   end
 
-  describe 'GET /budget/weekly_items' do # index
+  describe 'GET /budget/items' do # index
     let(:month) { Date.today.month }
     let(:grocery) { FactoryBot.create(:weekly_expense, month: month) }
     let(:gas) { FactoryBot.create(:weekly_expense, month: month) }
     let!(:items) do
-      [Budget::WeeklyItem.find(grocery.id), Budget::WeeklyItem.find(gas.id)]
+      [Budget::ItemView.find(grocery.id), Budget::ItemView.find(gas.id)]
     end
     before { FactoryBot.create(:monthly_expense) }
-    let(:endpoint) { '/budget/weekly_items' }
+    let(:endpoint) { '/budget/items' }
 
     subject { get endpoint }
 
@@ -38,8 +39,8 @@ RSpec.describe 'Budget Item request specs' do
     end
 
     it 'returns the items as JSON' do
-      parsed_body = JSON.parse(subject.body)
-      expect(parsed_body).to eq items.map(&:to_hash).map(&:stringify_keys)
+      parsed_body = JSON.parse(subject.body).map { |hash| hash.except('created_at', 'updated_at') }
+      expect(parsed_body).to eq items.map(&:to_hash).map(&:stringify_keys).map { |hash| hash.except('created_at', 'updated_at') }
     end
   end
 
@@ -98,8 +99,8 @@ RSpec.describe 'Budget Item request specs' do
 
     context 'transactions exist' do
       before { FactoryBot.create(:transaction, budget_item: item) }
-      it 'returns a 400' do
-        expect(subject.status).to be 400
+      it 'returns a 422' do
+        expect(subject.status).to be 422
       end
     end
   end
@@ -108,7 +109,7 @@ RSpec.describe 'Budget Item request specs' do
     let(:item) { FactoryBot.create(:budget_item) }
     let(:category) { item.category }
     let!(:transaction) { FactoryBot.create(:subtransaction, budget_item: item) }
-    let(:expected_transactions) { [Transaction::Record.find(transaction.id)].to_json }
+    let(:expected_transactions) { [Transaction::Record.find(transaction.id).to_hash].to_json }
     let(:endpoint) do
       "/budget/categories/#{category.id}/items/#{item.id}/transactions"
     end
