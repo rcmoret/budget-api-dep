@@ -1,0 +1,16 @@
+development:
+  adapter: postgresql
+  database: checkbook_development
+  pool: 5
+  timeout: 10
+
+test:
+  adapter: postgresql
+  database: checkbook_test
+  pool: 5
+
+demo:
+  adapter: postgresql
+  database: checkbook_demo
+  pool: 5
+  timeout: 10
