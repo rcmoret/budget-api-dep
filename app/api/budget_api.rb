@@ -53,7 +53,7 @@ class BudgetApi < Sinatra::Base
   end
 
   get '/items' do
-    render_collection(items)
+    [200, { metadata: discretionary, collection: items}.to_json]
   end
 
   namespace '/discretionary' do

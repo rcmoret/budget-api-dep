@@ -11,11 +11,6 @@ RSpec.describe Discretionary do
     let(:budget_month) { BudgetMonth.new }
     let(:discretionary) { Discretionary.new(budget_month).to_hash }
 
-    describe '[:name]' do
-      subject { discretionary[:name] }
-      it { expect(subject).to eq 'Discretionary' }
-    end
-
     describe '[:balance]' do
       subject { discretionary[:balance] }
 

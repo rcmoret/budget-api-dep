@@ -9,10 +9,8 @@ class Discretionary
 
   def to_hash
     {
-      name: 'Discretionary',
       spent: spent,
       balance: balance,
-      expense: true,
       days_remaining: days_remaining,
       total_days: total_days,
     }
