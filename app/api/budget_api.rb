@@ -137,7 +137,7 @@ class BudgetApi < Sinatra::Base
   end
 
   def budget_month
-    @budget_month ||= BudgetMonth.new(params)
+    @budget_month ||= BudgetMonth.new(sym_params)
   end
 
   def discretionary
