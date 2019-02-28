@@ -12,3 +12,7 @@
 /public/uploads/*
 /tmp/
 .gitmodules
+
+/config/database.yml
+
+.ruby-version

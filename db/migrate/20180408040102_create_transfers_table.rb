@@ -6,5 +6,9 @@ class CreateTransfersTable < ActiveRecord::Migration[5.1]
 
       t.timestamps
     end
+
+    add_foreign_key :transactions, :transfers
+    add_foreign_key :transfers, :transactions, column: :to_transaction_id
+    add_foreign_key :transfers, :transactions, column: :from_transaction_id
   end
 end

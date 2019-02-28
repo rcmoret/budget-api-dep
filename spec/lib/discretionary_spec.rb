@@ -2,16 +2,29 @@ require 'spec_helper'
 
 RSpec.describe Discretionary do
   context 'current month' do
+    let(:available_cash) { (3000..3400).to_a.sample }
+    let(:charged) { (-1000..100).to_a.sample }
     before do
-      allow(Budget::MonthlyAmount).to receive(:remaining).and_return(10)
-      allow(Budget::WeeklyAmount).to receive(:remaining).and_return(20)
-      allow(Account).to receive(:available_cash).and_return(0)
-      allow(Account).to receive(:charged).and_return(-2)
+      allow(Account).to receive(:available_cash) { available_cash }
+      allow(Account).to receive(:charged) { charged }
     end
-    let(:month) { BudgetMonth.new }
-    subject { Discretionary.new(month).to_hash }
-    it { expect(subject[:remaining]).to eq 28 }
-    it { expect(subject[:name]).to eq 'Discretionary' }
-    it { expect(subject[:amount]).to eq 28 }
+    let(:budget_month) { BudgetMonth.new }
+    let(:discretionary) { Discretionary.new(budget_month).to_hash }
+
+    describe '[:balance]' do
+      subject { discretionary[:balance] }
+
+      it { expect(subject).to eq (available_cash + charged) }
+    end
+
+    describe '[:days_remaining]' do
+      subject { discretionary[:days_remaining] }
+      it { should be budget_month.days_remaining }
+    end
+
+    describe '[:total_days]' do
+      subject { discretionary[:total_days] }
+      it { should be budget_month.total_days }
+    end
   end
 end

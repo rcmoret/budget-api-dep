@@ -1,138 +1,150 @@
-class ItemsApi < Sinatra::Base
+class BudgetApi < Sinatra::Base
   register Sinatra::Namespace
   include SharedHelpers
 
-  get '/' do
-    render_collection(Budget::Item.active.search_order(budget_month.piped))
-  end
-
-  post '/' do
-    item.save ? render_new(item) : render_error(400, item.errors.join('; '))
-  end
-
-  get '/active' do
-    render_collection(Budget::Amount.active(budget_month.piped))
-  end
-
-  namespace %r{/(?<item_id>\d+)} do
+  namespace '/categories' do
     get '' do
-      item.to_json
+      render_collection(categories)
     end
 
-    put '' do
-      if item.update_attributes(update_params)
-        render_updated(item.to_hash)
-      else
-        render_error(400)
+    post '' do
+      create_category!
+      render_new(category)
+    end
+
+    namespace %r{/(?<category_id>\d+)} do
+      put '' do
+        update_category!
+        render_updated(category)
+      end
+
+      delete '' do
+        if category.destroy
+          [204, {}]
+        else
+          render_error(422, category.errors.to_hash)
+        end
+      end
+
+      namespace '/items' do
+        post '' do
+          create_item!
+          render_new(item)
+        end
+
+        namespace %r{/(?<item_id>\d+)} do
+          put '' do
+            update_item!
+            render_updated(item)
+          end
+
+          delete '' do
+            render_error(422, "Item with id: #{item.id} could not be deleted") unless item.deletable?
+            item.destroy
+            [204, {}]
+          end
+
+          get '/transactions' do
+            render_collection(item.transactions)
+          end
+        end
       end
     end
+  end
 
-    post '/amount' do
-      amount.save ? render_new(amount) : render_error(400)
-    end
+  get '/items' do
+    [200, { metadata: discretionary, collection: items}.to_json]
+  end
 
-    put %r{/amount/(?<amount_id>\d+)/?} do
-      if amount.update_attributes(amount_params)
-        render_updated(amount.to_hash)
-      else
-        render_error(400)
-      end
-    end
-
-    delete %r{/amount/(?<amount_id>\d+)/?} do
-      if amount.destroy
-        [200, {}.to_json]
-      else
-        render_error(400)
-      end
-    end
-
-    get %r{/amounts/(?<amount_id>\d+)/transactions/?} do
-      render_collection(amount.transactions)
+  namespace '/discretionary' do
+    get '/transactions' do
+      render_collection(discretionary.transactions)
     end
   end
 
-  namespace '/amounts' do
-    get '/monthly' do
-      render_collection(Budget::MonthlyAmount.in(month.piped))
-    end
-
-    get '/weekly' do
-      render_collection(Budget::WeeklyAmount.in(month.piped))
-    end
-
-    get '/discretionary' do
-      [200, Discretionary.new(month).to_json]
-    end
-
-    get '/discretionary/transactions' do
-      render_collection(Discretionary.new(month).transactions)
-    end
-  end
-
-  def amount_id
-    params['amount_id']
-  end
-
-  def amount
-    @amount ||= find_or_initialize_amount!
-  end
-
-  def amount_class
-    return Budget::Amount unless month.piped == request_params['month']
-    monthly? ? Budget::MonthlyAmount : Budget::WeeklyAmount
-  end
-
-  def month
-    @month ||= BudgetMonth.new(month: params[:month], year: params[:year])
-  end
-
-  def find_or_initialize_amount!
-    if amount_id.present?
-      amount_class.find_by(id: amount_id, item_id: item_id) || render_404('budget amount', amount_id)
-    else
-      initialize_amount!
-    end
-  end
-
-  def initialize_amount!
-    if monthly?
-      item.monthly_amounts.new(amount_params)
-    else
-      item.weekly_amounts.new(amount_params)
-    end
-  end
-
-  def monthly?
-    item.monthly?
-  end
-
-  def amount_params
-    @amt_param ||= filtered_params(Budget::Amount)
-  end
+  private
 
   def item_id
-    params['item_id']
+    @item_id ||= params['item_id']
   end
 
   def item
-    @item ||= find_or_create_item!
+    @item ||= find_or_initialize_item!
+  rescue ActiveRecord::RecordNotFound
+    render_404('budget_item', item_id)
   end
 
-  def find_or_create_item!
+  def find_or_initialize_item!
     if item_id.present?
-      Budget::Item.find_by_id(item_id) || render_404('budget_item', item_id)
+      Budget::Item.find_by(id: item_id, budget_category_id: category_id)
     else
-      Budget::Item.new(create_params)
+      category.items.new(item_params)
     end
   end
 
-  def create_params
-    require_parameters!('name', 'default_amount', 'monthly', 'expense')
-    filtered_params(Budget::Item)
+  def create_item!
+    item.save!
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, item.errors.to_hash)
   end
 
-  def update_params
-    filtered_params(Budget::Item)
+  def update_item!
+    item.update!(item_params)
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, item.errors.to_hash)
+  end
+
+  def item_params
+    @item_params ||= params_for(Budget::Item)
+  end
+
+  def category_id
+    @category_id ||= params['category_id']
+  end
+
+  def category
+    @category ||= find_or_build_category!
+  rescue ActiveRecord::RecordNotFound
+    render_404('budget_category', category_id)
+  end
+
+  def find_or_build_category!
+    category_id.present? ? Budget::Category.find_by_id(category_id) : Budget::Category.new(category_params)
+  end
+
+  def create_category!
+    category.save!
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, category.errors.to_hash)
+  end
+
+  def update_category!
+    category.update!(category_params)
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, category.errors.to_hash)
+  end
+
+  def category_params
+    @category_params ||= params_for(Budget::Category)
+  end
+
+  def categories
+    @categories ||= Budget::Category.active
+  end
+
+  def items
+    @items ||= Budget::ItemView.in(date_hash)
+  end
+
+  def budget_month
+    @budget_month ||= BudgetMonth.new(sym_params)
+  end
+
+  def discretionary
+    @discretionary ||= Discretionary.new(budget_month)
+  end
+
+  def date_hash
+    @date_hash ||= budget_month.date_hash
   end
 end

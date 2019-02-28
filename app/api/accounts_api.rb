@@ -2,25 +2,28 @@ class AccountsApi < Sinatra::Base
   register Sinatra::Namespace
   include SharedHelpers
 
-  get '/' do
-    render_collection(Account.active.by_priority)
+  get %r{/?} do
+    render_collection(accounts)
   end
 
-  post '/' do
-    account.save ? render_new(account.to_hash) : render_error(400, account.errors.inspect)
+  post %r{/?} do
+    create_account!
+    render_new(account)
   end
 
   namespace %r{/(?<account_id>\d+)} do
     get '' do
-      account.to_hash.to_json
+      [200, account.to_json]
     end
 
     put '' do
-      if account.update_attributes(filtered_params(Account))
-        render_updated(account.to_hash)
-      else
-        render_error(400, account.errors.inspect)
-      end
+      update_account!
+      render_updated(account)
+    end
+
+    delete '' do
+      account.destroy
+      [204, {}]
     end
 
     get '/selectable_months' do
@@ -28,24 +31,36 @@ class AccountsApi < Sinatra::Base
     end
 
     get '/transactions' do
-      transaction_template.to_json
+      [200, transaction_template.to_json]
     end
 
     post '/transactions' do
-      transaction.save ? render_new(transaction.to_hash) : render_error(400, transaction.errors.inspect)
+      create_transaction!
+      render_new(transaction)
     end
 
     put %r{/transactions/(?<id>\d+)} do
-      if transaction.update_attributes(filtered_params(Primary::Transaction))
-        render_updated(transaction.to_hash)
-      else
-        render_error(400, transaction.errors.inspect)
-      end
+      update_transaction!
+      render_updated(transaction)
     end
 
     delete %r{/transactions/(?<id>\d+)} do
-      transaction.destroy ? [200, {}.to_json] : render_error(400, transaction.errors.inspect)
+      if transaction.destroy
+        [204, {}.to_json]
+      else
+        render_error(422, transaction.errors.to_hash)
+      end
     end
+  end
+
+  not_found do
+    msg = if body.include?('<h1>Not Found</h1>')
+            "#{request.fullpath} is not a valid route"
+          else
+            body
+          end
+    status 404
+    json({ errors: msg })
   end
 
   private
@@ -63,27 +78,55 @@ class AccountsApi < Sinatra::Base
   end
 
   def find_or_build_account!
-    if account_id.present?
-      Account.find_by_id(account_id) || render_404('account', account_id)
-    else
-      Account.new(create_params)
-    end
+    account_id.present? ? Account.find(account_id) : Account.new(account_params)
+  rescue ActiveRecord::RecordNotFound
+    render_404('account', account_id)
   end
 
-  def create_params
-    require_parameters!('name')
-    filtered_params(Account)
+  def create_account!
+    account.save!
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, account.errors.to_hash)
+  end
+
+  def update_account!
+    account.update!(account_params)
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, account.errors.to_hash)
+  end
+
+  def account_params
+    @account_params ||= params_for(Account)
   end
 
   def transaction
     @transaction ||= find_or_build_transaction!
+  rescue ActiveRecord::RecordNotFound
+    render_404('transaction', transaction_id)
+  end
+
+  def create_transaction!
+    transaction.save!
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, transaction.errors.to_hash)
+  end
+
+  def update_transaction!
+    transaction.update!(transaction_params)
+  rescue ActiveRecord::RecordInvalid
+    render_error(422, transaction.errors.to_hash)
   end
 
   def find_or_build_transaction!
-    transaction = account.primary_transactions.find_or_initialize_by(id: transaction_id)
-    return transaction if transaction.persisted?
-    transaction.assign_attributes(filtered_params(Primary::Transaction))
-    transaction
+    if transaction_id.present?
+      account.primary_transactions.find(transaction_id)
+    else
+      account.primary_transactions.build(transaction_params)
+    end
+  end
+
+  def transaction_params
+    @transaction_params ||= params_for(Primary::Transaction)
   end
 
   def selectable_months
@@ -96,12 +139,9 @@ class AccountsApi < Sinatra::Base
 
   def filtered_transaction_params
     params = request_params.slice(*Primary::Transaction::PUBLIC_ATTRS)
-    if request_params['subtransactions_attributes'].blank?
-      params['subtransactions_attributes'] = []
-    else
-      params['subtransactions_attributes'] = request_params['subtransactions_attributes'].map do |id, attrs|
-        attrs.slice(*Sub::Transaction::PUBLIC_ATTRS)
-      end
+    return params if request_params['subtransactions_attributes'].blank?
+    params['subtransactions_attributes'] = request_params['subtransactions_attributes'].map do |attrs|
+      attrs.slice(*Sub::Transaction::PUBLIC_ATTRS)
     end
     params
   end
@@ -109,5 +149,9 @@ class AccountsApi < Sinatra::Base
   def transaction_template
     @transaction_template ||=
       TransactionTemplate.new(account, sym_params.merge(include_pending: budget_month.current?))
+  end
+
+  def accounts
+    @accounts ||= Account.active
   end
 end

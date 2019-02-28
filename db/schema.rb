@@ -10,31 +10,39 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181220042844) do
+ActiveRecord::Schema.define(version: 20190101172413) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "accounts", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.boolean "cash_flow", default: true
-    t.boolean "health_savings_account", default: false
+    t.integer "priority", null: false
+    t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
-    t.integer "priority"
+  end
+
+  create_table "budget_categories", force: :cascade do |t|
+    t.string "name"
+    t.integer "default_amount", null: false
+    t.boolean "monthly", default: true, null: false
+    t.boolean "expense", default: true, null: false
+    t.datetime "archived_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "icon_id"
+    t.index ["icon_id"], name: "index_budget_categories_on_icon_id"
   end
 
   create_table "budget_items", force: :cascade do |t|
-    t.string "name"
-    t.decimal "default_amount", null: false
-    t.boolean "monthly", default: true
-    t.boolean "expense", default: true
+    t.integer "month"
+    t.integer "year"
+    t.integer "amount"
+    t.integer "budget_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "archived_at"
-    t.bigint "icon_id"
-    t.index ["icon_id"], name: "index_budget_items_on_icon_id"
   end
 
   create_table "icons", force: :cascade do |t|
@@ -44,30 +52,23 @@ ActiveRecord::Schema.define(version: 20181220042844) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "monthly_amounts", force: :cascade do |t|
-    t.string "month"
-    t.decimal "amount"
-    t.integer "budget_item_id"
-    t.index ["budget_item_id"], name: "index_monthly_amounts_on_budget_item_id"
-  end
-
   create_table "transactions", force: :cascade do |t|
     t.string "description"
-    t.decimal "amount"
+    t.integer "amount"
     t.date "clearance_date"
-    t.integer "check_number"
+    t.string "check_number"
     t.integer "account_id"
-    t.integer "monthly_amount_id"
+    t.integer "budget_item_id"
     t.integer "primary_transaction_id"
     t.text "notes"
     t.string "receipt"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.boolean "budget_exclusion", default: false
     t.integer "transfer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_transactions_on_account_id"
-    t.index ["monthly_amount_id"], name: "index_transactions_on_monthly_amount_id"
-    t.index ["primary_transaction_id"], name: "index_transactions_on_primary_transaction_id"
+    t.index ["budget_item_id"], name: "index_transactions_on_budget_item_id"
+    t.index ["transfer_id"], name: "index_transactions_on_transfer_id"
   end
 
   create_table "transfers", force: :cascade do |t|
@@ -95,9 +96,11 @@ ActiveRecord::Schema.define(version: 20181220042844) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "budget_items", "icons"
-  add_foreign_key "monthly_amounts", "budget_items"
+  add_foreign_key "budget_categories", "icons"
+  add_foreign_key "budget_items", "budget_categories"
   add_foreign_key "transactions", "accounts"
-  add_foreign_key "transactions", "monthly_amounts"
-  add_foreign_key "transactions", "transactions", column: "primary_transaction_id"
+  add_foreign_key "transactions", "budget_items"
+  add_foreign_key "transactions", "transfers"
+  add_foreign_key "transfers", "transactions", column: "from_transaction_id"
+  add_foreign_key "transfers", "transactions", column: "to_transaction_id"
 end

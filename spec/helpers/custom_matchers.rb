@@ -2,9 +2,10 @@ module Helpers
   module CustomMatchers
     RSpec::Matchers.define :be_a_boolean do |expected|
       match do |actual|
-        actual == true || actual == false
+        actual === true || actual === false
       end
     end
+
     RSpec::Matchers.define :include_these do |*expected|
       match do |actual|
         expected.all? { |e| actual.include?(e) }

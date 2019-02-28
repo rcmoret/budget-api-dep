@@ -4,6 +4,18 @@ abort unless ENV['RACK_ENV'] == 'demo'
 require 'bundler/setup'
 Bundler.require(:development)
 Dir['./app/concerns/*.rb'].each { |f| require f }
+# transaction modules and classes
+require './app/models/transaction/shared'
+require './app/models/transaction/view'
+require './app/models/transaction/record'
+require './app/models/transaction/sub_transaction'
+require './app/models/transaction/primary_transaction'
+# budget module and classes
+require './app/models/budget/shared'
+require './app/models/budget/category'
+require './app/models/budget/item'
+require './app/models/budget/monthly_item'
+require './app/models/budget/weekly_item'
 Dir['./app/models/*.rb'].each { |f| require f }
 Dir['./lib/*.rb'].each { |f| require f }
 require 'irb'
@@ -45,9 +57,9 @@ accounts.values.each do |account|
   )
 end
 
-# budget items/categories
+# budget categories
 
-item_attrs = [
+category_attrs = [
   # monthly expense
   {
     key: 'mortgage',
@@ -102,14 +114,17 @@ item_attrs = [
   },
 ]
 
-items = item_attrs.reduce({}) do |hash, attrs|
-  hash.merge(attrs[:key] => Budget::Item.create(attrs.except(:key)))
+categories = category_attrs.reduce({}) do |hash, attrs|
+  hash.merge(attrs[:key] => Budget::Category.create(attrs.except(:key)))
 end
 
 # budget amounts
 
-items.values.each do |item|
-  Budget::Amount.create(month: BudgetMonth.piped, budget_item_id: item.id, amount: item.default_amount)
+date_hash = BudgetMonth.new.date_hash
+month, year = date_hash.values_at(:month, :year)
+
+categories.values.each do |category|
+  Budget::Item.create(month: month, year: year, budget_category_id: category.id, amount: category.default_amount))
 end
 
 exit 1
