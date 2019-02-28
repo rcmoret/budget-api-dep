@@ -5,7 +5,7 @@ class Discretionary
     @budget_month = budget_month
   end
 
-  delegate :current?, :date_range, :days_remaining, :total_days, to: :budget_month
+  delegate :current?, :date_hash, :date_range, :days_remaining, :total_days, to: :budget_month
 
   def to_hash
     {
@@ -13,7 +13,7 @@ class Discretionary
       balance: balance,
       days_remaining: days_remaining,
       total_days: total_days,
-    }
+    }.merge(date_hash)
   end
 
   def transactions
@@ -26,7 +26,7 @@ class Discretionary
   private
 
   def balance
-    @balance ||= Account.available_cash.to_i + Account.charged.to_i
+    @balance ||= current? ? Account.available_cash.to_i + Account.charged.to_i : 0
   end
 
   def spent

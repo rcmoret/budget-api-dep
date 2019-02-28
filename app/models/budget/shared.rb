@@ -24,11 +24,10 @@ module Budget
         id: id,
         name: name,
         amount: amount,
-        category_id: budget_category_id,
+        budget_category_id: budget_category_id,
         icon_class_name: icon_class_name,
         month: month,
         year: year,
-        deletable: deletable?,
         expense: expense?,
       }
     end
