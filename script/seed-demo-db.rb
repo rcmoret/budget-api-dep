@@ -11,7 +11,7 @@ ActiveRecord::Base.logger = nil
 
 # cleanup
 
-[Transaction::Record, Account, Budget::Amount, Budget::Item].each do |klass|
+[Primary::Transaction, Account, Budget::Amount, Budget::Item].each do |klass|
   klass.destroy_all
 end
 
@@ -55,7 +55,7 @@ item_attrs = [
     default_amount: -800,
     expense: true,
     monthly: true,
-    icon: 'fas fa-home',
+    icon: Icon.find_or_create_by(class_name: 'fas fa-home'),
   },
   {
     key: 'electric_bill',
@@ -63,7 +63,7 @@ item_attrs = [
     default_amount: -100,
     expense: true,
     monthly: true,
-    icon: 'fas fa-plug',
+    icon: Icon.find_or_create_by(class_name: 'fas fa-plug'),
   },
   # monthly revenue
   {
@@ -72,7 +72,7 @@ item_attrs = [
     default_amount: 3000,
     expense: false,
     monthly: true,
-    icon: 'fas fa-dollar-sign',
+    icon: Icon.find_or_create_by(class_name: 'fas fa-dollar-sign'),
   },
   # weekly revenue
   {
@@ -81,7 +81,7 @@ item_attrs = [
     default_amount: 300,
     expense: false,
     monthly: false,
-    icon: 'fas fa-car',
+    icon: Icon.find_or_create_by(class_name: 'fas fa-car'),
   },
   # weekly expense
   {
@@ -90,7 +90,7 @@ item_attrs = [
     default_amount: -200,
     expense: true,
     monthly: false,
-    icon: 'fas fa-tshirt',
+    icon: Icon.find_or_create_by(class_name: 'fas fa-tshirt'),
   },
   {
     key: 'grocery',
@@ -98,7 +98,7 @@ item_attrs = [
     default_amount: -500,
     expense: true,
     monthly: false,
-    icon: 'fas fa-car',
+    icon: Icon.find_or_create_by(class_name: 'fas fa-car'),
   },
 ]
 
