@@ -2,45 +2,52 @@ require 'spec_helper'
 
 RSpec.describe 'Budget Item request specs' do
   describe 'GET /budget/items' do # index
-    let(:month) { Date.today.month }
-    let(:rent) { FactoryBot.create(:monthly_expense, month: month) }
-    let(:phone) { FactoryBot.create(:monthly_expense, month: month) }
-    let!(:items) { Budget::ItemView.find(rent.id, phone.id) }
-    before { FactoryBot.create(:weekly_expense) }
+    let(:today) { Date.today }
+    let(:month) { today.month }
+    let(:year) { today.year }
+    let(:budget_month) { BudgetMonth.new(month: month, year: year) }
+    let(:rent) { FactoryBot.create(:monthly_expense, month: month, year: year) }
+    let(:phone) { FactoryBot.create(:monthly_expense, month: month, year: year) }
+    let(:grocery) { FactoryBot.create(:weekly_expense, month: month, year: year) }
+    let!(:items) { Budget::ItemView.find(rent.id, phone.id, grocery.id) }
+    let(:balance) { Account.available_cash.to_i }
+    let(:spent) do
+      Transaction::Record.between(budget_month.date_range, include_pending: budget_month.current?)
+        .discretionary
+        .sum(:amount)
+        .to_i
+    end
+    before do
+      FactoryBot.create(:transaction, budget_item: rent, amount: rent.amount, clearance_date: today)
+    end
     let(:endpoint) { '/budget/items' }
 
     subject { get endpoint }
 
-    it 'retuns a 200' do
-      expect(subject.status).to be 200
-    end
+    describe 'GET /budget/items' do # index
+      it 'retuns a 200' do
+        expect(subject.status).to be 200
+      end
 
-    it 'returns the items as JSON' do
-      parsed_body = JSON.parse(subject.body).map { |hash| hash.except('created_at', 'updated_at') }
-      expected = items.map(&:to_hash).map(&:stringify_keys).map { |hash| hash.except('created_at', 'updated_at') }
-      expect(parsed_body).to eq expected
-    end
-  end
+      it 'returns some metadata' do
+        parsed_body = JSON.parse(subject.body)
+        expected_metadata = {
+          'balance' => balance,
+          'days_remaining' => budget_month.days_remaining,
+          'month' => month,
+          'spent' => spent,
+          'total_days' => budget_month.total_days,
+          'year' => year,
+        }
+        expect(parsed_body['metadata']).to eq expected_metadata
+      end
 
-  describe 'GET /budget/items' do # index
-    let(:month) { Date.today.month }
-    let(:grocery) { FactoryBot.create(:weekly_expense, month: month) }
-    let(:gas) { FactoryBot.create(:weekly_expense, month: month) }
-    let!(:items) do
-      [Budget::ItemView.find(grocery.id), Budget::ItemView.find(gas.id)]
-    end
-    before { FactoryBot.create(:monthly_expense) }
-    let(:endpoint) { '/budget/items' }
-
-    subject { get endpoint }
-
-    it 'retuns a 200' do
-      expect(subject.status).to be 200
-    end
-
-    it 'returns the items as JSON' do
-      parsed_body = JSON.parse(subject.body).map { |hash| hash.except('created_at', 'updated_at') }
-      expect(parsed_body).to eq items.map(&:to_hash).map(&:stringify_keys).map { |hash| hash.except('created_at', 'updated_at') }
+      it 'returns a collection of items as JSON' do
+        parsed_body = JSON.parse(subject.body)
+        actual_items = parsed_body['collection'].map { |hash| hash.except('created_at', 'updated_at') }
+        expected = items.map(&:reload).map(&:to_hash).map(&:stringify_keys).map { |hash| hash.except('created_at', 'updated_at') }
+        expect(actual_items).to eq expected
+      end
     end
   end
 
