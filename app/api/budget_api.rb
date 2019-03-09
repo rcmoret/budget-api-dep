@@ -53,12 +53,12 @@ class BudgetApi < Sinatra::Base
   end
 
   get '/items' do
-    [200, { metadata: discretionary, collection: items}.to_json]
+    [200, { metadata: metadata, collection: items}.to_json]
   end
 
   namespace '/discretionary' do
     get '/transactions' do
-      render_collection(discretionary.transactions)
+      render_collection(discretionary_transactions)
     end
   end
 
@@ -140,8 +140,12 @@ class BudgetApi < Sinatra::Base
     @budget_month ||= BudgetMonth.new(sym_params)
   end
 
-  def discretionary
-    @discretionary ||= Discretionary.new(budget_month)
+  def metadata
+    @metadata ||= Budget::Metadata.for(budget_month)
+  end
+
+  def discretionary_transactions
+    @discretionary_transactions ||= DiscretionaryTransactions.for(budget_month).collection
   end
 
   def date_hash

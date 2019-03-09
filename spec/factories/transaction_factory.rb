@@ -15,6 +15,10 @@ FactoryBot.define do
     trait :budget_exclusion do
       budget_exclusion { true }
     end
+
+    trait :discretionary do
+      budget_item_id { nil }
+    end
   end
 
   factory :subtransaction, class: Sub::Transaction do
