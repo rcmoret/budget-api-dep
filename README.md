@@ -16,9 +16,9 @@ Budget API
 | --------------- | -----------------               | ------------------------------------ |
 | GET (index)     | /accounts                       | all active (not scoped accounts)     |
 | GET (show)      | /accounts/:id                   | 200 + resource / 404                 |
-| POST            | /accounts                       | 201 + resource / 422                 |
-| PUT             | /accounts/:id                   | 200 + resource / 422                 |
-| DELETE          | /accounts/:id                   | 200 / 422                            |
+| POST            | /accounts                       | 201 + resource / 404, 422            |
+| PUT             | /accounts/:id                   | 200 + resource / 404, 422            |
+| DELETE          | /accounts/:id                   | 200 / 404, 422                       |
 | GET             | /accounts/:id/selectable_months | deprecated                           |
 
 ### Transactions
@@ -26,26 +26,26 @@ Budget API
 | HTTP Verb     | Endpoint                       | Expected return                                   |
 | ------------- | ---------------------------    | ----------------                                  |
 | GET (index)   | /accounts/:id/transactions     | collection of transaction resources plus metadata |
-| POST          | /accounts/:id/                 | 201 + resource / 422                              |
-| PUT           | /accounts/:id/transactions/:id | 200 + resource / 422                              |
-| DELETE        | /accounts/:id/transactions/:id | 200 / 422                                         |
+| POST          | /accounts/:id/                 | 201 + resource / 404, 422                         |
+| PUT           | /accounts/:id/transactions/:id | 200 + resource / 404, 422                         |
+| DELETE        | /accounts/:id/transactions/:id | 200 / 404, 422                                    |
 
 ### Budget
 #### Categories
-| HTTP Verb   | Endpoint               | Expected return      |
-| ---------   | --------               | ---------------      |
-| GET (index) | /budget/categories     | all active catgories |
-| POST        | /budget/categories     | 201 + resource / 422 |
-| PUT         | /budget/categories/:id | 200 + resource / 422 |
-| DELETE      | /budget/categories/:id | 200 / 422            |
+| HTTP Verb   | Endpoint               | Expected return           |
+| ---------   | --------               | ---------------           |
+| GET (index) | /budget/categories     | all active catgories      |
+| POST        | /budget/categories     | 201 + resource / 404, 422 |
+| PUT         | /budget/categories/:id | 200 + resource / 404, 422 |
+| DELETE      | /budget/categories/:id | 200 / 404, 422            |
 
 #### Items
 | HTTP Verb   | Endpoint                                               | Expected return                                   |
 | ---------   | --------                                               | ---------------                                   |
 | GET (index) | /budget/items                                          | collection of budget item resources and metadata  |
-| POST        | /budget/categories/:category_id/items                  | 201 + resource / 422                              |
-| PUT         | /budget/categories/:category_id/items/:id              | 200 + resource / 422                              |
-| DELETE      | /budget/categories/:category_id/items/:id              | 200 / 422                                         |
+| POST        | /budget/categories/:category_id/items                  | 201 + resource / 404, 422                         |
+| PUT         | /budget/categories/:category_id/items/:id              | 200 + resource / 404, 422                         |
+| DELETE      | /budget/categories/:category_id/items/:id              | 200 / 404, 422                                    |
 | GET         | /budget/categories/:category_id/items/:id/transactions | transactions collection                           |
 
 #### Discretionary
@@ -54,20 +54,20 @@ Budget API
 | GET       | /budget/discretionary/transactions | collection of discretionary transactions for given month |
 
 ### Transfers
-| HTTP Verb   | Endpoint       | Expected return         |
-| ---------   | --------       | ---------------         |
-| GET (index) | /transfers     | collection of transfers |
-| POST        | /transfers     | 201 + resource / 422    |
-| DELETE      | /transfers/:id | 200/ 422                |
+| HTTP Verb   | Endpoint       | Expected return                        |
+| ---------   | --------       | ---------------                        |
+| GET (index) | /transfers     | collection of transfers, plus metadata |
+| POST        | /transfers     | 201 + resource / 404, 422              |
+| DELETE      | /transfers/:id | 200 / 404, 422                         |
 
 ### Icons
-| HTTP Verb   | Endpoint   | Expected return      |
-| ---------   | --------   | ---------------      |
-| GET (index) | /icons     | collection of icons  |
-| GET (show)  | /icons/:id | 200 + resource / 422 |
-| POST        | /icons     | 201 + resource / 422 |
-| PUT         | /icons/:id | 200 + resource / 422 |
-| DELETE      | /icons/:id | 200 / 422            |
+| HTTP Verb   | Endpoint   | Expected return           |
+| ---------   | --------   | ---------------           |
+| GET (index) | /icons     | collection of icons       |
+| GET (show)  | /icons/:id | 200 + resource / 404, 422 |
+| POST        | /icons     | 201 + resource / 404, 422 |
+| PUT         | /icons/:id | 200 + resource / 404, 422 |
+| DELETE      | /icons/:id | 200 / 404, 422            |
 
 
 ## JSON Representations
@@ -397,7 +397,9 @@ over several months. See items for more information.
 Budget Items are a month's instance of a budget category. They can have whatever amount (as longer expenses are <= 0 and
 revenues are >= 0) is needed. Weekly and monthly can have different rules for how they are treated and how they are used
 to determine information about the state of the budget. This app certainly hints at how that could be done but is not
-prescriptive. Additional information present when these are returned as a collection: `transaction_count` and `spent`.
+prescriptive. When returning a collection a SQL view is used to return all data on the record plus additional information:
+`name`, `monthly` and `weekly` come from the parent category, `icon_name` and `icon_class_name` come from the Icon (through
+Category), `transaction_count` is a count query of related transactions, `spent` is a sum total on related transactions.
 
 ### Transaction
 This concept ties together the other concept described. A transaction belongs to an account (required) and belongs to
@@ -411,6 +413,12 @@ not required but not allowed if there are subtransactions.
 Sometimes you might spend money that is a single transaction that does not map perfectly to a budget item. A subtransaction
 lives in the transactions table and maps nicely to a budget item. `amount` is required and things like `account` and
 `clearance_date` are updated from the parent through callbacks
+
+#### View
+A SQL view is used return all the data on the record plus additional info: `budget_category` is the name of a `BudgetCategory`
+(through `budget_item`), `icon_class_name` comes from `Icon` (though `BudgetCategory`), `amount` is the `amount` OR the sum of
+any subtransactions, `account_name` comes from the parent `Account`. Subtransactions are a JSON array that includes: its `id`,
+its `budget_category` (name), its `budget_item_id`, its `description`, its `amount` and its `icon_class_name`.
 
 #### Budget Exclusion
 This option is available for transactions of non-cashflow accounts. This would be used for a transaction that will change
