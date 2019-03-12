@@ -69,6 +69,8 @@ Budget API
 | PUT         | /icons/:id | 200 + resource / 404, 422 |
 | DELETE      | /icons/:id | 200 / 404, 422            |
 
+## ERD
+![Database Schema](./docs/budget-erd-v2.0.png)
 
 ## JSON Representations
 ### Accounts
