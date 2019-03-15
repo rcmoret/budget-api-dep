@@ -3,6 +3,7 @@ FactoryBot.define do
     association :account
     amount { (-1000..1000).to_a.sample }
     budget_exclusion { false }
+    association :budget_item
 
     trait :with_subtransactions do
       association :subtransaction
