@@ -84,14 +84,12 @@ class AccountsApi < Sinatra::Base
   end
 
   def create_account!
-    account.save!
-  rescue ActiveRecord::RecordInvalid
+    return if account.save
     render_error(422, account.errors.to_hash)
   end
 
   def update_account!
-    account.update!(account_params)
-  rescue ActiveRecord::RecordInvalid
+    return if account.update(account_params)
     render_error(422, account.errors.to_hash)
   end
 

@@ -44,14 +44,12 @@ class IconsApi < Sinatra::Base
   end
 
   def create_icon!
-    icon.save!
-  rescue ActiveRecord::RecordInvalid
+    return if icon.save
     render_error(422, icon.errors.to_hash)
   end
 
   def update_icon!
-    icon.update!(icon_params)
-  rescue ActiveRecord::RecordInvalid
+    return if icon.update(icon_params)
     render_error(422, icon.errors.to_hash)
   end
 

@@ -83,14 +83,12 @@ class BudgetApi < Sinatra::Base
   end
 
   def create_item!
-    item.save!
-  rescue ActiveRecord::RecordInvalid
+    return if item.save
     render_error(422, item.errors.to_hash)
   end
 
   def update_item!
-    item.update!(item_params)
-  rescue ActiveRecord::RecordInvalid
+    return if item.update(item_params)
     render_error(422, item.errors.to_hash)
   end
 
@@ -113,14 +111,12 @@ class BudgetApi < Sinatra::Base
   end
 
   def create_category!
-    category.save!
-  rescue ActiveRecord::RecordInvalid
+    return if category.save
     render_error(422, category.errors.to_hash)
   end
 
   def update_category!
-    category.update!(category_params)
-  rescue ActiveRecord::RecordInvalid
+    return if category.update(category_params)
     render_error(422, category.errors.to_hash)
   end
 
