@@ -296,10 +296,45 @@ Get a simplified set of transactions for a budget item
 ##### Resource
 ```
 {
-  "to_transaction_id": 67,
-  "from_transaction_id": 66,
-  "created_at": "2019-03-03T03:22:45.333Z",
-  "updated_at": "2019-03-03T03:22:45.333Z"
+  "id": 1,
+  "to_transaction_id": 2,
+  "from_transaction_id": 1,
+  "created_at": "2019-03-20T04: 59: 57.953Z",
+  "updated_at": "2019-03-20T04: 59: 57.953Z",
+  "to_transaction": {
+    "id": 2,
+    "description": "Transfer to 33rd City Bank",
+    "budget_category": null,
+    "icon_class_name": null,
+    "budget_item_id": null,
+    "clearance_date": null,
+    "amount": 279,
+    "account_name": "33rd City Bank",
+    "account_id": 1,
+    "check_number": null,
+    "receipt": null,
+    "notes": null,
+    "budget_exclusion": false,
+    "subtransactions": [],
+    "updated_at": "2019-03-20T04: 59: 57.960Z"
+  },
+  "from_transaction": {
+    "id": 1,
+    "description": "Transfer to 33rd City Bank",
+    "budget_category": null,
+    "icon_class_name": null,
+    "budget_item_id": null,
+    "clearance_date": null,
+    "amount": -279,
+    "account_name": "34th City Bank",
+    "account_id": 2,
+    "check_number": null,
+    "receipt": null,
+    "notes": null,
+    "budget_exclusion": false,
+    "subtransactions": [],
+    "updated_at": "2019-03-20T04: 59: 57.969Z"
+  }
 }
 ```
 

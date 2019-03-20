@@ -11,7 +11,39 @@ RSpec.describe Transfer, type: :model do
         Primary::Transaction.where.not(transfer_id: nil).count
       }.by(2)
     end
+  end
 
+  describe 'to_hash' do
+    let(:checking_account) { FactoryBot.create(:account) }
+    let(:savings_account) { FactoryBot.create(:savings_account) }
+    let(:amount) { (100..1000).to_a.sample }
+    let(:transfer) do
+      Transfer::Generator.create(from_account: checking_account, to_account: savings_account, amount: amount)
+    end
+
+    subject { transfer.to_hash }
+
+    it 'includes the transfer id' do
+      expect(subject[:id]).to be transfer.id
+    end
+
+    it 'includes the to_transaction_id' do
+      expect(subject[:to_transaction_id]).to be transfer.to_transaction.id
+    end
+
+    it 'includes the from_transaction_id' do
+      expect(subject[:from_transaction_id]).to be transfer.from_transaction.id
+    end
+
+    it 'includes the to_transaction as a hash' do
+      expect(subject[:to_transaction][:amount]).to be amount
+      expect(subject[:to_transaction][:account_name]).to eq savings_account.name
+    end
+
+    it 'includes the from_transaction as a hash' do
+      expect(subject[:from_transaction][:amount]).to be -amount
+      expect(subject[:from_transaction][:account_name]).to eq checking_account.name
+    end
   end
 
   describe 'destroy' do

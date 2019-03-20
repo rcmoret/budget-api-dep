@@ -22,6 +22,10 @@ RSpec.describe 'transfer requests' do
         expect(subject['metadata']['viewing']).to eq [1, 10]
         expect(subject['metadata']['total']).to be 11
       end
+
+      it 'returns an array of transfers' do
+        expect(subject['transfers'].count).to be 10
+      end
     end
 
     context 'per_page => 5' do
@@ -97,8 +101,8 @@ RSpec.describe 'transfer requests' do
     let(:endpoint) { '/transfers' }
     let(:checking_account) { FactoryBot.create(:account) }
     let(:savings_account) { FactoryBot.create(:account) }
-    let(:to_account_id) { savings_account.id }
     let(:from_account_id) { checking_account.id }
+    let(:to_account_id) { savings_account.id }
     let(:amount) { (100..1000).to_a.sample }
     let(:body) do
       { to_account_id: to_account_id, from_account_id: from_account_id, amount: amount }
@@ -117,6 +121,30 @@ RSpec.describe 'transfer requests' do
 
       it 'creates to transaction records' do
         expect { subject }.to change { Transaction::Record.count }.by(+2)
+      end
+
+      it 'returns a hash with to transaction information: account name' do
+        expect(JSON.parse(subject.body)['to_transaction']['account_name']).to eq savings_account.name
+      end
+
+      it 'returns a hash with to transaction information: amount' do
+        expect(JSON.parse(subject.body)['to_transaction']['amount']).to be amount
+      end
+
+      it 'returns a hash with to transaction information: clearance date' do
+        expect(JSON.parse(subject.body)['to_transaction'].fetch('clearance_date')).to be_nil
+      end
+
+      it 'returns a hash with from transaction information: account name' do
+        expect(JSON.parse(subject.body)['from_transaction']['account_name']).to eq checking_account.name
+      end
+
+      it 'returns a hash with from transaction information: amount' do
+        expect(JSON.parse(subject.body)['from_transaction']['amount']).to be -amount
+      end
+
+      it 'returns a hash with from transaction information: clearance date' do
+        expect(JSON.parse(subject.body)['from_transaction'].fetch('clearance_date')).to be_nil
       end
     end
 
@@ -179,7 +207,6 @@ RSpec.describe 'transfer requests' do
     end
 
     context 'bad id' do
-
       subject { delete "/transfers/1#{transfer.id}" }
 
       it 'returns a 404' do

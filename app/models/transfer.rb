@@ -11,7 +11,7 @@ class Transfer < ActiveRecord::Base
   end
 
   def to_hash
-    attributes.merge(
+    attributes.symbolize_keys.merge(
       to_transaction: to_transaction.to_hash, from_transaction: from_transaction.to_hash
     )
   end

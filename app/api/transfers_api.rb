@@ -7,7 +7,7 @@ class TransfersApi < Sinatra::Base
   end
 
   post %r{/?} do
-    [201, transfer.to_json]
+    [201, transfer.to_hash.to_json]
   end
 
   delete %r{/(?<id>\d+)} do
