@@ -63,4 +63,8 @@ class Account < ActiveRecord::Base
   def destroy
     primary_transactions.any? ? update(archived_at: Time.current) : super
   end
+
+  def to_s
+    name
+  end
 end

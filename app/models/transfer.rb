@@ -41,7 +41,7 @@ class Transfer < ActiveRecord::Base
 
       @to_account = to_account
       @from_account = from_account
-      @amount = amount
+      @amount = amount.to_i.abs
     end
 
     def create
@@ -64,15 +64,15 @@ class Transfer < ActiveRecord::Base
     end
 
     def from_description
-      "Transfer to #{to_account.name}"
+      "Transfer from #{from_account}"
     end
 
     def to_transaction
-      transfer.build_to_transaction(description: from_description, account: to_account, amount: amount)
+      transfer.build_to_transaction(description: to_description, account: to_account, amount: amount)
     end
 
     def to_description
-      "Transfer to #{from_account.name}"
+      "Transfer to #{to_account}"
     end
   end
 end
