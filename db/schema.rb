@@ -100,7 +100,6 @@ ActiveRecord::Schema.define(version: 20190101172413) do
   add_foreign_key "budget_items", "budget_categories"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "budget_items"
-  add_foreign_key "transactions", "transfers"
   add_foreign_key "transfers", "transactions", column: "from_transaction_id"
   add_foreign_key "transfers", "transactions", column: "to_transaction_id"
 end
