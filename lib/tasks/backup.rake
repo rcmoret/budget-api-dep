@@ -9,7 +9,6 @@ namespace :backup do
     require 'bundler/setup'
     Bundler.require(:development)
     dir = "#{`pwd`.chomp}/db/dumps"
-    file = "#{dir}/current.sql"
     Dir.chdir(dir) do
       if `git diff origin/master`.empty?
         print_green 'no change'

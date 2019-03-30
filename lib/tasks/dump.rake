@@ -11,7 +11,7 @@ namespace :pg do
     dir = "#{`pwd`.chomp}/db/dumps"
     file = "#{dir}/current.sql"
     db_name = ActiveRecord::Base.connection.current_database
-    abort unless db_name == 'checkbook_development'
+    abort unless db_name == 'checkbook_new'
     command = "pg_dump -a -O --exclude-table=schema_migrations -f #{file} #{db_name}"
     print_green "Beginning database dump from #{db_name} to #{file}"
     print_cyan  "EXECUTING: `#{command}'"
