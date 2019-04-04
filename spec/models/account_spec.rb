@@ -3,6 +3,7 @@ require 'spec_helper'
 RSpec.describe Account, type: :model do
   it { should have_many(:transactions) }
   it { should have_many(:primary_transactions) }
+  it { should have_many(:transaction_views) }
 
   describe 'validations' do
     subject { FactoryBot.build(:account) }

@@ -1,5 +1,6 @@
 class Account < ActiveRecord::Base
-  has_many :transactions, class_name: 'Transaction::View'
+  has_many :transaction_views, class_name: 'Transaction::View'
+  has_many :transactions, class_name: 'Transaction::Record'
   has_many :primary_transactions, class_name: 'Primary::Transaction'
   scope :active, -> { where(archived_at: nil) }
   scope :by_priority, -> { order('priority asc') }
@@ -21,7 +22,7 @@ class Account < ActiveRecord::Base
 
     def charged(budget_month = BudgetMonth.new)
       non_cash_flow.joins(:transactions).merge(
-        Transaction::View.budget_inclusions.between(
+        Transaction::Record.budget_inclusions.between(
           budget_month.date_range, include_pending: budget_month.current?
         )
       ).total
@@ -29,7 +30,7 @@ class Account < ActiveRecord::Base
 
     def balance_prior_to(date)
       cash_flow.joins(:transactions).merge(
-        Transaction::View.cleared.prior_to(date)
+        Transaction::Record.cleared.prior_to(date)
       ).total
     end
   end
@@ -49,11 +50,11 @@ class Account < ActiveRecord::Base
   end
 
   def newest_clearance_date
-    primary_transactions.cleared.maximum(:clearance_date)
+    transactions.cleared.maximum(:clearance_date)
   end
 
   def oldest_clearance_date
-    primary_transactions.cleared.minimum(:clearance_date)
+    transactions.cleared.minimum(:clearance_date)
   end
 
   def deleted?
@@ -61,7 +62,7 @@ class Account < ActiveRecord::Base
   end
 
   def destroy
-    primary_transactions.any? ? update(archived_at: Time.current) : super
+    transactions.any? ? update(archived_at: Time.current) : super
   end
 
   def to_s

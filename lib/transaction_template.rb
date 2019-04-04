@@ -24,7 +24,7 @@ class TransactionTemplate
   end
 
   def collection
-    @collection ||= account.transactions.between(
+    @collection ||= account.transaction_views.between(
       date_range, include_pending: options[:include_pending]
     ).as_collection
   end
