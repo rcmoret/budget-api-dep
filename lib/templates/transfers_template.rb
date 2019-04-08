@@ -36,6 +36,6 @@ class TransfersTemplate
   end
 
   def transfers
-    @transfers ||= Transfer.limit(limit).offset(offset).map(&:to_hash)
+    @transfers ||= Transfer.recent_first.limit(limit).offset(offset).map(&:to_hash)
   end
 end

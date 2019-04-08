@@ -5,7 +5,7 @@ RSpec.describe 'transfer requests' do
     before { FactoryBot.create_list(:transfer, 11) }
 
     let(:endpoint) { '/transfers' }
-    let(:response) { get endpoint, params: params }
+    let(:response) { get endpoint, params }
 
     context 'empty params' do
       let(:params) { {} }
@@ -140,7 +140,7 @@ RSpec.describe 'transfer requests' do
       end
 
       it 'returns a hash with from transaction information: amount' do
-        expect(JSON.parse(subject.body)['from_transaction']['amount']).to be -amount
+        expect(JSON.parse(subject.body)['from_transaction']['amount']).to be (-1 * amount)
       end
 
       it 'returns a hash with from transaction information: clearance date' do

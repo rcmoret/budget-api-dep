@@ -68,11 +68,11 @@ class TransfersApi < Sinatra::Base
   end
 
   def limit
-    request_params.fetch('params', {}).fetch('per_page', 10).to_i
+    request_params.fetch('per_page', 10).to_i
   end
 
   def offset
-    page = request_params.fetch('params', {}).fetch('page', 1).to_i
+    page = request_params.fetch('page', 1).to_i
     (page - 1) * limit
   end
 end

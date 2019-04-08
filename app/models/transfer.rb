@@ -4,6 +4,8 @@ class Transfer < ActiveRecord::Base
 
   after_create :update_transactions!
 
+  scope :recent_first, -> { order(created_at: :desc) }
+
   def destroy
     update_transactions!(destroy: true)
     super
