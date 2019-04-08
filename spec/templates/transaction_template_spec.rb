@@ -60,15 +60,22 @@ RSpec.describe TransactionTemplate do
       end
     end
 
-    describe 'transactions' do
+    describe 'transactions in collection' do
       let(:collection) { double(total: 0, as_collection: []) }
-      let(:transactions) { double('transactions', between: collection, prior_to: collection) }
+      let(:transactions) { double('transactions', between: collection) }
       before { allow(account).to receive(:transaction_views) { transactions } }
+
       it 'calls between and as_collection' do
         expect(transactions).to receive(:between)
         expect(collection).to receive(:as_collection)
         subject
       end
+    end
+
+    describe 'transactions prior to' do
+      let(:collection) { double(total: 0, as_collection: []) }
+      let(:transactions) { double('transactions', prior_to: collection) }
+      before { allow(account).to receive(:transactions) { transactions } }
 
       it 'calls prior_to and total' do
         expect(transactions).to receive(:prior_to)

@@ -8,6 +8,7 @@ class TransactionTemplate
   end
 
   delegate :to_json, to: :hash
+  delegate :transactions, :transaction_views, to: :account
 
   private
 
@@ -18,13 +19,13 @@ class TransactionTemplate
   def metadata
     @metadata ||= {
       date_range: [date_range.first, date_range.last],
-      prior_balance: account.transactions.prior_to(date_range.first).total,
+      prior_balance: transactions.prior_to(date_range.first).total,
       query_options: options,
     }
   end
 
   def collection
-    @collection ||= account.transaction_views.between(
+    @collection ||= transaction_views.between(
       date_range, include_pending: options[:include_pending]
     ).as_collection
   end
