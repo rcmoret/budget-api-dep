@@ -66,7 +66,7 @@ class Transfer < ActiveRecord::Base
     end
 
     def from_description
-      "Transfer from #{from_account}"
+      "Transfer to #{to_account}"
     end
 
     def to_transaction
@@ -74,7 +74,7 @@ class Transfer < ActiveRecord::Base
     end
 
     def to_description
-      "Transfer to #{to_account}"
+      "Transfer from #{from_account}"
     end
   end
 end
