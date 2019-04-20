@@ -12,7 +12,7 @@ module SharedHelpers
   end
 
   def sym_params
-    @sym_params ||= params.reduce({}) { |memo, (k,v)| memo.merge(k.to_sym => v) }
+    @sym_params ||= request_params.reduce({}) { |memo, (k,v)| memo.merge(k.to_sym => v) }
   end
 
   %w(post get put delete).each do |http_verb|
