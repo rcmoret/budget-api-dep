@@ -34,19 +34,18 @@ RSpec.describe 'Budget Item request specs' do
         expected_metadata = {
           'balance' => balance,
           'days_remaining' => budget_month.days_remaining,
-          'month' => month,
+          'month' => budget_month.month,
           'spent' => spent,
           'total_days' => budget_month.total_days,
-          'year' => year,
+          'year' => budget_month.year,
         }
         expect(parsed_body['metadata']).to eq expected_metadata
       end
 
       it 'returns a collection of items as JSON' do
         parsed_body = JSON.parse(subject.body)
-        actual_items = parsed_body['collection'].map { |hash| hash.except('created_at', 'updated_at') }
-        expected = items.map(&:reload).map(&:to_hash).map(&:stringify_keys).map { |hash| hash.except('created_at', 'updated_at') }
-        expect(actual_items).to eq expected
+        expected = items.map(&:reload).map(&:to_hash).map(&:stringify_keys)
+        expect(parsed_body['collection']).to eq expected
       end
     end
   end

@@ -23,6 +23,7 @@ RSpec.describe Budget::ItemView, type: :model do
         icon_class_name: category.icon_class_name,
         month: budget_month.month,
         year: budget_month.year,
+        budget_month_id: budget_month.id,
         expense: category.expense?,
         transaction_count: 0,
       }

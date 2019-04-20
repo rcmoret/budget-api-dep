@@ -3,7 +3,7 @@ class BudgetItewViewV2 < ActiveRecord::Migration[5.1]
     execute('DROP VIEW budget_item_views')
     execute <<-SQL
       CREATE VIEW budget_item_views AS
-      SELECT i.id, i.amount, i.budget_category_id,
+      SELECT i.id, i.amount, i.budget_category_id, i.budget_month_id,
           c.name AS name,
           c.expense AS expense,
           c.monthly AS monthly,

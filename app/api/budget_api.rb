@@ -129,7 +129,7 @@ class BudgetApi < Sinatra::Base
   end
 
   def items
-    @items ||= Budget::ItemView.in(date_hash)
+    @items ||= budget_month.item_views
   end
 
   def budget_month

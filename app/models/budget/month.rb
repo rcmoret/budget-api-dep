@@ -1,6 +1,7 @@
 module Budget
   class Month < ActiveRecord::Base
     has_many :items, foreign_key: :budget_month_id
+    has_many :item_views, foreign_key: :budget_month_id
 
     validates :month, presence: true, inclusion: (1..12)
     validates :year, presence: true, inclusion: (2000..2099)

@@ -13,7 +13,7 @@ module Budget
       belongs_to :category, foreign_key: :budget_category_id
       belongs_to :budget_month, class_name: 'Budget::Month'
 
-      scope :in, ->(query = BudgetMonth.date_hash) { where(query).includes(:category) }
+      scope :in, ->(query = Budget::Month.current.date_hash) { where(query).includes(:category) }
 
       validates :category, presence: true
 
@@ -30,6 +30,7 @@ module Budget
         month: month,
         year: year,
         expense: expense?,
+        budget_month_id: budget_month.id,
       }
     end
 
