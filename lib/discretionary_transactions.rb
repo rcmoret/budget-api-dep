@@ -1,7 +1,7 @@
 class DiscretionaryTransactions
   attr_reader :budget_month
 
-  def self.for(budget_month = BudgetMonth.new)
+  def self.for(budget_month = Budget::Month.current)
     new(budget_month)
   end
 

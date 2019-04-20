@@ -33,13 +33,13 @@ class TransactionTemplate
   def date_range
     @date_range ||= case
                     when options[:date]
-                      BudgetMonth.new(date: options[:date]).date_range
+                      Budget::Month.for(date: options[:date]).date_range
                     when options[:month]
-                      BudgetMonth.new(options).date_range
+                      Budget::Month.for(options).date_range
                     when options[:first] && options[:last]
                       (options[:first].to_date..options[:last].to_date)
                     else
-                      BudgetMonth.new.date_range
+                      Budget::Month.current.date_range
                     end
   end
 end

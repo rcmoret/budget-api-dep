@@ -1,5 +1,5 @@
 class Budget::Metadata
-  def self.for(budget_month = BudgetMonth.new)
+  def self.for(budget_month = Budget::Month.current)
     new(budget_month).call
   end
 

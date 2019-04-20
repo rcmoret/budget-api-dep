@@ -45,6 +45,7 @@ namespace :app do
     require './app/models/budget/category'
     require './app/models/budget/item'
     require './app/models/budget/item_view'
+    require './app/models/budget/month'
     Dir['./app/models/*.rb'].each { |f| require f }
     Dir['./app/templates/*.rb'].each { |f| require f }
     Dir['./lib/*.rb'].each { |f| require f }

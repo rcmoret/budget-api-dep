@@ -93,7 +93,7 @@ class BudgetApi < Sinatra::Base
   end
 
   def item_params
-    @item_params ||= params_for(Budget::Item)
+    @item_params ||= params_for(Budget::Item).merge(budget_month_id: budget_month.id)
   end
 
   def category_id
@@ -133,7 +133,7 @@ class BudgetApi < Sinatra::Base
   end
 
   def budget_month
-    @budget_month ||= BudgetMonth.new(sym_params)
+    @budget_month ||= Budget::Month.for(sym_params)
   end
 
   def metadata

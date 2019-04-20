@@ -11,6 +11,7 @@ module Budget
       has_many :transactions, -> { includes(:account).ordered },
                class_name: 'Transaction::Record', foreign_key: :budget_item_id
       belongs_to :category, foreign_key: :budget_category_id
+      belongs_to :budget_month, class_name: 'Budget::Month'
 
       scope :in, ->(query = BudgetMonth.date_hash) { where(query).includes(:category) }
 

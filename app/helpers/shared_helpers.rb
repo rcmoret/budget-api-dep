@@ -73,6 +73,6 @@ module SharedHelpers
   end
 
   def budget_month
-    @budget_month ||= BudgetMonth.new(sym_params)
+    @budget_month ||= Budget::Month.for(sym_params)
   end
 end

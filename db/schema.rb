@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190101172413) do
+ActiveRecord::Schema.define(version: 20190420013725) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,16 @@ ActiveRecord::Schema.define(version: 20190101172413) do
     t.integer "year"
     t.integer "amount"
     t.integer "budget_category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "budget_month_id"
+  end
+
+  create_table "budget_months", force: :cascade do |t|
+    t.integer "month", null: false
+    t.integer "year", null: false
+    t.datetime "set_up_completed_at"
+    t.datetime "close_out_completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -11,7 +11,7 @@ RSpec.describe Budget::Metadata do
   let(:available_cash) { (1000..10000).to_a.sample }
   let(:charged) { (-1000..-10).to_a.sample }
   let(:budget_month) do
-    instance_double(BudgetMonth, date_hash: { month: month, year: year },
+    instance_double(Budget::Month, date_hash: { month: month, year: year },
                     current?: true,
                     days_remaining: days_remaining,
                     total_days: total_days

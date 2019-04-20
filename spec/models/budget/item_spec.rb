@@ -2,6 +2,7 @@ require 'spec_helper'
 
 RSpec.describe Budget::Item, type: :model do
   it { should belong_to(:category) }
+  it { should belong_to(:budget_month) }
   it { should have_many(:transactions) }
   it { should delegate_method(:name).to(:category) }
   it { should delegate_method(:icon_class_name).to(:category) }
@@ -21,10 +22,9 @@ RSpec.describe Budget::Item, type: :model do
   end
 
   describe 'month validation' do
-
     subject { FactoryBot.build(:budget_item, month: month) }
 
-    context 'month is valid' do
+    fcontext 'month is valid' do
       let(:month) { (1..12).to_a.sample }
       it { should be_valid }
     end
@@ -55,7 +55,7 @@ RSpec.describe Budget::Item, type: :model do
     end
 
     context 'year is not valid - past some arbitrary date' do
-      let(:year) { 2100 } # post apocalypse
+      let(:year) { 3000 } # post apocalypse
       it { should_not be_valid }
     end
   end

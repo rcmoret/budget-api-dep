@@ -120,11 +120,10 @@ end
 
 # budget amounts
 
-date_hash = BudgetMonth.new.date_hash
-month, year = date_hash.values_at(:month, :year)
+budget_month = BudgetMonth.current
 
 categories.values.each do |category|
-  Budget::Item.create(month: month, year: year, budget_category_id: category.id, amount: category.default_amount))
+  Budget::Item.create(budget_month: budget_month, category: category, amount: category.default_amount)
 end
 
 exit 1
