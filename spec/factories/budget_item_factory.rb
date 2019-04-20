@@ -4,7 +4,7 @@ FactoryBot.define do
     year { (2000..2030).to_a.sample }
     amount { -10 }
     association :category
-    association :budget_month
+    association :budget_interval
 
     trait :expense do
       amount { (-1000..-100).to_a.sample }

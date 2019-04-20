@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :budget_month, class: 'Budget::Month' do
+  factory :budget_interval, class: 'Budget::Interval' do
     month { (1..12).to_a.sample }
     year { (2018..2030).to_a.sample }
 

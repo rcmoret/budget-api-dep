@@ -72,7 +72,7 @@ module SharedHelpers
     {}
   end
 
-  def budget_month
-    @budget_month ||= Budget::Month.for(sym_params)
+  def budget_interval
+    @budget_interval ||= Budget::Interval.for(sym_params)
   end
 end

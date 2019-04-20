@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe Budget::Item, type: :model do
   it { should belong_to(:category) }
-  it { should belong_to(:budget_month) }
+  it { should belong_to(:budget_interval) }
   it { should have_many(:transactions) }
   it { should delegate_method(:name).to(:category) }
   it { should delegate_method(:icon_class_name).to(:category) }

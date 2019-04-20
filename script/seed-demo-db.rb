@@ -120,10 +120,10 @@ end
 
 # budget amounts
 
-budget_month = BudgetMonth.current
+budget_interval = Budget::Interval.current
 
 categories.values.each do |category|
-  Budget::Item.create(budget_month: budget_month, category: category, amount: category.default_amount)
+  Budget::Item.create(budget_interval: budget_interval, category: category, amount: category.default_amount)
 end
 
 exit 1

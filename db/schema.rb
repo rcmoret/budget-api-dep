@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190420152002) do
+ActiveRecord::Schema.define(version: 20190420205720) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,15 @@ ActiveRecord::Schema.define(version: 20190420152002) do
     t.index ["icon_id"], name: "index_budget_categories_on_icon_id"
   end
 
+  create_table "budget_intervals", force: :cascade do |t|
+    t.integer "month", null: false
+    t.integer "year", null: false
+    t.datetime "set_up_completed_at"
+    t.datetime "close_out_completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "budget_items", force: :cascade do |t|
     t.integer "month"
     t.integer "year"
@@ -43,16 +52,7 @@ ActiveRecord::Schema.define(version: 20190420152002) do
     t.integer "budget_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "budget_month_id"
-  end
-
-  create_table "budget_months", force: :cascade do |t|
-    t.integer "month", null: false
-    t.integer "year", null: false
-    t.datetime "set_up_completed_at"
-    t.datetime "close_out_completed_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer "budget_interval_id"
   end
 
   create_table "icons", force: :cascade do |t|

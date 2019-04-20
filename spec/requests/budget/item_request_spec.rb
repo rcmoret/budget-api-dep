@@ -5,14 +5,14 @@ RSpec.describe 'Budget Item request specs' do
     let(:today) { Date.today }
     let(:month) { today.month }
     let(:year) { today.year }
-    let(:budget_month) { FactoryBot.build(:budget_month, month: month, year: year) }
-    let(:rent) { FactoryBot.create(:monthly_expense, budget_month: budget_month) }
-    let(:phone) { FactoryBot.create(:monthly_expense, budget_month: budget_month) }
-    let(:grocery) { FactoryBot.create(:weekly_expense, budget_month: budget_month) }
+    let(:budget_interval) { FactoryBot.build(:budget_interval, month: month, year: year) }
+    let(:rent) { FactoryBot.create(:monthly_expense, budget_interval: budget_interval) }
+    let(:phone) { FactoryBot.create(:monthly_expense, budget_interval: budget_interval) }
+    let(:grocery) { FactoryBot.create(:weekly_expense, budget_interval: budget_interval) }
     let!(:items) { Budget::ItemView.find(rent.id, phone.id, grocery.id) }
     let(:balance) { Account.available_cash.to_i }
     let(:spent) do
-      Transaction::Record.between(budget_month.date_range, include_pending: budget_month.current?)
+      Transaction::Record.between(budget_interval.date_range, include_pending: budget_interval.current?)
         .discretionary
         .sum(:amount)
         .to_i
@@ -33,11 +33,11 @@ RSpec.describe 'Budget Item request specs' do
         parsed_body = JSON.parse(subject.body)
         expected_metadata = {
           'balance' => balance,
-          'days_remaining' => budget_month.days_remaining,
-          'month' => budget_month.month,
+          'days_remaining' => budget_interval.days_remaining,
+          'month' => budget_interval.month,
           'spent' => spent,
-          'total_days' => budget_month.total_days,
-          'year' => budget_month.year,
+          'total_days' => budget_interval.total_days,
+          'year' => budget_interval.year,
         }
         expect(parsed_body['metadata']).to eq expected_metadata
       end

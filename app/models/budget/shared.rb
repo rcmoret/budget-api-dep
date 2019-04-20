@@ -11,9 +11,9 @@ module Budget
       has_many :transactions, -> { includes(:account).ordered },
                class_name: 'Transaction::Record', foreign_key: :budget_item_id
       belongs_to :category, foreign_key: :budget_category_id
-      belongs_to :budget_month, class_name: 'Budget::Month'
+      belongs_to :budget_interval, class_name: 'Budget::Interval'
 
-      scope :in, ->(query = Budget::Month.current.date_hash) { where(query).includes(:category) }
+      scope :in, ->(query = Budget::Interval.current.date_hash) { where(query).includes(:category) }
 
       validates :category, presence: true
 
@@ -30,7 +30,7 @@ module Budget
         month: month,
         year: year,
         expense: expense?,
-        budget_month_id: budget_month.id,
+        budget_interval_id: budget_interval.id,
       }
     end
 

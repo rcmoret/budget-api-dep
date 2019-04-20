@@ -1,15 +1,15 @@
 class DiscretionaryTransactions
-  attr_reader :budget_month
+  attr_reader :budget_interval
 
-  def self.for(budget_month = Budget::Month.current)
-    new(budget_month)
+  def self.for(budget_interval = Budget::Interval.current)
+    new(budget_interval)
   end
 
-  def initialize(budget_month)
-    @budget_month = budget_month
+  def initialize(budget_interval)
+    @budget_interval = budget_interval
   end
 
-  delegate :current?, :date_hash, :date_range, :days_remaining, :total_days, to: :budget_month
+  delegate :current?, :date_hash, :date_range, :days_remaining, :total_days, to: :budget_interval
 
   def collection
     @collection ||=

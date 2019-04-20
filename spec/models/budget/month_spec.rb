@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-RSpec.describe Budget::Month, type: :model do
+RSpec.describe Budget::Interval, type: :model do
   it { should have_many(:items) }
 
   describe 'month validations' do
     context 'month is nil' do
       specify do
-        subject = FactoryBot.build(:budget_month, month: nil)
+        subject = FactoryBot.build(:budget_interval, month: nil)
 
         expect(subject).to be_invalid
       end
@@ -14,7 +14,7 @@ RSpec.describe Budget::Month, type: :model do
 
     context 'month is greater than 12' do
       specify do
-        subject = FactoryBot.build(:budget_month, month: 13)
+        subject = FactoryBot.build(:budget_interval, month: 13)
 
         expect(subject).to be_invalid
       end
@@ -22,7 +22,7 @@ RSpec.describe Budget::Month, type: :model do
 
     context 'month is less than 1' do
       specify do
-        subject = FactoryBot.build(:budget_month, month: 0)
+        subject = FactoryBot.build(:budget_interval, month: 0)
 
         expect(subject).to be_invalid
       end
@@ -30,7 +30,7 @@ RSpec.describe Budget::Month, type: :model do
 
     context 'month is 1-12'do
       specify do
-        subject = FactoryBot.build(:budget_month, month: (1..12).to_a.sample)
+        subject = FactoryBot.build(:budget_interval, month: (1..12).to_a.sample)
 
         expect(subject).to be_valid
       end
@@ -40,7 +40,7 @@ RSpec.describe Budget::Month, type: :model do
   describe 'year validations' do
     context 'year is nil' do
       specify do
-        subject = FactoryBot.build(:budget_month, year: nil)
+        subject = FactoryBot.build(:budget_interval, year: nil)
 
         expect(subject).to be_invalid
       end
@@ -48,7 +48,7 @@ RSpec.describe Budget::Month, type: :model do
 
     context 'year is too early' do # 1990's gtfo
       specify do
-        subject = FactoryBot.build(:budget_month, year: 1999)
+        subject = FactoryBot.build(:budget_interval, year: 1999)
 
         expect(subject).to be_invalid
       end
@@ -56,7 +56,7 @@ RSpec.describe Budget::Month, type: :model do
 
     context 'year is too late' do # if we live that long
       specify do
-        subject = FactoryBot.build(:budget_month, year: 2100)
+        subject = FactoryBot.build(:budget_interval, year: 2100)
 
         expect(subject).to be_invalid
       end
@@ -64,7 +64,7 @@ RSpec.describe Budget::Month, type: :model do
 
     context 'year is valid' do
       specify do
-        subject = FactoryBot.build(:budget_month, year: (2000..2099).to_a.sample)
+        subject = FactoryBot.build(:budget_interval, year: (2000..2099).to_a.sample)
 
         expect(subject).to be_valid
       end
@@ -73,7 +73,7 @@ RSpec.describe Budget::Month, type: :model do
     describe '#set_up?' do
       context 'when set up completed at is populated' do
         specify do
-          subject = FactoryBot.build(:budget_month, set_up_completed_at: 1.day.ago)
+          subject = FactoryBot.build(:budget_interval, set_up_completed_at: 1.day.ago)
 
           expect(subject.set_up?).to be true
         end
@@ -81,7 +81,7 @@ RSpec.describe Budget::Month, type: :model do
 
       context 'when set up completed at is nil' do
         specify do
-          subject = FactoryBot.build(:budget_month, set_up_completed_at: nil)
+          subject = FactoryBot.build(:budget_interval, set_up_completed_at: nil)
 
           expect(subject.set_up?).to be false
         end
@@ -91,7 +91,7 @@ RSpec.describe Budget::Month, type: :model do
     describe '#closed_out?' do
       context 'when close out completed at is populated' do
         specify do
-          subject = FactoryBot.build(:budget_month, close_out_completed_at: 1.day.ago)
+          subject = FactoryBot.build(:budget_interval, close_out_completed_at: 1.day.ago)
 
           expect(subject.closed_out?).to be true
         end
@@ -99,7 +99,7 @@ RSpec.describe Budget::Month, type: :model do
 
       context 'when close out completed at is nil' do
         specify do
-          subject = FactoryBot.build(:budget_month, close_out_completed_at: nil)
+          subject = FactoryBot.build(:budget_interval, close_out_completed_at: nil)
 
           expect(subject.closed_out?).to be false
         end
@@ -147,14 +147,14 @@ RSpec.describe Budget::Month, type: :model do
 
     describe '#first_date' do
       specify do
-        subject = FactoryBot.build(:budget_month, month: 3, year: 2019)
+        subject = FactoryBot.build(:budget_interval, month: 3, year: 2019)
         expect(subject.first_date).to eq Date.new(2019, 3, 1)
       end
     end
 
     describe '#last_date' do
       specify do
-        subject = FactoryBot.build(:budget_month, month: 3, year: 2019)
+        subject = FactoryBot.build(:budget_interval, month: 3, year: 2019)
         expect(subject.last_date).to eq Date.new(2019, 3, 31)
       end
     end
@@ -162,14 +162,14 @@ RSpec.describe Budget::Month, type: :model do
     describe '#current?' do
       context 'in the past' do
         specify do
-          subject = FactoryBot.build(:budget_month, year: (Date.today.year + 1))
+          subject = FactoryBot.build(:budget_interval, year: (Date.today.year + 1))
           expect(subject.current?).to be false
         end
       end
 
       context 'in the future' do
         specify do
-          subject = FactoryBot.build(:budget_month, year: (Date.today.year - 1))
+          subject = FactoryBot.build(:budget_interval, year: (Date.today.year - 1))
           expect(subject.current?).to be false
         end
       end
@@ -177,7 +177,7 @@ RSpec.describe Budget::Month, type: :model do
       context 'in current month' do
         specify do
           today = Date.today
-          subject = FactoryBot.build(:budget_month, year: today.year, month: today.month)
+          subject = FactoryBot.build(:budget_interval, year: today.year, month: today.month)
           expect(subject.current?).to be true
         end
       end
@@ -191,14 +191,14 @@ RSpec.describe Budget::Month, type: :model do
 
       context 'in current month' do
         specify do
-          subject = FactoryBot.build(:budget_month, year: year, month: today.month)
+          subject = FactoryBot.build(:budget_interval, year: year, month: today.month)
           expect(subject.days_remaining).to be 1
         end
       end
 
       context 'in a past month' do
         specify do
-          subject = FactoryBot.build(:budget_month, year: (year - 1), month: today.month)
+          subject = FactoryBot.build(:budget_interval, year: (year - 1), month: today.month)
           expect(subject.days_remaining).to be 31
         end
       end

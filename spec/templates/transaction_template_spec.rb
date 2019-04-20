@@ -6,7 +6,7 @@ RSpec.describe TransactionTemplate do
     FactoryBot.create(:transaction, account: account, clearance_date: '2000-01-01'.to_date)
   end
   let(:template) { TransactionTemplate.new(account).to_json }
-  let(:budget_month) { FactoryBot.build(:budget_month, :current) }
+  let(:budget_interval) { FactoryBot.build(:budget_interval, :current) }
 
   describe '#to_json' do
     subject { JSON.parse(template) }

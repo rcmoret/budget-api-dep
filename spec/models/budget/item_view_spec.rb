@@ -7,8 +7,8 @@ RSpec.describe Budget::ItemView, type: :model do
 
   around { |ex| travel_to(Time.current.beginning_of_minute) { ex.run } }
   describe '.to_hash' do
-    let(:budget_month) { FactoryBot.create(:budget_month, :current) }
-    let(:item) { FactoryBot.create(:weekly_item, budget_month: budget_month) }
+    let(:budget_interval) { FactoryBot.create(:budget_interval, :current) }
+    let(:item) { FactoryBot.create(:weekly_item, budget_interval: budget_interval) }
     let(:category) { item.category }
     let(:spent) { 0 }
     let(:deletable?) { true }
@@ -21,9 +21,9 @@ RSpec.describe Budget::ItemView, type: :model do
         budget_category_id: category.id,
         monthly: false,
         icon_class_name: category.icon_class_name,
-        month: budget_month.month,
-        year: budget_month.year,
-        budget_month_id: budget_month.id,
+        month: budget_interval.month,
+        year: budget_interval.year,
+        budget_interval_id: budget_interval.id,
         expense: category.expense?,
         transaction_count: 0,
       }

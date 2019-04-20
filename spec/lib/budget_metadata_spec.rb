@@ -1,7 +1,7 @@
 import 'spec_helper'
 
 RSpec.describe Budget::Metadata do
-  subject { described_class.for(budget_month) }
+  subject { described_class.for(budget_interval) }
 
   let(:month) { (1..12).to_a.sample }
   let(:year) { (2000..2099).to_a.sample }
@@ -10,8 +10,8 @@ RSpec.describe Budget::Metadata do
   let(:spent) { (-1000..-10).to_a.sample }
   let(:available_cash) { (1000..10000).to_a.sample }
   let(:charged) { (-1000..-10).to_a.sample }
-  let(:budget_month) do
-    instance_double(Budget::Month, date_hash: { month: month, year: year },
+  let(:budget_interval) do
+    instance_double(Budget::Interval, date_hash: { month: month, year: year },
                     current?: true,
                     days_remaining: days_remaining,
                     total_days: total_days

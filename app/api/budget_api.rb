@@ -93,7 +93,7 @@ class BudgetApi < Sinatra::Base
   end
 
   def item_params
-    @item_params ||= params_for(Budget::Item).merge(budget_month_id: budget_month.id)
+    @item_params ||= params_for(Budget::Item).merge(budget_interval_id: budget_interval.id)
   end
 
   def category_id
@@ -129,22 +129,22 @@ class BudgetApi < Sinatra::Base
   end
 
   def items
-    @items ||= budget_month.item_views
+    @items ||= budget_interval.item_views
   end
 
-  def budget_month
-    @budget_month ||= Budget::Month.for(sym_params)
+  def budget_interval
+    @budget_interval ||= Budget::Interval.for(sym_params)
   end
 
   def metadata
-    @metadata ||= Budget::Metadata.for(budget_month)
+    @metadata ||= Budget::Metadata.for(budget_interval)
   end
 
   def discretionary_transactions
-    @discretionary_transactions ||= DiscretionaryTransactions.for(budget_month).collection
+    @discretionary_transactions ||= DiscretionaryTransactions.for(budget_interval).collection
   end
 
   def date_hash
-    @date_hash ||= budget_month.date_hash
+    @date_hash ||= budget_interval.date_hash
   end
 end

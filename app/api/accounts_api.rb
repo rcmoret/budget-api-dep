@@ -146,7 +146,7 @@ class AccountsApi < Sinatra::Base
 
   def transaction_template
     @transaction_template ||=
-      TransactionTemplate.new(account, sym_params.merge(include_pending: budget_month.current?))
+      TransactionTemplate.new(account, sym_params.merge(include_pending: budget_interval.current?))
   end
 
   def accounts

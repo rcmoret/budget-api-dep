@@ -30,8 +30,8 @@ RSpec.describe Account, type: :model do
     end
 
     context 'without prior_to argument' do
-      let(:budget_month) { FactoryBot.build(:budget_month, :current) }
-      let(:date) { budget_month.first_date }
+      let(:budget_interval) { FactoryBot.build(:budget_interval, :current) }
+      let(:date) { budget_interval.first_date }
       before { allow(transactions).to receive(:sum) }
       subject { account.balance(prior_to: date) }
       it 'should call `total` on transactions' do
