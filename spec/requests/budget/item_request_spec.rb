@@ -5,10 +5,10 @@ RSpec.describe 'Budget Item request specs' do
     let(:today) { Date.today }
     let(:month) { today.month }
     let(:year) { today.year }
-    let(:budget_month) { Budget::Month.new(month: month, year: year) }
-    let(:rent) { FactoryBot.create(:monthly_expense, month: month, year: year) }
-    let(:phone) { FactoryBot.create(:monthly_expense, month: month, year: year) }
-    let(:grocery) { FactoryBot.create(:weekly_expense, month: month, year: year) }
+    let(:budget_month) { FactoryBot.build(:budget_month, month: month, year: year) }
+    let(:rent) { FactoryBot.create(:monthly_expense, budget_month: budget_month) }
+    let(:phone) { FactoryBot.create(:monthly_expense, budget_month: budget_month) }
+    let(:grocery) { FactoryBot.create(:weekly_expense, budget_month: budget_month) }
     let!(:items) { Budget::ItemView.find(rent.id, phone.id, grocery.id) }
     let(:balance) { Account.available_cash.to_i }
     let(:spent) do
