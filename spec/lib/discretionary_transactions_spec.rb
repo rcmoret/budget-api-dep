@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe DiscretionaryTransactions do
   subject { described_class.for(budget_month).collection }
 
-  let(:budget_month) { Budget::Month.current }
+  let(:budget_month) { FactoryBot.build(:budget_month, :current) }
   let(:clearance_date) { budget_month.date_range.to_a.sample }
   let(:transaction) do
     FactoryBot.create(:transaction, :discretionary, clearance_date: clearance_date)
