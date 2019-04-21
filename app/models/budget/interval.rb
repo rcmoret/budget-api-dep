@@ -45,8 +45,8 @@ module Budget
     end
 
     def days_remaining
-      return total_days unless current?
-      total_days - today.day + 1
+      return total_days - today.day + 1 if current?
+      total_days
     end
 
     def date_range
@@ -55,6 +55,10 @@ module Budget
 
     def date_hash
       { month: month, year: year }
+    end
+
+    def attributes
+      super.symbolize_keys.except(:created_at, :updated_at)
     end
 
     private

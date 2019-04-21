@@ -3,19 +3,11 @@ import 'spec_helper'
 RSpec.describe Budget::Metadata do
   subject { described_class.for(budget_interval) }
 
-  let(:month) { (1..12).to_a.sample }
-  let(:year) { (2000..2099).to_a.sample }
-  let(:total_days) { (28..31).to_a.sample }
-  let(:days_remaining) { (1..total_days).to_a.sample }
   let(:spent) { (-1000..-10).to_a.sample }
   let(:available_cash) { (1000..10000).to_a.sample }
   let(:charged) { (-1000..-10).to_a.sample }
   let(:budget_interval) do
-    instance_double(Budget::Interval, date_hash: { month: month, year: year },
-                    current?: true,
-                    days_remaining: days_remaining,
-                    total_days: total_days
-    )
+    FactoryBot.create(:budget_interval, :current, :set_up, :closed_out)
   end
 
   before do
@@ -27,19 +19,19 @@ RSpec.describe Budget::Metadata do
   end
 
   it 'returns month from the budget month' do
-    expect(subject[:month]).to be month
+    expect(subject[:month]).to be budget_interval.month
   end
 
   it 'returns year from the budget month' do
-    expect(subject[:year]).to be year
+    expect(subject[:year]).to be budget_interval.year
   end
 
   it 'returns the number of days remaining from the budget month' do
-    expect(subject[:days_remaining]).to be days_remaining
+    expect(subject[:days_remaining]).to be budget_interval.days_remaining
   end
 
   it 'returns the number of total days from the budget month' do
-    expect(subject[:total_days]).to be total_days
+    expect(subject[:total_days]).to be budget_interval.total_days
   end
 
   it 'calls total on discretionary transactions' do
@@ -49,5 +41,13 @@ RSpec.describe Budget::Metadata do
   it 'returns balance' do
     balance = available_cash + charged
     expect(subject[:balance]).to be balance
+  end
+
+  it 'returns is_set_up' do
+    expect(subject[:is_set_up]).to be true
+  end
+
+  it 'returns is_completed' do
+    expect(subject[:is_closed_out]).to be true
   end
 end

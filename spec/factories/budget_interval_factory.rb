@@ -7,5 +7,13 @@ FactoryBot.define do
       month { Date.today.month }
       year { Date.today.year }
     end
+
+    trait :set_up do
+      set_up_completed_at { 1.day.ago }
+    end
+
+    trait :closed_out do
+      close_out_completed_at { 1.day.ago }
+    end
   end
 end
