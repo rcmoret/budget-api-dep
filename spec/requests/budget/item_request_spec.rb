@@ -6,9 +6,9 @@ RSpec.describe 'Budget Item request specs' do
     let(:month) { today.month }
     let(:year) { today.year }
     let(:budget_interval) { FactoryBot.build(:budget_interval, month: month, year: year) }
-    let(:rent) { FactoryBot.create(:monthly_expense, budget_interval: budget_interval) }
-    let(:phone) { FactoryBot.create(:monthly_expense, budget_interval: budget_interval) }
-    let(:grocery) { FactoryBot.create(:weekly_expense, budget_interval: budget_interval) }
+    let(:rent) { FactoryBot.create(:monthly_expense, interval: budget_interval) }
+    let(:phone) { FactoryBot.create(:monthly_expense, interval: budget_interval) }
+    let(:grocery) { FactoryBot.create(:weekly_expense, interval: budget_interval) }
     let!(:items) { Budget::ItemView.find(rent.id, phone.id, grocery.id) }
     let(:balance) { Account.available_cash.to_i }
     let(:spent) do
@@ -55,7 +55,7 @@ RSpec.describe 'Budget Item request specs' do
     let(:year) { (2000..2088).to_a.sample }
     let(:category) { FactoryBot.create(:category, :revenue) }
     let(:endpoint) { "/budget/categories/#{category.id}/items" }
-    let(:body) { { month: month, year: year, amount: (100..900).to_a.sample } }
+    let(:body) { { amount: (100..900).to_a.sample } }
     subject { post endpoint, body }
 
     it 'returns a 201' do

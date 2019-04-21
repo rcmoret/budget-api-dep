@@ -4,13 +4,11 @@ module Budget
 
     validates :amount, numericality: { less_than_or_equal_to: 0 }, if: :expense?
     validates :amount, numericality: { greater_than_or_equal_to: 0 }, if: :revenue?
-    validates_uniqueness_of :budget_category_id, scope: [:month, :year], if: :weekly?
-    validates_inclusion_of :month, in: 1..12
-    validates_inclusion_of :year, in: 2000..2999
+    validates_uniqueness_of :budget_category_id, scope: :budget_interval_id, if: :weekly?
 
-    scope :current, -> { where(Budget::Interval.current.date_hash) }
-    scope :expenses, -> { joins(:category).merge(Category.expenses).order(amount: :asc) }
-    scope :revenues, -> { joins(:category).merge(Category.revenues).order(amount: :desc) }
+    scope :current, -> { where(budget_interval: Interval.current) }
+    scope :expenses, -> { joins(:category).merge(Category.expenses) }
+    scope :revenues, -> { joins(:category).merge(Category.revenues) }
     scope :weekly, -> { joins(:category).merge(Category.weekly) }
     scope :monthly, -> { joins(:category).merge(Category.monthly) }
 
