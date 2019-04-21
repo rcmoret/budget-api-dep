@@ -70,7 +70,7 @@ Budget API
 | DELETE      | /icons/:id | 200 / 404, 422            |
 
 ## ERD
-![Database Schema](./docs/budget-erd-v2.0.png)
+![Database Schema](./docs/budget-erd-v2.2.png)
 
 ## JSON Representations
 ### Accounts
@@ -229,6 +229,8 @@ There is no show route per se, but this resource will be returned after PUT and 
     "total_days": 31,
     "month": 3,
     "year": 2019
+    "is_set_up": true,
+    "is_closed_out": false,
   },
   "collection": [
     {
