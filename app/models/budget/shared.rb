@@ -29,6 +29,8 @@ module Budget
         icon_class_name: icon_class_name,
         expense: expense?,
         budget_interval_id: interval.id,
+        month: interval.month,
+        year: interval.year,
       }
     end
 
