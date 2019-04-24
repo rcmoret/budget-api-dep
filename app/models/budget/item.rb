@@ -12,7 +12,7 @@ module Budget
     scope :weekly, -> { joins(:category).merge(Category.weekly) }
     scope :monthly, -> { joins(:category).merge(Category.monthly) }
 
-    PUBLIC_ATTRS = %w(amount month year budget_category_id).freeze
+    PUBLIC_ATTRS = %w(amount budget_category_id budget_interval_id).freeze
 
     delegate :name, :icon_class_name, :expense?, :monthly?, to: :category
   end
