@@ -49,14 +49,6 @@ class Account < ActiveRecord::Base
     end
   end
 
-  def newest_clearance_date
-    transactions.cleared.maximum(:clearance_date)
-  end
-
-  def oldest_clearance_date
-    transactions.cleared.minimum(:clearance_date)
-  end
-
   def deleted?
     archived_at.present?
   end

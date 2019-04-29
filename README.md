@@ -19,7 +19,6 @@ Budget API
 | POST            | /accounts                       | 201 + resource / 404, 422            |
 | PUT             | /accounts/:id                   | 200 + resource / 404, 422            |
 | DELETE          | /accounts/:id                   | 200 / 404, 422                       |
-| GET             | /accounts/:id/selectable_months | deprecated                           |
 
 ### Transactions
 

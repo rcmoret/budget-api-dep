@@ -26,10 +26,6 @@ class AccountsApi < Sinatra::Base
       [204, {}]
     end
 
-    get '/selectable_months' do
-      render_collection(selectable_months)
-    end
-
     get '/transactions' do
       [200, transaction_template.to_json]
     end
@@ -125,14 +121,6 @@ class AccountsApi < Sinatra::Base
 
   def transaction_params
     @transaction_params ||= params_for(Primary::Transaction)
-  end
-
-  def selectable_months
-    beginning_date = account.oldest_clearance_date.to_month
-    ending_date = [Date.today.next_month, account.newest_clearance_date].max.to_month
-    (beginning_date..ending_date).to_a.reverse.map do |month|
-      { string: month.strftime('%B, %Y'), value: "#{month.month}|#{month.year}" }
-    end
   end
 
   def filtered_transaction_params
