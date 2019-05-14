@@ -68,6 +68,11 @@ Budget API
 | PUT         | /icons/:id | 200 + resource / 404, 422 |
 | DELETE      | /icons/:id | 200 / 404, 422            |
 
+### Intervals
+| HTTP Verb | Endpoint               | Expected return |
+| --------- | ---------------------- | --------------- |
+| PUT       | /interval/:month/:year | 200 + resource  |
+
 ## ERD
 ![Database Schema](./docs/budget-erd-v2.2.png)
 

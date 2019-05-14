@@ -17,6 +17,10 @@ map '/icons' do
   run IconsApi.new
 end
 
+map '/intervals' do
+  run IntervalsApi.new
+end
+
 map '/transfers' do
   run TransfersApi.new
 end

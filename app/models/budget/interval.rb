@@ -6,6 +6,8 @@ module Budget
     validates :month, presence: true, inclusion: (1..12)
     validates :year, presence: true, inclusion: (2000..2099)
 
+    PUBLIC_ATTRS = %i[close_out_completed_at set_up_completed_at]
+
     def self.for(**opts)
       month, year = if opts[:date].present?
         [opts[:date].to_date.month, opts[:date].to_date.year]
