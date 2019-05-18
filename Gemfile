@@ -9,6 +9,7 @@ group :development do
   gem 'rack-cors'
   gem 'rb-readline'
   gem 'sinatra-activerecord'
+  gem 'sqlite3', '~> 1.3.6'
   gem 'standalone_migrations'
   gem 'whenever', require: false
 end
