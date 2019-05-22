@@ -1,6 +1,6 @@
 class ItemViewV3 < ActiveRecord::Migration[5.1]
   def up
-    execute('DROP VIEW budget_item_views')
+    execute('DROP VIEW if exists budget_item_views')
     execute <<-SQL
       CREATE VIEW budget_item_views AS
       SELECT i.id, i.amount, i.budget_category_id, i.budget_interval_id,

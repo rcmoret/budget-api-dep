@@ -14,3 +14,8 @@ demo:
   database: checkbook_demo
   pool: 5
   timeout: 10
+
+sqlite:
+  adapter: sqlite3
+  database: ./db/dumps/budget.sql
+  pool: 5
