@@ -17,7 +17,8 @@ module Transaction
     end
 
     def subtransactions
-      CONFIG.dig(:db_config, 'adapter') == 'sqlite3' ? JSON.parse(super) : super
+      return super unless CONFIG.dig(:db_config, 'adapter') == 'sqlite3'
+      JSON.parse(super, symbolize_names: true)
     end
   end
 end
