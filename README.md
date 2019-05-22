@@ -4,8 +4,9 @@ Budget API
 ## Resources
 * Accounts
 * Transactions
-* BudgetCategories
-* BudgetItems
+* Budget::Categories
+* Budget::Items
+* Budget::Intervals
 * Transfers
 * Icons
 
