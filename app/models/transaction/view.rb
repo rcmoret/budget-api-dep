@@ -11,7 +11,13 @@ module Transaction
     end
 
     def to_hash
-      attributes.deep_symbolize_keys
+      attributes
+        .deep_symbolize_keys
+        .merge(subtransactions: subtransactions)
+    end
+
+    def subtransactions
+      CONFIG.dig(:db_config, 'adapter') == 'sqlite3' ? JSON.parse(super) : super
     end
   end
 end
