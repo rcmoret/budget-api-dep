@@ -78,7 +78,7 @@ class BudgetApi < Sinatra::Base
     if item_id.present?
       Budget::Item.find_by(id: item_id, budget_category_id: category_id)
     else
-      category.items.new(item_params)
+      category.items.new(item_params.merge(budget_interval_id: budget_interval.id))
     end
   end
 
@@ -93,7 +93,7 @@ class BudgetApi < Sinatra::Base
   end
 
   def item_params
-    @item_params ||= params_for(Budget::Item).merge(budget_interval_id: budget_interval.id)
+    @item_params ||= params_for(Budget::Item)
   end
 
   def category_id
