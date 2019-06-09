@@ -17,6 +17,7 @@ RSpec.describe Budget::ItemView, type: :model do
         id: item.id,
         name: category.name,
         amount: item.amount,
+        accrual: category.accrual,
         spent: spent,
         budget_category_id: category.id,
         monthly: false,

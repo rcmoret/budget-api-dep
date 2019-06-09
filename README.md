@@ -243,6 +243,7 @@ There is no show route per se, but this resource will be returned after PUT and 
       "id": 26,
       "month": 3,
       "year": 2019,
+      "accrual": false,
       "amount": -9000,
       "budget_category_id": 12,
       "budget_interval_id": 22,
