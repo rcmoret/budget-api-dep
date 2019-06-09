@@ -18,6 +18,8 @@ RSpec.configure do |config|
   config.include(Shoulda::Matchers::Independent)
   config.include(ActiveSupport::Testing::TimeHelpers)
 
+  config.filter_run_when_matching :focus
+
   config.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true
   end
