@@ -199,6 +199,7 @@ There is no show route per se, but this resource will be returned after PUT and 
 [
   {
     "id": 2,
+    "accrual": true,
     "name": "Grocery",
     "expense": true,
     "monthly": false,
@@ -437,7 +438,7 @@ if you like to use your credit card for daily stuff and you religiously pay it o
 ### Budget Categories
 Budget Categories are types of expenses and revenues. They are also categorized as weekly and monthly which provide for
 a nice grouping. The default amount is a nice to have for things that stay the same or for things that are divided up
-over several months. See items for more information.
+over several months. An accrual is a category that is not expected each interval. See items for more information.
 
 ### Budget Items
 Budget Items are a month's instance of a budget category. They can have whatever amount (as longer expenses are <= 0 and

@@ -18,7 +18,7 @@ module Budget
     delegate :to_json, to: :to_hash
     delegate :class_name, :name, to: :icon, prefix: true, allow_nil: true
 
-    PUBLIC_ATTRS = %w(id name expense monthly default_amount icon_id)
+    PUBLIC_ATTRS = %w(id accrual name expense monthly default_amount icon_id)
 
     def revenue?
       !expense?
@@ -29,7 +29,10 @@ module Budget
     end
 
     def to_hash
-      attributes.slice(*PUBLIC_ATTRS).symbolize_keys.merge(icon_class_name: icon_class_name)
+      attributes
+        .slice(*PUBLIC_ATTRS)
+        .symbolize_keys
+        .merge(icon_class_name: icon_class_name)
     end
 
     def archived?
