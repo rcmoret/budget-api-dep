@@ -2,7 +2,10 @@ module Budget
   class Category < ActiveRecord::Base
     has_many :items, foreign_key: :budget_category_id
     has_many :transactions, through: :items
-    has_many :maturity_intervals, class_name: 'CategoryMaturityInterval', foreign_key: :budget_category_id
+    has_many :maturity_intervals,
+      -> { ordered },
+      class_name: 'CategoryMaturityInterval',
+      foreign_key: :budget_category_id
     belongs_to :icon
 
     validates :default_amount, presence: true

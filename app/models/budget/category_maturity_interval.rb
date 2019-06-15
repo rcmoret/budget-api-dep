@@ -6,6 +6,8 @@ module Budget
     validates :category, uniqueness: { scope: :interval }
     validate :category_accrual?
 
+    scope :ordered, -> { joins(:interval).merge(Interval.ordered) }
+
     private
 
     def category_accrual?

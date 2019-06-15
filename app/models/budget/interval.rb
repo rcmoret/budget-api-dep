@@ -8,6 +8,8 @@ module Budget
 
     PUBLIC_ATTRS = %i[close_out_completed_at set_up_completed_at]
 
+    scope :ordered, -> { order(year: :asc).order(month: :asc) }
+
     def self.for(**opts)
       month, year = if opts[:date].present?
         [opts[:date].to_date.month, opts[:date].to_date.year]
