@@ -8,6 +8,16 @@ module Budget
 
     scope :ordered, -> { joins(:interval).merge(Interval.ordered) }
 
+    delegate :month, :year, to: :interval
+
+    def to_hash
+      {
+        category_id: category.id,
+        month: month,
+        year: year
+      }
+    end
+
     private
 
     def category_accrual?

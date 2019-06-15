@@ -3,6 +3,8 @@ require 'spec_helper'
 RSpec.describe Budget::CategoryMaturityInterval, type: :model do
   it { should belong_to(:interval) }
   it { should belong_to(:category) }
+  it { should delegate_method(:month).to(:interval) }
+  it { should delegate_method(:year).to(:interval) }
 
   describe 'requires interval and catgory' do
     context 'budget interval is null' do

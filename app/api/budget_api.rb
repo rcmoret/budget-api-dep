@@ -49,6 +49,12 @@ class BudgetApi < Sinatra::Base
           end
         end
       end
+
+      namespace '/maturity_intervals' do
+        get '' do
+          render_collection(category.maturity_intervals)
+        end
+      end
     end
   end
 
