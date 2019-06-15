@@ -28,7 +28,6 @@ namespace :app do
     ENV['RACK_ENV'] ||= 'development'
     require 'bundler/setup'
     Bundler.require(:development)
-    Bundler.require(:assets)
     require './config/environments'
     Dir['./app/*.rb'].each { |f| require f }
     Dir['./app/helpers/*_helpers.rb'].each { |f| require f }
