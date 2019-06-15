@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20190615142715) do
   create_table "budget_category_maturity_intervals", force: :cascade do |t|
     t.integer "budget_interval_id", null: false
     t.integer "budget_category_id", null: false
+    t.index ["budget_category_id", "budget_interval_id"], name: "index_category_interval_uniqueness", unique: true
   end
 
   create_table "budget_intervals", force: :cascade do |t|

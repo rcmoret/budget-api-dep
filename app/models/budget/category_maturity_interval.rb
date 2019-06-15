@@ -3,6 +3,7 @@ module Budget
     belongs_to :interval, foreign_key: :budget_interval_id
     belongs_to :category, foreign_key: :budget_category_id
 
+    validates :category, uniqueness: { scope: :interval }
     validate :category_accrual?
 
     private

@@ -24,6 +24,20 @@ RSpec.describe Budget::CategoryMaturityInterval, type: :model do
     end
   end
 
+  describe 'uniqueness validation' do
+    subject { record.valid? }
+
+    let(:interval) { FactoryBot.create(:budget_interval) }
+    let(:category) { FactoryBot.create(:category, :accrual) }
+    let(:record) { FactoryBot.build(:maturity_interval, interval: interval, category: category) }
+
+    before { FactoryBot.create(:maturity_interval, interval: interval, category: category) }
+
+    it 'returns false' do
+      expect(subject).to be false
+    end
+  end
+
   describe 'accrual validation' do
     subject { record.valid? }
 
