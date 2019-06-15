@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :category, class: 'Budget::Category' do
     default_amount { (-100..0).to_a.sample * 100 }
     sequence(:name) { |n| "Stuff - #{n}" }
+    accrual { false }
 
     trait :monthly do
       monthly { true }
@@ -20,6 +21,10 @@ FactoryBot.define do
       sequence(:name) { |n| "Income - #{n}" }
       expense { false }
       default_amount { (0..100).to_a.sample * 100 }
+    end
+
+    trait :accrual do
+      accrual { true }
     end
   end
 end

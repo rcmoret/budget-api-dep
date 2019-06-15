@@ -7,6 +7,7 @@ Budget API
 * Budget::Categories
 * Budget::Items
 * Budget::Intervals
+* Budget::CategoryMaturityIntervals
 * Transfers
 * Icons
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190609014320) do
+ActiveRecord::Schema.define(version: 20190615142715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,11 @@ ActiveRecord::Schema.define(version: 20190609014320) do
     t.bigint "icon_id"
     t.boolean "accrual", default: false, null: false
     t.index ["icon_id"], name: "index_budget_categories_on_icon_id"
+  end
+
+  create_table "budget_category_maturity_intervals", force: :cascade do |t|
+    t.integer "budget_interval_id", null: false
+    t.integer "budget_category_id", null: false
   end
 
   create_table "budget_intervals", force: :cascade do |t|
@@ -106,6 +111,8 @@ ActiveRecord::Schema.define(version: 20190609014320) do
   end
 
   add_foreign_key "budget_categories", "icons"
+  add_foreign_key "budget_category_maturity_intervals", "budget_categories"
+  add_foreign_key "budget_category_maturity_intervals", "budget_intervals"
   add_foreign_key "budget_items", "budget_categories"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "budget_items"

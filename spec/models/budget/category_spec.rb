@@ -5,6 +5,7 @@ RSpec.describe Budget::Category, type: :model do
     it { should have_many(:items) }
     it { should have_many(:transactions) }
     it { should belong_to(:icon) }
+    it { should have_many(:maturity_intervals) }
   end
 
   describe 'validations' do
