@@ -415,6 +415,17 @@ Get a simplified set of transactions for a budget item
 }
 ```
 
+### Budget Category Maturity Intervals
+#### Resource
+```
+{
+  id: 1,
+  category_id: 44,
+  month: 12,
+  year: 2022
+}
+```
+
 ### Icons
 ##### Index
 ```
