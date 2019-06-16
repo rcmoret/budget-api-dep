@@ -58,6 +58,13 @@ class BudgetApi < Sinatra::Base
         post '' do
           render_new(maturity_interval.to_hash)
         end
+
+        namespace %r{/(?<maturity_interval_id>\d+)} do
+          put '' do
+            update_maturity_interval!
+            render_updated(maturity_interval.to_hash)
+          end
+        end
       end
     end
   end
@@ -110,6 +117,7 @@ class BudgetApi < Sinatra::Base
     @category_id ||= params['category_id']
   end
 
+
   def category
     @category ||= find_or_build_category!
   rescue ActiveRecord::RecordNotFound
@@ -158,8 +166,23 @@ class BudgetApi < Sinatra::Base
     @date_hash ||= budget_interval.date_hash
   end
 
+  def maturity_interval_id
+    @maturity_interval_id ||= params[:maturity_interval_id]
+  end
+
   def maturity_interval
-    @maturity_interval ||= \
+    @maturity_interval ||= find_or_create_maturity_interval!
+  end
+
+  def find_or_create_maturity_interval!
+    if maturity_interval_id
+      category.maturity_intervals.find(maturity_interval_id)
+    else
       Budget::CategoryMaturityInterval.find_or_create_by(interval: budget_interval, category: category)
+    end
+  end
+
+  def update_maturity_interval!
+    maturity_interval.update(interval: budget_interval)
   end
 end

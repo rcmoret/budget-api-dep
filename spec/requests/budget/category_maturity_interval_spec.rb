@@ -46,4 +46,41 @@ RSpec.describe 'budget category maturity intervals' do
       expect(parsed_body).to eq expected_body
     end
   end
+
+  describe 'the put route' do
+    let(:month) { (1..11).to_a.sample }
+    let(:category) { FactoryBot.create(:category, :accrual) }
+    let(:interval) { FactoryBot.create(:budget_interval, month: month) }
+    let(:year) { interval.year }
+    let(:maturity_interval) do
+      FactoryBot.create(:maturity_interval, category: category, interval: interval)
+    end
+    let(:endpoint) do
+      "/budget/categories/#{category.id}/maturity_intervals/#{maturity_interval.id}"
+    end
+    let(:body) do
+      { month: (month + 1), year: year }
+    end
+
+    subject { put endpoint, body }
+
+    it 'returns a 200' do
+      expect(subject.status).to be 200
+    end
+
+    it 'updates the record' do
+      expect { subject }.to change { maturity_interval.reload.month }.by(+1)
+    end
+
+    it 'returns a json representation of the record' do
+      parsed_body = JSON.parse(subject.body, symbolize_names: true)
+      expected_body = {
+        id: maturity_interval.id,
+        category_id: category.id,
+        month: (month + 1),
+        year: year,
+      }
+      expect(parsed_body).to eq expected_body
+    end
+  end
 end
