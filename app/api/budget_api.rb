@@ -54,6 +54,10 @@ class BudgetApi < Sinatra::Base
         get '' do
           render_collection(category.maturity_intervals)
         end
+
+        post '' do
+          render_new(maturity_interval.to_hash)
+        end
       end
     end
   end
@@ -152,5 +156,10 @@ class BudgetApi < Sinatra::Base
 
   def date_hash
     @date_hash ||= budget_interval.date_hash
+  end
+
+  def maturity_interval
+    @maturity_interval ||= \
+      Budget::CategoryMaturityInterval.find_or_create_by(interval: budget_interval, category: category)
   end
 end

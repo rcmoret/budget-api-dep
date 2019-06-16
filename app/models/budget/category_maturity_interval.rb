@@ -12,6 +12,7 @@ module Budget
 
     def to_hash
       {
+        id: id,
         category_id: category.id,
         month: month,
         year: year
