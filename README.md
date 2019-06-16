@@ -70,6 +70,11 @@ Budget API
 | PUT         | /icons/:id | 200 + resource / 404, 422 |
 | DELETE      | /icons/:id | 200 / 404, 422            |
 
+### Budget Category Maturity Intervals
+| HTTP Verb   | Endpoint                                          | Expexted return                  |
+| --------    | --------                                          | ---------------                  |
+| GET (index) | /budget/categories/:catgory_id/maturity_intervals | collection of maturity intervals |
+
 ### Intervals
 | HTTP Verb | Endpoint               | Expected return |
 | --------- | ---------------------- | --------------- |
