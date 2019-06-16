@@ -64,6 +64,11 @@ class BudgetApi < Sinatra::Base
             update_maturity_interval!
             render_updated(maturity_interval.to_hash)
           end
+
+          delete '' do
+            maturity_interval.destroy
+            [204, {}]
+          end
         end
       end
     end

@@ -83,4 +83,22 @@ RSpec.describe 'budget category maturity intervals' do
       expect(parsed_body).to eq expected_body
     end
   end
+
+  describe 'the delete route' do
+    let(:category) { FactoryBot.create(:category, :accrual) }
+    let!(:maturity_interval) { FactoryBot.create(:maturity_interval, category: category) }
+    let(:endpoint) do
+      "/budget/categories/#{category.id}/maturity_intervals/#{maturity_interval.id}"
+    end
+
+    subject { delete endpoint }
+
+    it 'returns a 204' do
+      expect(subject.status).to be 204
+    end
+
+    it 'deletes the record' do
+      expect { subject }.to change { Budget::CategoryMaturityInterval.count }.by(-1)
+    end
+  end
 end
