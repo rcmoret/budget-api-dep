@@ -29,7 +29,7 @@ Budget API
 | GET (index)   | /accounts/:id/transactions     | collection of transaction resources plus metadata |
 | POST          | /accounts/:id/                 | 201 + resource / 404, 422                         |
 | PUT           | /accounts/:id/transactions/:id | 200 + resource / 404, 422                         |
-| DELETE        | /accounts/:id/transactions/:id | 200 / 404, 422                                    |
+| DELETE        | /accounts/:id/transactions/:id | 204 / 404, 422                                    |
 
 ### Budget
 #### Categories
@@ -38,7 +38,7 @@ Budget API
 | GET (index) | /budget/categories     | all active catgories      |
 | POST        | /budget/categories     | 201 + resource / 404, 422 |
 | PUT         | /budget/categories/:id | 200 + resource / 404, 422 |
-| DELETE      | /budget/categories/:id | 200 / 404, 422            |
+| DELETE      | /budget/categories/:id | 204 / 404, 422            |
 
 #### Items
 | HTTP Verb   | Endpoint                                               | Expected return                                   |
@@ -46,7 +46,7 @@ Budget API
 | GET (index) | /budget/items                                          | collection of budget item resources and metadata  |
 | POST        | /budget/categories/:category_id/items                  | 201 + resource / 404, 422                         |
 | PUT         | /budget/categories/:category_id/items/:id              | 200 + resource / 404, 422                         |
-| DELETE      | /budget/categories/:category_id/items/:id              | 200 / 404, 422                                    |
+| DELETE      | /budget/categories/:category_id/items/:id              | 204 / 404, 422                                    |
 | GET         | /budget/categories/:category_id/items/:id/transactions | transactions collection                           |
 
 #### Discretionary
@@ -68,7 +68,7 @@ Budget API
 | GET (show)  | /icons/:id | 200 + resource / 404, 422 |
 | POST        | /icons     | 201 + resource / 404, 422 |
 | PUT         | /icons/:id | 200 + resource / 404, 422 |
-| DELETE      | /icons/:id | 200 / 404, 422            |
+| DELETE      | /icons/:id | 204 / 404, 422            |
 
 ### Budget Category Maturity Intervals
 | HTTP Verb    | Endpoint                                                 | Expexted return                  |
