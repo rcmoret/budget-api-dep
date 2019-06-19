@@ -23,13 +23,14 @@ module Budget
     def to_hash
       {
         id: id,
-        name: name,
+        accural: accrual,
         amount: amount,
         budget_category_id: budget_category_id,
-        icon_class_name: icon_class_name,
-        expense: expense?,
         budget_interval_id: interval.id,
+        expense: expense?,
+        icon_class_name: icon_class_name,
         month: interval.month,
+        name: name,
         year: interval.year,
       }
     end

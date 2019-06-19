@@ -29,13 +29,13 @@ class BudgetApi < Sinatra::Base
       namespace '/items' do
         post '' do
           create_item!
-          render_new(item.to_hash)
+          render_new(item.view.to_hash)
         end
 
         namespace %r{/(?<item_id>\d+)} do
           put '' do
             update_item!
-            render_updated(item.to_hash)
+            render_updated(item.view.to_hash)
           end
 
           delete '' do

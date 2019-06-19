@@ -271,18 +271,25 @@ There is no show route per se, but this resource will be returned after PUT and 
 ```
 
 ##### Resource
-A simplified resource is returned after POST or PUT requests
+A full version of the resource is returned after POST or PUT requests
 ```
 {
   "id": 26,
-  "name": "gas",
-  "amount": -9600,
-  "budget_category_id": 12,
-  "budget_interval_id": 22,
-  "icon_class_name": null,
   "month": 3,
   "year": 2019,
-  "expense": true
+  "accrual": false,
+  "amount": -9000,
+  "budget_category_id": 12,
+  "budget_interval_id": 22,
+  "created_at": "2019-02-15T03:48:47.289Z",
+  "updated_at": "2019-02-15T03:48:47.289Z",
+  "name": "gas",
+  "expense": true,
+  "monthly": false,
+  "icon_class_name": null,
+  "icon_name": null,
+  "transaction_count": 0,
+  "spent": 0
 }
 ```
 

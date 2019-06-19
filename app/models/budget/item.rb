@@ -14,6 +14,10 @@ module Budget
 
     PUBLIC_ATTRS = %w(amount budget_category_id budget_interval_id).freeze
 
-    delegate :name, :icon_class_name, :expense?, :monthly?, to: :category
+    delegate :accrual, :name, :icon_class_name, :expense?, :monthly?, to: :category
+
+    def view
+      @view ||= ItemView.find(id)
+    end
   end
 end
