@@ -12,6 +12,16 @@ RSpec.describe Budget::Category, type: :model do
     subject { FactoryBot.create(:category) }
     it { should validate_presence_of(:name) }
     it { should validate_uniqueness_of(:name) }
+
+    describe 'accrual on expense' do
+      subject { FactoryBot.build(:category, :revenue, :accrual) }
+      it { should_not be_valid }
+      it "populates the object's errors" do
+        subject.valid?
+        expect(subject.errors[:accrual]).to \
+          include 'can only be enabled for expenses'
+      end
+    end
   end
 
   describe '#revenue?' do

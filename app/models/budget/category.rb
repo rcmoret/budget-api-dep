@@ -12,6 +12,7 @@ module Budget
     validates :default_amount, numericality: { less_than_or_equal_to: 0 }, if: :expense?
     validates :default_amount, numericality: { greater_than_or_equal_to: 0 }, if: :revenue?
     validates :name, uniqueness: true, presence: true
+    validate :accrual_on_expense
 
     scope :active, -> { where(archived_at: nil) }
     scope :monthly, -> { where(monthly: true) }
@@ -53,6 +54,14 @@ module Budget
 
     def destroy
       items.any? ? archive! : super
+    end
+
+    private
+
+    def accrual_on_expense
+      return if expense? || (!accrual && revenue?)
+
+      errors.add(:accrual, 'can only be enabled for expenses')
     end
   end
 end
