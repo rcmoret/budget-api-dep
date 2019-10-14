@@ -19,7 +19,7 @@ class TransactionTemplate
   def metadata
     @metadata ||= {
       date_range: [date_range.first, date_range.last],
-      prior_balance: transactions.prior_to(date_range.first).total,
+      prior_balance: prior_balance,
       query_options: options,
     }
   end
@@ -41,5 +41,13 @@ class TransactionTemplate
                     else
                       Budget::Interval.current.date_range
                     end
+  end
+
+  def prior_balance
+    if date_range.first > Date.today
+      transactions.prior_to(date_range.first).or(transactions.pending).total
+    else
+      transactions.prior_to(date_range.first).total
+    end
   end
 end
