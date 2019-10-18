@@ -38,7 +38,7 @@ class AccountsApi < Sinatra::Base
 
       namespace %r{/(?<id>\d+)} do
         get '' do
-          [200, transaction.to_json]
+          [200, transaction_entry.to_json]
         end
 
         put '' do
@@ -105,6 +105,10 @@ class AccountsApi < Sinatra::Base
     @transaction ||= find_or_build_transaction!
   rescue ActiveRecord::RecordNotFound
     render_404('transaction', transaction_id)
+  end
+
+  def transaction_entry
+    @transaction_entry ||= account.transactions.find(transaction_id)
   end
 
   def create_transaction!
