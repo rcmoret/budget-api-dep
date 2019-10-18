@@ -26,25 +26,33 @@ class AccountsApi < Sinatra::Base
       [204, {}]
     end
 
-    get '/transactions' do
-      [200, transaction_template.to_json]
-    end
+    namespace '/transactions' do
+      get '' do
+        [200, transaction_template.to_json]
+      end
 
-    post '/transactions' do
-      create_transaction!
-      render_new(transaction)
-    end
+      post '' do
+        create_transaction!
+        render_new(transaction)
+      end
 
-    put %r{/transactions/(?<id>\d+)} do
-      update_transaction!
-      render_updated(transaction)
-    end
+      namespace %r{/(?<id>\d+)} do
+        get '' do
+          [200, transaction.to_json]
+        end
 
-    delete %r{/transactions/(?<id>\d+)} do
-      if transaction.destroy
-        [204, {}.to_json]
-      else
-        render_error(422, transaction.errors.to_hash)
+        put '' do
+          update_transaction!
+          render_updated(transaction)
+        end
+
+        delete '' do
+          if transaction.destroy
+            [204, {}.to_json]
+          else
+            render_error(422, transaction.errors.to_hash)
+          end
+        end
       end
     end
   end
