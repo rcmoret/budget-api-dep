@@ -16,7 +16,7 @@ StandaloneMigrations::Tasks.load_tasks
 namespace :app do
   desc 'Start application in development'
   task start: :setup do
-    Rack::Server.start(config: './server.ru', Host: '0.0.0.0', Port: 8088)
+    Rack::Server.start(Settings::SERVER_SETTINGS.dup)
   end
   desc 'Start application console'
   task console: :setup do
@@ -30,6 +30,7 @@ namespace :app do
     ENV['RACK_ENV'] ||= 'development'
     require 'bundler/setup'
     Bundler.require(:development)
+    require './config/settings'
     require './config/environments'
     Dir['./app/*.rb'].each { |f| require f }
     Dir['./app/helpers/*_helpers.rb'].each { |f| require f }

@@ -1,0 +1,7 @@
+module Settings
+  SERVER_SETTINGS = {
+    config: './server.ru',
+    Host: '0.0.0.0',
+    Port: 8128,
+  }.freeze
+end
