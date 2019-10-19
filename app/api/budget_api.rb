@@ -33,6 +33,10 @@ class BudgetApi < Sinatra::Base
         end
 
         namespace %r{/(?<item_id>\d+)} do
+          get '' do
+            [200, item.view.to_hash.to_json]
+          end
+
           put '' do
             update_item!
             render_updated(item.view.to_hash)
