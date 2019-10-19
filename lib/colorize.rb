@@ -2,6 +2,7 @@ module Colorize
   def color_print(text, color_code)
     puts "\033[#{color_code}m#{text}\033[0m"
   end
+
   {
     black:    30,
     red:      31,
