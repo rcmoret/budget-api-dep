@@ -27,6 +27,7 @@ Budget API
 | HTTP Verb     | Endpoint                       | Expected return                                   |
 | ------------- | ---------------------------    | ----------------                                  |
 | GET (index)   | /accounts/:id/transactions     | collection of transaction resources plus metadata |
+| GET (show)    | /accounts/:id/transactions/:id | 200 + resource / 404                              |
 | POST          | /accounts/:id/                 | 201 + resource / 404, 422                         |
 | PUT           | /accounts/:id/transactions/:id | 200 + resource / 404, 422                         |
 | DELETE        | /accounts/:id/transactions/:id | 204 / 404, 422                                    |
@@ -159,6 +160,7 @@ Budget API
           "budget_item_id": 3,
           "description": "",
           "amount": 9,
+          "primary_transaction_id": 12,
           "icon_class_name": null
         },
         {
@@ -167,6 +169,7 @@ Budget API
           "budget_item_id": 2,
           "description": "",
           "amount": 10,
+          "primary_transaction_id": 12,
           "icon_class_name": null
         }
       ],
@@ -178,7 +181,7 @@ Budget API
 ```
 
 #### Resource
-There is no show route per se, but this resource will be returned after PUT and POST requests
+This resource will be returned after PUT and POST requests
 
 ```
 {
@@ -197,6 +200,27 @@ There is no show route per se, but this resource will be returned after PUT and 
   "budget_exclusion": false,
   "subtransactions": [],
   "updated_at": "2019-03-03T03:00:00.903Z"
+}
+```
+
+This version will be returned for the show route
+```
+{
+  "id": 9446,
+  "description": "",
+  "amount": -800,
+  "clearance_date": "2019-10-11",
+  "check_number": null,
+  "account_id": 17,
+  "budget_item_id": 2929,
+  "primary_transaction_id": 9445,
+  "notes": null,
+  "receipt": null,
+  "budget_exclusion": false,
+  "transfer_id": null,
+  "created_at": "2019-10-13T19:22:57.882Z",
+  "updated_at": "2019-10-13T19:22:57.882Z",
+  "account_name": "Aspiration (ck)"
 }
 ```
 
