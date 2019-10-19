@@ -45,10 +45,16 @@ RSpec.describe 'transaction endpoints', type: :request do
     end
 
     describe 'the transaction collection' do
-      before { Timecop.freeze(Time.current.beginning_of_minute) }
-      let(:transaction) { FactoryBot.create(:transaction, account: checking).view }
-      let!(:transaction_hash) { JSON.parse(transaction.to_json) }
       subject { parsed_response['transactions'] }
+
+      before do
+        Timecop.freeze(Time.current.beginning_of_minute)
+        transaction
+      end
+
+
+      let(:transaction) { FactoryBot.create(:transaction, account: checking).view }
+      let(:transaction_hash) { JSON.parse(transaction.to_json) }
       it { should be_a Array }
       it { expect(subject[0]).to eq transaction_hash }
     end
@@ -57,16 +63,19 @@ RSpec.describe 'transaction endpoints', type: :request do
   describe 'GET /accounts/:account_id/transactions/:id' do
     let(:transaction) { FactoryBot.create(:transaction) }
     let(:account) { transaction.account }
+    let(:entry) { Transaction::Record.find(transaction.id) }
     let(:endpoint) { "/accounts/#{account.id}/transactions/#{transaction.id}" }
 
     subject { get endpoint }
 
-    it 'returns a 404' do
-      expect(subject.status).to be 404
+    it 'returns a 200' do
+      expect(subject.status).to be 200
     end
 
-    it 'returns an error' do
-      expect(JSON.parse(subject.body)).to eq('errors' => "#{endpoint} is not a valid route")
+    it 'returns a transaction' do
+      simple_resp = JSON.parse(subject.body, symbolize_names: true).except(:updated_at, :created_at)
+      expect(simple_resp)
+        .to eq entry.to_hash.except(:created_at, :updated_at)
     end
   end
 

@@ -27,6 +27,8 @@ RSpec.describe Budget::ItemView, type: :model do
         budget_interval_id: budget_interval.id,
         expense: category.expense?,
         transaction_count: 0,
+        maturity_month: nil,
+        maturity_year: nil,
       }
     end
 

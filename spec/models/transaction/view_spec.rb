@@ -58,6 +58,7 @@ RSpec.describe Transaction::View, type: :model do
           budget_category: category.name,
           amount: subtransaction.amount,
           description: subtransaction.description,
+          primary_transaction_id: record.id,
           icon_class_name: icon.class_name,
         }
       end
@@ -65,6 +66,7 @@ RSpec.describe Transaction::View, type: :model do
       let(:expected_hash) do
         super().merge(amount: new_total, subtransactions: [subtransaction_hash])
       end
+
       it { should eq expected_hash }
     end
   end
