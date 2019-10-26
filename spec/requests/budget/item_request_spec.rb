@@ -20,11 +20,24 @@ RSpec.describe 'Budget Item request specs' do
     before do
       FactoryBot.create(:transaction, budget_item: rent, amount: rent.amount, clearance_date: today)
     end
-    let(:endpoint) { '/budget/items' }
 
     subject { get endpoint }
 
     describe 'GET /budget/items' do # index
+      let(:endpoint) { '/budget/items' }
+      it 'retuns a 200' do
+        expect(subject.status).to be 200
+      end
+
+      it 'returns a collection of items as JSON' do
+        parsed_body = JSON.parse(subject.body)
+        expected = items.map(&:reload).map(&:to_hash).map(&:stringify_keys)
+        expect(parsed_body).to eq expected
+      end
+    end
+
+    describe 'GET /budget/items/metadata' do # /metadata
+      let(:endpoint) { '/budget/items/metadata' }
       it 'retuns a 200' do
         expect(subject.status).to be 200
       end
@@ -41,13 +54,7 @@ RSpec.describe 'Budget Item request specs' do
           'is_set_up' => budget_interval.set_up?,
           'is_closed_out' => budget_interval.closed_out?,
         }
-        expect(parsed_body['metadata']).to eq expected_metadata
-      end
-
-      it 'returns a collection of items as JSON' do
-        parsed_body = JSON.parse(subject.body)
-        expected = items.map(&:reload).map(&:to_hash).map(&:stringify_keys)
-        expect(parsed_body['collection']).to eq expected
+        expect(parsed_body).to eq expected_metadata
       end
     end
   end
