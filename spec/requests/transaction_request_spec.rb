@@ -7,7 +7,6 @@ RSpec.describe 'transaction endpoints', type: :request do
   describe 'GET /accounts/:id/transactions' do
     let(:checking) { FactoryBot.create(:account) }
     let(:query) { {} }
-    let(:endpoint) { "/accounts/#{checking.id}/transactions?#{query.to_query}" }
     let(:response) { get endpoint }
     let(:parsed_response) { JSON.parse(response.body) }
 
@@ -27,7 +26,9 @@ RSpec.describe 'transaction endpoints', type: :request do
     end
 
     describe 'the metadata' do
-      subject { parsed_response['metadata'] }
+      subject { parsed_response }
+
+      let(:endpoint) { "/accounts/#{checking.id}/transactions/metadata?#{query.to_query}" }
 
       describe 'date range' do
         let(:beginning_date) { Date.new(year, month, 1) }
@@ -46,7 +47,9 @@ RSpec.describe 'transaction endpoints', type: :request do
     end
 
     describe 'the transaction collection' do
-      subject { parsed_response['transactions'] }
+      subject { parsed_response }
+
+      let(:endpoint) { "/accounts/#{checking.id}/transactions?#{query.to_query}" }
 
       before do
         Timecop.freeze(Time.current.beginning_of_minute)

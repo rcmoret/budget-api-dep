@@ -8,15 +8,6 @@ class TransactionTemplate
     @options = options
   end
 
-  delegate :to_json, to: :hash
-  delegate :detail_views, :transaction_views, to: :account
-
-  private
-
-  def hash
-    { metadata: metadata, transactions: collection }
-  end
-
   def metadata
     @metadata ||= {
       date_range: [date_range.first, date_range.last],
@@ -34,6 +25,10 @@ class TransactionTemplate
       )
       .map(&:to_hash)
   end
+
+  private
+
+  delegate :transaction_views, to: :account
 
   def date_range # rubocop:disable AbcSize
     @date_range ||=

@@ -31,7 +31,11 @@ class AccountsApi < Sinatra::Base # rubocop:disable Metrics/ClassLength
 
     namespace '/transactions' do
       get '' do
-        [200, transaction_template.to_json]
+        [200, transaction_template.collection.to_json]
+      end
+
+      get '/metadata' do
+        [200, transaction_template.metadata.to_json]
       end
 
       post '' do
