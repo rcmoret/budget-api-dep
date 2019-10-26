@@ -24,13 +24,14 @@ Budget API
 
 ### Transactions
 
-| HTTP Verb     | Endpoint                       | Expected return                                   |
-| ------------- | ---------------------------    | ----------------                                  |
-| GET (index)   | /accounts/:id/transactions     | collection of transaction resources plus metadata |
-| GET (show)    | /accounts/:id/transactions/:id | 200 + resource / 404                              |
-| POST          | /accounts/:id/                 | 201 + resource / 404, 422                         |
-| PUT           | /accounts/:id/transactions/:id | 200 + resource / 404, 422                         |
-| DELETE        | /accounts/:id/transactions/:id | 204 / 404, 422                                    |
+| HTTP Verb     | Endpoint                            | Expected return                     |
+| ------------- | ---------------------------         | ----------------                    |
+| GET (index)   | /accounts/:id/transactions          | collection of transaction resources |
+| GET           | /accounts/:id/transactions/metadata | metadata                            |
+| GET (show)    | /accounts/:id/transactions/:id      | 200 + resource / 404                |
+| POST          | /accounts/:id/                      | 201 + resource / 404, 422           |
+| PUT           | /accounts/:id/transactions/:id      | 200 + resource / 404, 422           |
+| DELETE        | /accounts/:id/transactions/:id      | 204 / 404, 422                      |
 
 ### Budget
 #### Categories

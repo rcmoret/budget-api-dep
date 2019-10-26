@@ -7,15 +7,6 @@ class TransactionTemplate
     @options = options
   end
 
-  delegate :to_json, to: :hash
-  delegate :transactions, :transaction_views, to: :account
-
-  private
-
-  def hash
-    { metadata: metadata, transactions: collection }
-  end
-
   def metadata
     @metadata ||= {
       date_range: [date_range.first, date_range.last],
@@ -29,6 +20,10 @@ class TransactionTemplate
       date_range, include_pending: options[:include_pending]
     ).as_collection
   end
+
+  delegate :transactions, :transaction_views, to: :account
+
+  private
 
   def date_range
     @date_range ||= case
