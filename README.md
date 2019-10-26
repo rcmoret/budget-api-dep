@@ -43,14 +43,15 @@ Budget API
 | DELETE      | /budget/categories/:id | 204 / 404, 422            |
 
 #### Items
-| HTTP Verb   | Endpoint                                               | Expected return                                   |
-| ---------   | --------                                               | ---------------                                   |
-| GET (index) | /budget/items                                          | collection of budget item resources and metadata  |
-| POST        | /budget/categories/:category_id/items                  | 201 + resource / 404, 422                         |
-| GET         | /budget/categories/:category_id/items/:id              | 200 + resource / 404                              |
-| PUT         | /budget/categories/:category_id/items/:id              | 200 + resource / 404, 422                         |
-| DELETE      | /budget/categories/:category_id/items/:id              | 204 / 404, 422                                    |
-| GET         | /budget/categories/:category_id/items/:id/transactions | transactions collection                           |
+| HTTP Verb   | Endpoint                                               | Expected return                     |
+| ---------   | --------                                               | ---------------                     |
+| GET (index) | /budget/items                                          | collection of budget item resources |
+| GET         | /budget/items/metatdata                                | metadata                            |
+| POST        | /budget/categories/:category_id/items                  | 201 + resource / 404, 422           |
+| GET         | /budget/categories/:category_id/items/:id              | 200 + resource / 404                |
+| PUT         | /budget/categories/:category_id/items/:id              | 200 + resource / 404, 422           |
+| DELETE      | /budget/categories/:category_id/items/:id              | 204 / 404, 422                      |
+| GET         | /budget/categories/:category_id/items/:id/transactions | transactions collection             |
 
 #### Discretionary
 | HTTP Verb | Endpoint                           | Expected return                                          |
