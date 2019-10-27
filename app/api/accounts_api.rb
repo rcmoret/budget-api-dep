@@ -112,7 +112,7 @@ class AccountsApi < Sinatra::Base
   end
 
   def transaction_entry
-    @transaction_entry ||= account.transactions.find(transaction_id)
+    @transaction_entry ||= account.primary_transactions.find(transaction_id).view
   end
 
   def create_transaction!

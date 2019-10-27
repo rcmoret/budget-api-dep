@@ -20,7 +20,7 @@ module Primary
                       clearance_date receipt notes budget_exclusion
                       check_number subtransactions_attributes).freeze
 
-    default_scope { where(primary_transaction_id: nil).includes(:subtransactions) }
+    default_scope { includes(:subtransactions) }
 
     def readonly?
       false
