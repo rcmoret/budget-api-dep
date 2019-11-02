@@ -50,7 +50,7 @@ RSpec.describe 'IconsApi', type: :request do
     context 'valid params' do
       let(:class_name) { 'fas fa-save' }
       let(:name) { 'Save' }
-      let(:body) { { name: name, class_name: class_name } }
+      let(:body) { { name: name, className: class_name } }
       let(:response) { post endpoint, body }
       it 'should create a new resource' do
         expect { response }.to change { Icon.count }.by 1
@@ -72,7 +72,7 @@ RSpec.describe 'IconsApi', type: :request do
       end
 
       context 'invalid params - lacking "name"' do
-        let(:post_body) { { class_name: 'fa fa-dolla-sign' } }
+        let(:post_body) { { className: 'fa fa-dolla-sign' } }
         it { expect(status).to be 422 }
 
         it 'should have an error message' do
@@ -83,7 +83,7 @@ RSpec.describe 'IconsApi', type: :request do
       context 'duplicate name' do
         let(:name) { 'Dolla $ign' }
         before { FactoryBot.create(:icon, name: name) }
-        let(:post_body) { { name: name, class_name: 'fas fa-amazon' } }
+        let(:post_body) { { name: name, className: 'fas fa-amazon' } }
 
         it { expect(status).to be 422 }
         it 'should have an error message' do
@@ -94,7 +94,7 @@ RSpec.describe 'IconsApi', type: :request do
       context 'duplicate class_name' do
         let(:class_name) { 'fa fa-amazon' }
         before { FactoryBot.create(:icon, class_name: class_name) }
-        let(:post_body) { { name: 'Dolla $ign', class_name: class_name } }
+        let(:post_body) { { name: 'Dolla $ign', className: class_name } }
 
         it { expect(status).to be 422 }
         it 'should have an error message' do
@@ -124,7 +124,7 @@ RSpec.describe 'IconsApi', type: :request do
 
     context 'updating the class_name' do
       let(:new_class_name) { 'fa fa-box' }
-      let(:request_body) { { class_name: new_class_name } }
+      let(:request_body) { { className: new_class_name } }
 
       it 'returns a 200' do
         expect(response.status).to be 200
