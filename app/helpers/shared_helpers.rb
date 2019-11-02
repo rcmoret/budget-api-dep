@@ -46,6 +46,11 @@ module SharedHelpers
     case klass.to_s
     when 'Primary::Transaction'
       filtered_transaction_params
+    when 'Account'
+      klass::ATTRS_MAP.reduce({}) do |hash, (key, value)|
+        next hash unless request_params.key?(value)
+        hash.merge(key => request_params[value])
+      end
     else
       request_params.slice(*klass::PUBLIC_ATTRS)
     end

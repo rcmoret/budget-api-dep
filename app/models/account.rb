@@ -10,6 +10,11 @@ class Account < ActiveRecord::Base
   validates_uniqueness_of :name, :priority
 
   PUBLIC_ATTRS = %w(name cash_flow priority).freeze
+  ATTRS_MAP = {
+    name: 'name',
+    priority: 'priority',
+    cash_flow: 'cashFlow',
+  }.freeze
 
   class << self
     def total
