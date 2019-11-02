@@ -49,7 +49,7 @@ module SharedHelpers
     case klass.to_s
     when 'Transaction::Entry'
       filtered_transaction_params
-    when 'Account'
+    when 'Account', 'Budget::Category'
       klass::ATTRS_MAP.reduce({}) do |hash, (key, value)|
         next hash unless request_params.key?(value)
 
