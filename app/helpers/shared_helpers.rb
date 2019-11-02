@@ -44,14 +44,22 @@ module SharedHelpers
     [200, resource.to_json]
   end
 
+  # rubocop:disable Metrics/MethodLength
   def params_for(klass)
     case klass.to_s
     when 'Transaction::Entry'
       filtered_transaction_params
+    when 'Account'
+      klass::ATTRS_MAP.reduce({}) do |hash, (key, value)|
+        next hash unless request_params.key?(value)
+
+        hash.merge(key => request_params[value])
+      end
     else
       request_params.slice(*klass::PUBLIC_ATTRS)
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def request_params
     @request_params ||= params.merge(request_body)

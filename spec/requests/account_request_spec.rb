@@ -65,10 +65,10 @@ RSpec.describe 'AccountsApi', type: :request do
 
     context 'valid params' do
       let(:account_name) { '1st Tenn' }
-      let(:body) { { name: account_name, priority: rand(100) } }
+      let(:body) { { name: account_name, priority: rand(100), cashFlow: false } }
       let(:response) { post endpoint, body }
       it 'should create a new resource' do
-        expect { response }.to change { Account.count }.by 1
+        expect { response }.to change { Account.non_cash_flow.count }.by 1
       end
 
       subject { JSON.parse(response.body) }
@@ -129,7 +129,7 @@ RSpec.describe 'AccountsApi', type: :request do
     let!(:account) { FactoryBot.create(:account, cash_flow: true) }
     let(:account_name) { account.name }
     let(:endpoint) { "/accounts/#{account.id}" }
-    let(:request_body) { { cash_flow: false } }
+    let(:request_body) { { cashFlow: false } }
     let(:response) { put endpoint, request_body }
     let(:request) { response }
     let(:status) { response.status }
