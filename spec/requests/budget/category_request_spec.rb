@@ -21,8 +21,9 @@ RSpec.describe 'budget category requests' do
 
   describe 'POST /categories' do
     let(:endpoint) { '/budget/categories' }
+    let(:icon) { FactoryBot.create(:icon) }
     let(:body) do
-      { name: 'Party Supplies', expense: true, monthly: false, default_amount: -100 }
+      { name: 'Party Supplies', expense: true, monthly: false, defaultAmount: -100, iconId: icon.id }
     end
 
     let(:response) { post endpoint, body }
@@ -41,7 +42,7 @@ RSpec.describe 'budget category requests' do
     let(:category) { FactoryBot.create(:category, :expense, default_amount: default_amount) }
     let(:new_amount) { default_amount * 2 }
     let(:body) do
-      { default_amount: new_amount }
+      { defaultAmount: new_amount }
     end
 
     subject { put endpoint, body }

@@ -24,6 +24,15 @@ module Budget
     delegate :class_name, :name, to: :icon, prefix: true, allow_nil: true
 
     PUBLIC_ATTRS = %w(id accrual name expense monthly default_amount icon_id)
+    ATTRS_MAP = {
+      id: 'id',
+      accrual: 'accural',
+      name: 'name',
+      expense: 'expense',
+      monthly: 'monthly',
+      default_amount: 'defaultAmount',
+      icon_id: 'iconId'
+    }.freeze
 
     def revenue?
       !expense?
