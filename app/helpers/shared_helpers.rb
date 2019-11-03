@@ -56,7 +56,16 @@ module SharedHelpers
         hash.merge(key => request_params[value])
       end
     else
-      request_params.slice(*klass::PUBLIC_ATTRS)
+      raise DeprecationError, 'you shouldn\'t be herr'
+    end
+  end
+  DeprecationError = Class.new(StandardError)
+
+  def map_attributes(klass, attributes)
+    klass::ATTRS_MAP.reduce({}) do |hash, (key, value)|
+      next hash unless attributes.key?(value)
+
+      hash.merge(key => attributes[value])
     end
   end
   # rubocop:enable Metrics/MethodLength

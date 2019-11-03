@@ -189,7 +189,7 @@ RSpec.describe 'transfer requests' do
 
     context 'amount is not passed' do
       let(:body) do
-        { to_account_id: to_account_id, from_account_id: from_account_id }
+        { toAccountId: to_account_id, fromAccountId: from_account_id }
       end
 
       it 'returns a 422' do

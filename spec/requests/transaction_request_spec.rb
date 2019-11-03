@@ -78,11 +78,14 @@ RSpec.describe 'transaction endpoints', type: :request do
     end
 
     it 'returns a transaction' do
-      simple_resp = JSON
-                    .parse(subject.body, symbolize_names: true)
-                    .except(:updated_at, :created_at)
-      expect(simple_resp)
-        .to eq entry.view.to_hash.except(:created_at, :updated_at)
+      simple_resp = JSON.parse(subject.body, symbolize_names: true).except(:updated_at, :created_at)
+      view_attrs =
+        Transaction::View
+        .find(entry.id)
+        .attributes
+        .symbolize_keys
+        .except(:created_at, :updated_at)
+      expect(simple_resp).to eq view_attrs
     end
   end
 
@@ -90,26 +93,31 @@ RSpec.describe 'transaction endpoints', type: :request do
   describe 'transactions POST' do
     let(:checking) { FactoryBot.create(:account) }
     let(:endpoint) { "/accounts/#{checking.id}/transactions" }
-    let(:response) { post endpoint, transaction_attributes }
-    let(:status) { response.status }
-
-    subject { JSON.parse(response.body) }
 
     context 'simple transaction' do
+      subject do
+        response = post(endpoint, transaction_attributes)
+        OpenStruct.new(
+          body: JSON.parse(response.body, symbolize_names: true),
+          status: response.status
+        )
+      end
+
+      let(:amount) { rand(-10_000..10_000) }
       let(:item) { FactoryBot.create(:weekly_expense) }
       let(:transaction_attributes) do
         {
+          clearanceDate: '2015-01-04',
           description: 'Kroger',
-          clearance_date: '2015-01-04',
           details_attributes: [{
-            amount: -60.0,
-            budget_item_id: item.id,
+            amount: amount,
+            budgetItemId: item.id,
           }],
         }
       end
 
       it 'returns a 201' do
-        expect(status).to be 201
+        expect(subject.status).to be 201
       end
 
       it 'creates a new transaction' do
@@ -134,13 +142,18 @@ RSpec.describe 'transaction endpoints', type: :request do
       end
 
       it 'returns the JSON version of the transaction' do
-        expect(subject).to include(expected_hash)
+        expect(subject.body).to include(expected_hash)
       end
 
       context 'submitting an invalid transaction' do
-        let(:endpoint) { "/accounts/#{checking.id}/transactions" }
-        let(:response) { post endpoint, transaction_attributes }
-        let(:status) { response.status }
+        subject do
+          response = post(endpoint, transaction_attributes)
+          OpenStruct.new(
+            body: JSON.parse(response.body, symbolize_names: true),
+            status: response.status
+          )
+        end
+
         let(:transaction_attributes) do
           {
             description: 'Kroger',
@@ -150,7 +163,7 @@ RSpec.describe 'transaction endpoints', type: :request do
         end
 
         it 'returns a 422' do
-          expect(response.status).to be 422
+          expect(subject.status).to be 422
         end
 
         it 'returns an error message' do
@@ -159,36 +172,43 @@ RSpec.describe 'transaction endpoints', type: :request do
         end
       end
 
-      context 'transaction with details' do
-        let(:grocery) { FactoryBot.create(:weekly_expense) }
-        let(:clothes) { FactoryBot.create(:weekly_expense) }
-        let(:details_attributes) do
-          [{ amount: -2000, budget_item_id: clothes.id },
-           { amount: -3500, budget_item_id: grocery.id }]
-        end
-        let(:clearance_date) { '2019-12-31' }
-        let(:base_attrs) do
-          {
-            description: 'Kroger',
-            clearance_date: clearance_date,
-          }
-        end
-        let(:transaction_attributes) do
-          base_attrs.merge(
-            details_attributes: details_attributes
+      context 'transaction with multiple details' do
+        subject do
+          response = post(endpoint, transaction_attributes)
+          OpenStruct.new(
+            body: JSON.parse(response.body, symbolize_names: true),
+            status: response.status
           )
         end
 
+        let(:grocery) { FactoryBot.create(:weekly_expense) }
+        let(:clothes) { FactoryBot.create(:weekly_expense) }
+        let(:clearance_date) { '2019-12-31' }
+        let(:amount) { rand(-5_000..5_000) }
+        let(:transaction_attributes) do
+          {
+            description: 'Kroger',
+            clearanceDate: clearance_date,
+            details: [
+              { amount: -20.0, budgetItemId: clothes.id },
+              { amount: -35.0, budgetItemId: grocery.id },
+            ],
+          }
+        end
+        let(:expected_amount) do
+          transaction_attributes[:details].reduce(0) { |sum, attrs| sum + attrs[:amount] }
+        end
+
         it 'returns a 201' do
-          expect(status).to be 201
+          expect(subject.status).to be 201
         end
 
         it 'creates a new transaction' do
-          expect { subject }.to change { Transaction::Entry.count }.by(1)
+          expect { subject }.to change { Primary::Transaction.count }.by(+1)
         end
 
         it 'creates 2 new details' do
-          expect { subject }.to change { Transaction::Detail.count }.by(2)
+          expect { subject }.to change { Sub::Transaction.count }.by(+2)
         end
 
         let(:expected_hash) do
@@ -215,7 +235,24 @@ RSpec.describe 'transaction endpoints', type: :request do
         end
 
         it 'returns the JSON version of the transaction' do
-          pending(subject).to include(expected_hash)
+          expect(subject.body).to include(expected_hash)
+        end
+
+        it 'returns the JSON version of the first detail' do
+          details = subject.body[:subtransactions]
+          expect(details[0]).to include(
+            budget_category: clothes.name,
+            budget_item_id: clothes.id,
+            amount: transaction_attributes[:details][0][:amount]
+          )
+        end
+
+        it 'returns the JSON version of the second detail' do
+          expect(subject.body[:subtransactions][1]).to include(
+            budget_category: grocery.name,
+            budget_item_id: grocery.id,
+            amount: transaction_attributes[:details][1][:amount]
+          )
         end
       end
     end
@@ -227,10 +264,8 @@ RSpec.describe 'transaction endpoints', type: :request do
       let(:transaction) { FactoryBot.create(:transaction_entry) }
       let(:account) { transaction.account }
       let(:clearance_date) { '2019-01-01' }
-      let(:endpoint) do
-        "/accounts/#{account.id}/transactions/#{transaction.id}"
-      end
-      let(:body) { { clearance_date: clearance_date } }
+      let(:endpoint) { "/accounts/#{account.id}/transactions/#{transaction.id}" }
+      let(:body) { { clearanceDate: clearance_date } }
       let(:response) { put endpoint, body }
 
       it { expect(response.status).to be 200 }
@@ -239,9 +274,9 @@ RSpec.describe 'transaction endpoints', type: :request do
       end
     end
 
-    context 'with additional details' do
-      let(:transaction_detail) { FactoryBot.create(:transaction_detail) }
-      let(:transaction) { transaction_detail.entry }
+    context 'with detail' do
+      let(:subtransaction) { FactoryBot.create(:subtransaction) }
+      let!(:transaction) { subtransaction.primary_transaction }
       let(:account) { transaction.account }
       let(:endpoint) do
         "/accounts/#{account.id}/transactions/#{transaction.id}"
@@ -258,6 +293,7 @@ RSpec.describe 'transaction endpoints', type: :request do
         end
 
         it { expect(response.status).to be 200 }
+
         it 'changes the transaction detail amount' do
           expect { response }.to(change { transaction_detail.reload.amount })
         end

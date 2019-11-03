@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# top-level comment/documentation
 class AccountsApi < Sinatra::Base # rubocop:disable Metrics/ClassLength
   register Sinatra::Namespace
   include SharedHelpers
