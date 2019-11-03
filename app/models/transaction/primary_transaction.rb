@@ -16,7 +16,7 @@ module Primary
     delegate :to_hash, to: :view
     delegate :none?, to: :subtransactions, prefix: true
 
-    PUBLIC_ATTRS = %w(
+    PUBLIC_ATTRS = %i(
       amount
       budget_exclusion
       budget_item_id
@@ -34,9 +34,9 @@ module Primary
       check_number: 'checkNumber',
       clearance_date: 'clearanceDate',
       description: 'description',
+      details: 'details',
       notes: 'notes',
       receipt: 'receipt',
-      subtransactions_attributes: 'subtransactionsAttributes',
     }.freeze
 
     default_scope { where(primary_transaction_id: nil).includes(:subtransactions) }

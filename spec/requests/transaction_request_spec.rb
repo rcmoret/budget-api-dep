@@ -106,10 +106,12 @@ RSpec.describe 'transaction endpoints', type: :request do
       let(:item) { FactoryBot.create(:weekly_expense) }
       let(:transaction_attributes) do
         {
-          amount: amount,
-          budgetItemId: item.id,
           clearanceDate: '2015-01-04',
           description: 'Kroger',
+          details: [
+            amount: amount,
+            budgetItemId: item.id,
+          ]
         }
       end
 
@@ -146,7 +148,13 @@ RSpec.describe 'transaction endpoints', type: :request do
         end
 
         let(:transaction_attributes) do
-          { description: 'Kroger', clearanceDate: '2015-01-04', budgetItemId: item.id }
+          {
+            clearanceDate: '2015-01-04',
+            description: 'Kroger',
+            details: [
+              budgetItemId: item.id,
+            ],
+          }
         end
 
         it 'returns a 422' do
@@ -158,7 +166,7 @@ RSpec.describe 'transaction endpoints', type: :request do
         end
       end
 
-      context 'transaction with subtransactions' do
+      context 'transaction with multiple details' do
         subject do
           response = post(endpoint, transaction_attributes)
           OpenStruct.new(
@@ -169,24 +177,20 @@ RSpec.describe 'transaction endpoints', type: :request do
 
         let(:grocery) { FactoryBot.create(:weekly_expense) }
         let(:clothes) { FactoryBot.create(:weekly_expense) }
-        let(:subtransactions_attributes) do
-          [ { description: 'Clothes', amount: -20.0, budgetItemId: clothes.id },
-            { description: 'Food', amount: -35.0, budgetItemId: grocery.id } ]
-        end
         let(:clearance_date) { '2019-12-31' }
         let(:amount) { rand(-5_000..5_000) }
-        let(:base_attrs) do
+        let(:transaction_attributes) do
           {
             description: 'Kroger',
-            amount: amount,
             clearanceDate: clearance_date,
+            details: [
+              { amount: -20.0, budgetItemId: clothes.id },
+              { amount: -35.0, budgetItemId: grocery.id },
+            ],
           }
         end
-        let(:transaction_attributes) do
-          base_attrs.merge(subtransactionsAttributes: subtransactions_attributes)
-        end
         let(:expected_amount) do
-          subtransactions_attributes.reduce(0) { |sum, attrs| sum + attrs[:amount] }
+          transaction_attributes[:details].reduce(0) { |sum, attrs| sum + attrs[:amount] }
         end
 
         it 'returns a 201' do
@@ -197,7 +201,7 @@ RSpec.describe 'transaction endpoints', type: :request do
           expect { subject }.to change { Primary::Transaction.count }.by(+1)
         end
 
-        it 'creates 2 new subtransactions' do
+        it 'creates 2 new details' do
           expect { subject }.to change { Sub::Transaction.count }.by(+2)
         end
 
@@ -216,21 +220,20 @@ RSpec.describe 'transaction endpoints', type: :request do
           expect(subject.body).to include(expected_hash)
         end
 
-        it 'returns the JSON version of the subtransactions' do
-          expect(subject.body[:subtransactions][0]).to include(
+        it 'returns the JSON version of the first detail' do
+          details = subject.body[:subtransactions]
+          expect(details[0]).to include(
             budget_category: clothes.name,
             budget_item_id: clothes.id,
-            amount: subtransactions_attributes[0][:amount],
-            description: 'Clothes'
+            amount: transaction_attributes[:details][0][:amount],
           )
         end
 
-        it 'returns the JSON version of the subtransactions' do
+        it 'returns the JSON version of the second detail' do
           expect(subject.body[:subtransactions][1]).to include(
             budget_category: grocery.name,
             budget_item_id: grocery.id,
-            amount: subtransactions_attributes[1][:amount],
-            description: 'Food',
+            amount: transaction_attributes[:details][1][:amount],
           )
         end
       end
@@ -253,31 +256,39 @@ RSpec.describe 'transaction endpoints', type: :request do
       end
     end
 
-    context 'with subtransaction' do
+    context 'with detail' do
       let(:subtransaction) { FactoryBot.create(:subtransaction) }
       let!(:transaction) { subtransaction.primary_transaction }
       let(:account) { transaction.account }
       let(:endpoint) { "/accounts/#{account.id}/transactions/#{transaction.id}" }
       let(:response) { put endpoint, body }
 
-      describe 'updating a subtransaction' do
-        let(:body) { { subtransactionsAttributes: [{ id: subtransaction.id, amount: 10000 }] } }
+      before do
+        FactoryBot.create(:subtransaction, primary_transaction: transaction)
+      end
+
+      describe 'updating a detail' do
+        let(:body) do
+          { details: [{ id: subtransaction.id, amount: 10000 }] }
+        end
+
         it { expect(response.status).to be 200 }
+
         it 'changes the subtransaction amount' do
           expect { response }.to change { subtransaction.reload.amount }
         end
       end
 
-      describe 'adding a subtransaction' do
-        let(:body) { { subtransactionsAttributes: [{ amount: -1000 }] } }
+      describe 'adding a detail' do
+        let(:body) { { details: [{ id: nil, amount: -1000 }] } }
         it { expect(response.status).to be 200 }
         it 'changes the count' do
           expect { response }.to change { transaction.reload.subtransactions.count }.by(1)
         end
       end
 
-      describe 'deleting a subtransaction' do
-        let(:body) { { subtransactionsAttributes: [{ id: subtransaction.id, _destroy: true }] } }
+      describe 'deleting a detail' do
+        let(:body) { { details: [{ id: subtransaction.id, _destroy: true }] } }
         it { expect(response.status).to be 200 }
         it 'changes the count' do
           expect { response }.to change { transaction.reload.subtransactions.count }.by(-1)

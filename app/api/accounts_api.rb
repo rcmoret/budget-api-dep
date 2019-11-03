@@ -137,10 +137,15 @@ class AccountsApi < Sinatra::Base
 
   def transaction_params
     attributes = map_attributes(Primary::Transaction, request_params)
-    detail_attributes = attributes.fetch(:subtransactions_attributes, []).map do |subtransaction|
-      map_attributes(Sub::Transaction, subtransaction)
+    details = attributes.fetch(:details, [])
+    if details.one? && (post_request? || !details.first.key?('id'))
+      detail = map_attributes(Sub::Transaction, details.first)
+      attributes.merge(detail).slice(*Primary::Transaction::PUBLIC_ATTRS)
+    else
+      attributes.merge(subtransactions_attributes: details.map do |detail_attribute|
+        map_attributes(Sub::Transaction, detail_attribute)
+      end).slice(*Primary::Transaction::PUBLIC_ATTRS)
     end
-    attributes.merge(subtransactions_attributes: detail_attributes)
   end
 
   def transaction_template

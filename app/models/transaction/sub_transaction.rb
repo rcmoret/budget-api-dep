@@ -8,14 +8,12 @@ module Sub
       id
       amount
       budget_item_id
-      description
       _destroy
     ).freeze
     ATTRS_MAP = {
       id: 'id',
       amount: 'amount',
       budget_item_id: 'budgetItemId',
-      description: 'description',
       _destroy: '_destroy',
     }
 
