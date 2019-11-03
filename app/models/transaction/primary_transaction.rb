@@ -16,11 +16,30 @@ module Primary
     delegate :to_hash, to: :view
     delegate :none?, to: :subtransactions, prefix: true
 
-    PUBLIC_ATTRS = %w(description budget_item_id amount
-                      clearance_date receipt notes budget_exclusion
-                      check_number subtransactions_attributes).freeze
+    PUBLIC_ATTRS = %w(
+      amount
+      budget_exclusion
+      budget_item_id
+      check_number
+      clearance_date
+      description
+      notes
+      receipt
+      subtransactions_attributes
+    ).freeze
+    ATTRS_MAP = {
+      amount: 'amount',
+      budget_exclusion: 'budgetExclusion',
+      budget_item_id: 'budgetItemId',
+      check_number: 'checkNumber',
+      clearance_date: 'clearanceDate',
+      description: 'description',
+      notes: 'notes',
+      receipt: 'receipt',
+      subtransactions_attributes: 'subtransactionsAttributes',
+    }.freeze
 
-    default_scope { includes(:subtransactions) }
+    default_scope { where(primary_transaction_id: nil).includes(:subtransactions) }
 
     def readonly?
       false

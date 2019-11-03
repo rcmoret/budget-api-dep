@@ -44,15 +44,19 @@ module SharedHelpers
 
   def params_for(klass)
     case klass.to_s
-    when 'Primary::Transaction'
-      filtered_transaction_params
-    when 'Account', 'Budget::Category', 'Icon'
-      klass::ATTRS_MAP.reduce({}) do |hash, (key, value)|
-        next hash unless request_params.key?(value)
-        hash.merge(key => request_params[value])
-      end
+    when 'Account', 'Budget::Category', 'Icon', 'Primary::Transaction'
+      map_attributes(klass, request_params)
     else
-      request_params.slice(*klass::PUBLIC_ATTRS)
+      raise DeprecationError, 'you shouldn\'t be herr'
+    end
+  end
+  DeprecationError = Class.new(StandardError)
+
+
+  def map_attributes(klass, attributes)
+    klass::ATTRS_MAP.reduce({}) do |hash, (key, value)|
+      next hash unless attributes.key?(value)
+      hash.merge(key => attributes[value])
     end
   end
 
