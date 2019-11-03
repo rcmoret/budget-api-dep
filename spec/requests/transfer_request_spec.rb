@@ -105,7 +105,7 @@ RSpec.describe 'transfer requests' do
     let(:to_account_id) { savings_account.id }
     let(:amount) { (100..1000).to_a.sample }
     let(:body) do
-      { to_account_id: to_account_id, from_account_id: from_account_id, amount: amount }
+      { toAccountId: to_account_id, fromAccountId: from_account_id, amount: amount }
     end
 
     subject { post endpoint, body }
@@ -172,7 +172,7 @@ RSpec.describe 'transfer requests' do
 
     context 'amount is not passed' do
       let(:body) do
-        { to_account_id: to_account_id, from_account_id: from_account_id }
+        { toAccountId: to_account_id, fromAccountId: from_account_id }
       end
 
       it 'returns a 422' do

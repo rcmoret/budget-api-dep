@@ -46,15 +46,15 @@ class TransfersApi < Sinatra::Base
   end
 
   def to_account
-    @to_account ||= Account.find(request_params.fetch('to_account_id'))
+    @to_account ||= Account.find(request_params.fetch('toAccountId'))
   rescue ActiveRecord::RecordNotFound
-    render_404('account', request_params.fetch('to_account_id'))
+    render_404('account', request_params.fetch('toAccountId'))
   end
 
   def from_account
-    @from_account ||= Account.find(request_params.fetch('from_account_id'))
+    @from_account ||= Account.find(request_params.fetch('fromAccountId'))
   rescue ActiveRecord::RecordNotFound
-    render_404('account', request_params.fetch('from_account_id'))
+    render_404('account', request_params.fetch('fromAccountId'))
   end
 
   def amount
