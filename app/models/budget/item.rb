@@ -13,6 +13,11 @@ module Budget
     scope :monthly, -> { joins(:category).merge(Category.monthly) }
 
     PUBLIC_ATTRS = %w(amount budget_category_id budget_interval_id).freeze
+    ATTRS_MAP = {
+      amount: 'amount',
+      budget_category_id: 'budget_category_id',
+      budget_interval_id: 'budget_interval_id',
+    }.freeze
 
     delegate :accrual, :name, :icon_class_name, :expense?, :monthly?, to: :category
 

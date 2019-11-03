@@ -44,7 +44,7 @@ module SharedHelpers
 
   def params_for(klass)
     case klass.to_s
-    when 'Account', 'Budget::Category', 'Icon', 'Primary::Transaction'
+    when 'Account', 'Budget::Category', 'Budget::Item', 'Icon', 'Primary::Transaction'
       map_attributes(klass, request_params)
     else
       raise DeprecationError, 'you shouldn\'t be herr'

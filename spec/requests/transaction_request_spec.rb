@@ -258,7 +258,7 @@ RSpec.describe 'transaction endpoints', type: :request do
 
     context 'with detail' do
       let(:subtransaction) { FactoryBot.create(:subtransaction) }
-      let!(:transaction) { subtransaction.primary_transaction }
+      let(:transaction) { subtransaction.primary_transaction }
       let(:account) { transaction.account }
       let(:endpoint) { "/accounts/#{account.id}/transactions/#{transaction.id}" }
       let(:response) { put endpoint, body }
