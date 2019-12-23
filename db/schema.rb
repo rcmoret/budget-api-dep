@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191018221243) do
+ActiveRecord::Schema.define(version: 20191223221243) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,20 @@ ActiveRecord::Schema.define(version: 20191018221243) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "transaction_entries", force: :cascade do |t|
+    t.string "description", limit: 255
+    t.string "check_number", limit: 12
+    t.date "clearance_date"
+    t.bigint "account_id", null: false
+    t.text "notes"
+    t.boolean "budget_exclusion"
+    t.bigint "transfer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_transaction_entries_on_account_id"
+    t.index ["transfer_id"], name: "index_transaction_entries_on_transfer_id"
+  end
+
   create_table "transactions", force: :cascade do |t|
     t.string "description"
     t.integer "amount"
@@ -115,6 +129,8 @@ ActiveRecord::Schema.define(version: 20191018221243) do
   add_foreign_key "budget_category_maturity_intervals", "budget_categories"
   add_foreign_key "budget_category_maturity_intervals", "budget_intervals"
   add_foreign_key "budget_items", "budget_categories"
+  add_foreign_key "transaction_entries", "accounts"
+  add_foreign_key "transaction_entries", "transfers"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "budget_items"
   add_foreign_key "transfers", "transactions", column: "from_transaction_id"
