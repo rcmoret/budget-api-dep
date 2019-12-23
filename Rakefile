@@ -39,7 +39,9 @@ namespace :app do
     require './app/models/transaction/record'
     require './app/models/transaction/sub_transaction'
     require './app/models/transaction/primary_transaction'
+    require './app/models/transaction'
     require './app/models/transaction/entry'
+    require './app/models/transaction/detail'
     # budget module and classes
     require './app/models/budget/shared'
     require './app/models/budget/category'
