@@ -183,4 +183,6 @@ class UpdateTransactionViewV2 < ActiveRecord::Migration[5.1]
       raise AdapterError, "No SQL defined for #{adapter} to create transaction views"
     end
   end
+
+  AdapterError = Class.new(StandardError)
 end
