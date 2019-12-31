@@ -110,10 +110,12 @@ class BudgetApi < Sinatra::Base
 
   def create_item!
     return if item.save
+
     render_error(422, item.errors.to_hash)
   end
 
   def update_item!
+
     return if item.update(item_params)
     render_error(422, item.errors.to_hash)
   end

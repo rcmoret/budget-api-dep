@@ -1,15 +1,13 @@
-module Transaction
-  class View < ActiveRecord::Base
-    include Scopes
+# frozen_string_literal: true
 
-    belongs_to :account
-    belongs_to :transfer
+module Transaction
+  class EntryView < ActiveRecord::Base
+    include Scopes
     self.table_name = :transaction_view
     self.primary_key = :id
 
-    def self.as_collection
-      all.map(&:to_hash)
-    end
+    belongs_to :account, required: true
+    belongs_to :transfer, required: false
 
     def readonly?
       true

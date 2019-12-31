@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class Transfer < ActiveRecord::Base
-  belongs_to :from_transaction, class_name: 'Primary::Transaction'
-  belongs_to :to_transaction, class_name: 'Primary::Transaction'
+  belongs_to :from_transaction, class_name: 'Transaction::Entry'
+  belongs_to :to_transaction, class_name: 'Transaction::Entry'
 
   after_create :update_transactions!
 
@@ -14,7 +16,8 @@ class Transfer < ActiveRecord::Base
 
   def to_hash
     attributes.symbolize_keys.merge(
-      to_transaction: to_transaction.to_hash, from_transaction: from_transaction.to_hash
+      to_transaction: to_transaction.attributes,
+      from_transaction: from_transaction.attributes
     )
   end
 
@@ -23,7 +26,7 @@ class Transfer < ActiveRecord::Base
   def update_transactions!(destroy: false)
     transfer_id = destroy ? nil : id
     ActiveRecord::Base.transaction do
-      transactions.each { |transaction| transaction.update(transfer_id: transfer_id) }
+      transactions.each { |txn| txn.update(transfer_id: transfer_id) }
     end
   end
 
@@ -62,7 +65,14 @@ class Transfer < ActiveRecord::Base
     end
 
     def from_transaction
-      transfer.build_from_transaction(description: from_description, account: from_account, amount: -amount)
+      transfer
+        .build_from_transaction(
+          description: from_description,
+          account: from_account,
+          details_attributes: [
+            { amount: -amount },
+          ]
+        )
     end
 
     def from_description
@@ -70,7 +80,14 @@ class Transfer < ActiveRecord::Base
     end
 
     def to_transaction
-      transfer.build_to_transaction(description: to_description, account: to_account, amount: amount)
+      transfer
+        .build_to_transaction(
+          description: to_description,
+          account: to_account,
+          details_attributes: [
+            { amount: amount },
+          ]
+        )
     end
 
     def to_description

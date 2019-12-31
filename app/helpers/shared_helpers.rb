@@ -44,7 +44,7 @@ module SharedHelpers
 
   def params_for(klass)
     case klass.to_s
-    when 'Primary::Transaction'
+    when 'Transaction::Entry'
       filtered_transaction_params
     else
       request_params.slice(*klass::PUBLIC_ATTRS)

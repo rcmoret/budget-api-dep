@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TransactionTemplate
 
   attr_reader :account, :options
@@ -8,7 +10,7 @@ class TransactionTemplate
   end
 
   delegate :to_json, to: :hash
-  delegate :transactions, :transaction_views, to: :account
+  delegate :detail_views, :transaction_views, to: :account
 
   private
 
@@ -45,9 +47,14 @@ class TransactionTemplate
 
   def prior_balance
     if date_range.first > Date.today
-      transactions.prior_to(date_range.first).or(transactions.pending).total
+      detail_views
+        .prior_to(date_range.first)
+        .or(detail_views.pending)
+        .total
     else
-      transactions.prior_to(date_range.first).total
+      detail_views
+        .prior_to(date_range.first)
+        .total
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191223255543) do
+ActiveRecord::Schema.define(version: 20191228043943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(version: 20191223255543) do
     t.text "notes"
     t.boolean "budget_exclusion"
     t.bigint "transfer_id"
+    t.string "receipt", limit: 255
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_transaction_entries_on_account_id"
@@ -145,6 +146,6 @@ ActiveRecord::Schema.define(version: 20191223255543) do
   add_foreign_key "transaction_entries", "transfers"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "budget_items"
-  add_foreign_key "transfers", "transactions", column: "from_transaction_id"
-  add_foreign_key "transfers", "transactions", column: "to_transaction_id"
+  add_foreign_key "transfers", "transaction_entries", column: "from_transaction_id"
+  add_foreign_key "transfers", "transaction_entries", column: "to_transaction_id"
 end

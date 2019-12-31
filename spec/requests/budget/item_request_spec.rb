@@ -1,28 +1,33 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-RSpec.describe 'Budget Item request specs' do
-  describe 'GET /budget/items' do # index
+RSpec.describe 'Budget Item request specs' do # rubocop:disable Metrics/BlockLength
+  # index
+  describe 'GET /budget/items' do # rubocop:disable Metrics/BlockLength
+    subject { get '/budget/items' }
+
     let(:today) { Date.today }
     let(:month) { today.month }
     let(:year) { today.year }
-    let(:budget_interval) { FactoryBot.build(:budget_interval, month: month, year: year) }
-    let(:rent) { FactoryBot.create(:monthly_expense, interval: budget_interval) }
-    let(:phone) { FactoryBot.create(:monthly_expense, interval: budget_interval) }
-    let(:grocery) { FactoryBot.create(:weekly_expense, interval: budget_interval) }
+    let(:budget_interval) do
+      FactoryBot.build(:budget_interval, month: month, year: year)
+    end
+    let(:rent) do
+      FactoryBot.create(:monthly_expense, interval: budget_interval)
+    end
+    let(:phone) do
+      FactoryBot.create(:monthly_expense, interval: budget_interval)
+    end
+    let(:grocery) do
+      FactoryBot.create(:weekly_expense, interval: budget_interval)
+    end
     let!(:items) { Budget::ItemView.find(rent.id, phone.id, grocery.id) }
     let(:balance) { Account.available_cash.to_i }
-    let(:spent) do
-      Transaction::Record.between(budget_interval.date_range, include_pending: budget_interval.current?)
-        .discretionary
-        .sum(:amount)
-        .to_i
-    end
-    before do
-      FactoryBot.create(:transaction, budget_item: rent, amount: rent.amount, clearance_date: today)
-    end
-    let(:endpoint) { '/budget/items' }
 
-    subject { get endpoint }
+    let!(:misc_expense) do
+      FactoryBot.create(:transaction_entry, :discretionary, clearance_date: today)
+    end
 
     describe 'GET /budget/items' do # index
       it 'retuns a 200' do
@@ -35,7 +40,7 @@ RSpec.describe 'Budget Item request specs' do
           'balance' => balance,
           'days_remaining' => budget_interval.days_remaining,
           'month' => budget_interval.month,
-          'spent' => spent,
+          'spent' => misc_expense.details.map(&:amount).reduce(:+),
           'total_days' => budget_interval.total_days,
           'year' => budget_interval.year,
           'is_set_up' => budget_interval.set_up?,
@@ -106,7 +111,18 @@ RSpec.describe 'Budget Item request specs' do
     end
 
     context 'transactions exist' do
-      before { FactoryBot.create(:transaction, budget_item: item) }
+      before do
+        FactoryBot.create(
+          :transaction_entry,
+          details_attributes: [
+            {
+              budget_item: item,
+              amount: -10_000
+            }
+          ]
+        )
+      end
+
       it 'returns a 422' do
         expect(subject.status).to be 422
       end
@@ -114,15 +130,28 @@ RSpec.describe 'Budget Item request specs' do
   end
 
   describe 'GET /budget/categories/:category_id/items/:item_id/transactions' do
+    subject { get endpoint }
+
     let(:item) { FactoryBot.create(:budget_item) }
     let(:category) { item.category }
-    let!(:transaction) { FactoryBot.create(:subtransaction, budget_item: item) }
-    let(:expected_transactions) { [Transaction::Record.find(transaction.id).to_hash].to_json }
+    let!(:transaction) do
+      FactoryBot.create(
+        :transaction_entry,
+        details_attributes: [
+          {
+            budget_item: item,
+            amount: -100
+          }
+        ]
+      )
+    end
+    let(:detail_id) { transaction.details.first.id }
+    let(:expected_transactions) do
+      [Transaction::DetailView.find(detail_id).to_hash].to_json
+    end
     let(:endpoint) do
       "/budget/categories/#{category.id}/items/#{item.id}/transactions"
     end
-
-    subject { get endpoint }
 
     it 'returns a 200' do
       expect(subject.status).to be 200

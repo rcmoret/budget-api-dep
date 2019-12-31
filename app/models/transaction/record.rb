@@ -1,6 +1,5 @@
 module Transaction
   class Record < ActiveRecord::Base
-    include SharedMethods
     include Scopes
 
     self.table_name = 'transactions'

@@ -1,4 +1,7 @@
-class AccountsApi < Sinatra::Base
+# frozen_string_literal: true
+
+# top-level comment/documentation
+class AccountsApi < Sinatra::Base # rubocop:disable Metrics/ClassLength
   register Sinatra::Namespace
   include SharedHelpers
 
@@ -11,7 +14,7 @@ class AccountsApi < Sinatra::Base
     render_new(account)
   end
 
-  namespace %r{/(?<account_id>\d+)} do
+  namespace %r{/(?<account_id>\d+)} do # rubocop:disable Metrics/BlockLength
     get '' do
       [200, account.to_json]
     end
@@ -33,12 +36,12 @@ class AccountsApi < Sinatra::Base
 
       post '' do
         create_transaction!
-        render_new(transaction)
+        render_new(transaction.view)
       end
 
       namespace %r{/(?<id>\d+)} do
         get '' do
-          [200, transaction_entry.to_json]
+          [200, transaction.view.to_json]
         end
 
         put '' do
@@ -64,7 +67,7 @@ class AccountsApi < Sinatra::Base
             body
           end
     status 404
-    json({ errors: msg })
+    json(errors: msg)
   end
 
   private
@@ -89,11 +92,13 @@ class AccountsApi < Sinatra::Base
 
   def create_account!
     return if account.save
+
     render_error(422, account.errors.to_hash)
   end
 
   def update_account!
     return if account.update(account_params)
+
     render_error(422, account.errors.to_hash)
   end
 
@@ -105,10 +110,6 @@ class AccountsApi < Sinatra::Base
     @transaction ||= find_or_build_transaction!
   rescue ActiveRecord::RecordNotFound
     render_404('transaction', transaction_id)
-  end
-
-  def transaction_entry
-    @transaction_entry ||= account.transactions.find(transaction_id)
   end
 
   def create_transaction!
@@ -125,28 +126,33 @@ class AccountsApi < Sinatra::Base
 
   def find_or_build_transaction!
     if transaction_id.present?
-      account.primary_transactions.find(transaction_id)
+      account.transactions.find(transaction_id)
     else
-      account.primary_transactions.build(transaction_params)
+      account.transactions.build(transaction_params)
     end
   end
 
   def transaction_params
-    @transaction_params ||= params_for(Primary::Transaction)
+    @transaction_params ||= params_for(Transaction::Entry)
   end
 
   def filtered_transaction_params
-    params = request_params.slice(*Primary::Transaction::PUBLIC_ATTRS)
-    return params if request_params['subtransactions_attributes'].blank?
-    params['subtransactions_attributes'] = request_params['subtransactions_attributes'].map do |attrs|
-      attrs.slice(*Sub::Transaction::PUBLIC_ATTRS)
-    end
+    params = request_params.slice(*Transaction::Entry::PUBLIC_ATTRS)
+    return params if request_params['details_attributes'].blank?
+
+    params['details_attributes'] =
+      request_params['details_attributes'].map do |attrs|
+        attrs.slice(*Transaction::Detail::PUBLIC_ATTRS)
+      end
     params
   end
 
   def transaction_template
     @transaction_template ||=
-      TransactionTemplate.new(account, sym_params.merge(include_pending: budget_interval.current?))
+      TransactionTemplate.new(
+        account,
+        sym_params.merge(include_pending: budget_interval.current?)
+      )
   end
 
   def accounts

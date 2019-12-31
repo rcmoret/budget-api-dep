@@ -1,7 +1,10 @@
 class Account < ActiveRecord::Base
   has_many :transaction_views, class_name: 'Transaction::View'
-  has_many :transactions, class_name: 'Transaction::Record'
-  has_many :primary_transactions, class_name: 'Primary::Transaction'
+  has_many :transactions, class_name: 'Transaction::Entry'
+  has_many :details,
+           class_name: 'Transaction::Detail',
+           through: :transactions
+  has_many :detail_views, class_name: 'Transaction::DetailView'
   scope :active, -> { where(archived_at: nil) }
   scope :by_priority, -> { order('priority asc') }
   scope :cash_flow, -> { where(cash_flow: true) }
@@ -9,29 +12,18 @@ class Account < ActiveRecord::Base
   validates_presence_of :name, :priority
   validates_uniqueness_of :name, :priority
 
-  PUBLIC_ATTRS = %w(name cash_flow priority).freeze
+  PUBLIC_ATTRS = %w[name cash_flow priority].freeze
 
   class << self
-    def total
-      sum(:amount)
-    end
-
     def available_cash
-      cash_flow.joins(:transactions).total
-    end
-
-    def charged(budget_interval = Budget::Interval.current)
-      non_cash_flow.joins(:transactions).merge(
-        Transaction::Record.budget_inclusions.between(
-          budget_interval.date_range, include_pending: budget_interval.current?
-        )
-      ).total
+      cash_flow.joins(:details).sum(:amount)
     end
 
     def balance_prior_to(date)
-      cash_flow.joins(:transactions).merge(
-        Transaction::Record.cleared.prior_to(date)
-      ).total
+      cash_flow
+        .joins(:details)
+        .merge(Transaction::Detail.prior_to(date))
+        .sum(:amount)
     end
   end
 
@@ -43,7 +35,7 @@ class Account < ActiveRecord::Base
 
   def balance(prior_to: nil)
     if prior_to.nil?
-      transactions.total
+      details.total
     else
       transactions.prior_to(prior_to).total
     end

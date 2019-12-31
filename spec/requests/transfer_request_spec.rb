@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-RSpec.describe 'transfer requests' do
-  describe 'index' do
+RSpec.describe 'transfer requests' do # rubocop:disable Metrics/BlockLength
+  describe 'index' do # rubocop:disable Metrics/BlockLength
     before { FactoryBot.create_list(:transfer, 11) }
 
     let(:endpoint) { '/transfers' }
@@ -97,7 +99,7 @@ RSpec.describe 'transfer requests' do
     end
   end
 
-  describe 'post' do
+  describe 'post' do # rubocop:disable Metrics/BlockLength
     let(:endpoint) { '/transfers' }
     let(:checking_account) { FactoryBot.create(:account) }
     let(:savings_account) { FactoryBot.create(:account) }
@@ -105,12 +107,16 @@ RSpec.describe 'transfer requests' do
     let(:to_account_id) { savings_account.id }
     let(:amount) { (100..1000).to_a.sample }
     let(:body) do
-      { to_account_id: to_account_id, from_account_id: from_account_id, amount: amount }
+      {
+        to_account_id: to_account_id,
+        from_account_id: from_account_id,
+        amount: amount
+      }
     end
 
     subject { post endpoint, body }
 
-    context 'happy path' do
+    context 'happy path' do # rubocop:disable Metrics/BlockLength
       it 'returns a 201' do
         expect(subject.status).to be 201
       end
@@ -120,31 +126,40 @@ RSpec.describe 'transfer requests' do
       end
 
       it 'creates to transaction records' do
-        expect { subject }.to change { Transaction::Record.count }.by(+2)
+        expect { subject }.to change { Transaction::Entry.count }.by(+2)
       end
 
       it 'returns a hash with to transaction information: account name' do
-        expect(JSON.parse(subject.body)['to_transaction']['account_name']).to eq savings_account.name
+        expect(JSON.parse(subject.body)['to_transaction']['account_name'])
+          .to eq savings_account.name
       end
 
       it 'returns a hash with to transaction information: amount' do
-        expect(JSON.parse(subject.body)['to_transaction']['amount']).to be amount
+        expect(
+          JSON.parse(subject.body).dig('to_transaction', 'details', 0, 'amount')
+        ).to be amount
       end
 
       it 'returns a hash with to transaction information: clearance date' do
-        expect(JSON.parse(subject.body)['to_transaction'].fetch('clearance_date')).to be_nil
+        info = JSON.parse(subject.body)['to_transaction']
+        expect(info.fetch('clearance_date')).to be nil
       end
 
       it 'returns a hash with from transaction information: account name' do
-        expect(JSON.parse(subject.body)['from_transaction']['account_name']).to eq checking_account.name
+        expect(JSON.parse(subject.body)['from_transaction']['account_name'])
+          .to eq checking_account.name
       end
 
       it 'returns a hash with from transaction information: amount' do
-        expect(JSON.parse(subject.body)['from_transaction']['amount']).to be (-1 * amount)
+        expect(
+          JSON.parse(subject.body)
+          .dig('from_transaction', 'details', 0, 'amount')
+        ).to be(-1 * amount)
       end
 
       it 'returns a hash with from transaction information: clearance date' do
-        expect(JSON.parse(subject.body)['from_transaction'].fetch('clearance_date')).to be_nil
+        info = JSON.parse(subject.body)['from_transaction']
+        expect(info.fetch('clearance_date')).to be nil
       end
     end
 
@@ -155,7 +170,8 @@ RSpec.describe 'transfer requests' do
       end
 
       it 'responds with an error message' do
-        expect(subject.body).to eq "Could not find a(n) account with id: #{to_account_id}"
+        expect(subject.body)
+          .to eq "Could not find a(n) account with id: #{to_account_id}"
       end
     end
 
@@ -166,7 +182,8 @@ RSpec.describe 'transfer requests' do
       end
 
       it 'responds with an error message' do
-        expect(subject.body).to eq "Could not find a(n) account with id: #{from_account_id}"
+        expect(subject.body)
+          .to eq "Could not find a(n) account with id: #{from_account_id}"
       end
     end
 
@@ -195,7 +212,7 @@ RSpec.describe 'transfer requests' do
     end
 
     it 'deletes the transactions too' do
-      expect { subject }.to change { Transaction::Record.count }.by(-2)
+      expect { subject }.to change { Transaction::Entry.count }.by(-2)
     end
 
     it 'returns a 200' do
@@ -214,7 +231,8 @@ RSpec.describe 'transfer requests' do
       end
 
       it 'includes an error message' do
-        expect(subject.body).to eq "Could not find a(n) transfer with id: 1#{transfer.id}"
+        expect(subject.body)
+          .to eq "Could not find a(n) transfer with id: 1#{transfer.id}"
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DiscretionaryTransactions
   attr_reader :budget_interval
 
@@ -9,13 +11,15 @@ class DiscretionaryTransactions
     @budget_interval = budget_interval
   end
 
-  delegate :current?, :date_hash, :date_range, :days_remaining, :total_days, to: :budget_interval
+  delegate :current?, :date_hash, :date_range, :days_remaining, :total_days,
+           to: :budget_interval
 
   def collection
     @collection ||=
-      Transaction::Record.between(date_range, include_pending: current?)
-        .discretionary
-        .ordered
+      Transaction::DetailView
+      .discretionary
+      .between(date_range, include_pending: current?)
+      .ordered
   end
 
   def total
@@ -25,7 +29,13 @@ class DiscretionaryTransactions
   private
 
   def balance
-    @balance ||= current? ? Account.available_cash.to_i + Account.charged.to_i : 0
+    @balance ||= current? ? Account.available_cash.to_i + charged : 0
   end
 
+  def charged
+    Transaction::DetailView
+      .budget_inclusions
+      .non_cash_flow
+      .total
+  end
 end

@@ -162,13 +162,14 @@ RSpec.describe 'AccountsApi', type: :request do
     end
 
     context 'transactions exist' do
-      before { FactoryBot.create(:transaction, account: account) }
+      before { FactoryBot.create(:transaction_entry, account: account) }
+
       it 'returns a 204' do
         expect(response.status).to be 204
       end
 
       it 'updates deleted_at on the record' do
-        expect { response }.to change { account.reload.archived_at }
+        expect { response }.to(change { account.reload.archived_at })
       end
 
       it 'soft deletes the record' do

@@ -1,10 +1,12 @@
-import 'spec_helper'
+# frozen_string_literal: true
 
-RSpec.describe Budget::Metadata do
+require 'spec_helper'
+
+RSpec.describe Budget::Metadata do # rubocop:disable Metrics/BlockLength
   subject { described_class.for(budget_interval) }
 
   let(:spent) { (-1000..-10).to_a.sample }
-  let(:available_cash) { (1000..10000).to_a.sample }
+  let(:available_cash) { (1000..10_000).to_a.sample }
   let(:charged) { (-1000..-10).to_a.sample }
   let(:budget_interval) do
     FactoryBot.create(:budget_interval, :current, :set_up, :closed_out)
@@ -15,7 +17,18 @@ RSpec.describe Budget::Metadata do
       instance_double(DiscretionaryTransactions, total: spent)
     end
     allow(Account).to receive(:available_cash).and_return(available_cash)
-    allow(Account).to receive(:charged).and_return(charged)
+    allow(Transaction::DetailView)
+      .to receive(:non_cash_flow)
+      .and_return(
+        double(
+          'non_cash_flow_detail_view',
+          between:
+          double(
+            'between_detail_view',
+            sum: charged
+          )
+        )
+      )
   end
 
   it 'returns month from the budget month' do
