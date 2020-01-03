@@ -9,7 +9,7 @@ module Transaction
     has_one :account, through: :entry
     validates :amount, presence: true
     validates :budget_item_id, uniqueness: true, if: :budget_item_monthly?
-    validate :amount_static!, if: :transfer?
+    validate :amount_static!, if: :transfer?, on: :update
 
     scope :discretionary, -> { where(budget_item_id: nil) }
     scope :prior_to, ->(date) { joins(:entry).merge(Entry.prior_to(date)) }

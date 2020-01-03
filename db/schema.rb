@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191228043943) do
+ActiveRecord::Schema.define(version: 20200103144035) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -146,6 +146,6 @@ ActiveRecord::Schema.define(version: 20191228043943) do
   add_foreign_key "transaction_entries", "transfers"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "budget_items"
-  add_foreign_key "transfers", "transaction_entries", column: "from_transaction_id"
-  add_foreign_key "transfers", "transaction_entries", column: "to_transaction_id"
+  add_foreign_key "transfers", "transactions", column: "from_transaction_id"
+  add_foreign_key "transfers", "transactions", column: "to_transaction_id"
 end

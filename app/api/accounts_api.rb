@@ -46,7 +46,7 @@ class AccountsApi < Sinatra::Base # rubocop:disable Metrics/ClassLength
 
         put '' do
           update_transaction!
-          render_updated(transaction)
+          render_updated(transaction.view)
         end
 
         delete '' do
