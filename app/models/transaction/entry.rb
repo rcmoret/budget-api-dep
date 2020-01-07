@@ -25,6 +25,7 @@ module Transaction
     PUBLIC_ATTRS = %w[
       account_id
       budget_exclusion
+      check_number
       clearance_date
       description
       details_attributes
