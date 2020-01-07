@@ -32,7 +32,6 @@ class TransactionTemplate
       .between(
         date_range, include_pending: options[:include_pending]
       )
-      .ordered
       .map(&:to_hash)
   end
 

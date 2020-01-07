@@ -18,8 +18,8 @@ class DiscretionaryTransactions
     @collection ||=
       Transaction::DetailView
       .discretionary
+      .non_transfer
       .between(date_range, include_pending: current?)
-      .ordered
   end
 
   def total

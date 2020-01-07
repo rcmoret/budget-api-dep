@@ -17,9 +17,6 @@ module Transaction
       scope :budget_inclusions, -> { where(budget_exclusion: false) }
       scope :non_transfers, -> { where(transfer_id: nil) }
       scope :non_cash_flow, -> { joins(:account).merge(Account.non_cash_flow) }
-      scope :pending_last, -> { order(%("#{table_name}".clearance_date IS NULL)) }
-      scope :by_clearnce_date, -> { order(clearance_date: :asc) }
-      scope :ordered, -> { pending_last.by_clearnce_date }
     end
   end
 end
