@@ -33,11 +33,16 @@ module Budget
     end
 
     def balance
-      @balance ||= current? ? (Account.available_cash + charged).to_i : 0
+      @balance ||= current? ? (available_cash + charged).to_i : 0
+    end
+
+    def available_cash
+      @available_cash ||= Account.available_cash
     end
 
     def charged
       @charged ||= Transaction::DetailView
+                   .budget_inclusions
                    .non_cash_flow
                    .between(
                      budget_interval.date_range,

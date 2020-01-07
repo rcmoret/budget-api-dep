@@ -25,23 +25,4 @@ class DiscretionaryTransactions
   def total
     collection.total.to_i
   end
-
-  private
-
-  def balance
-    @balance ||= current? ? (available_cash + charged) : 0
-  end
-
-  def available_cash
-    Account.available_cash.to_i
-  end
-
-  def charged
-    Transaction::DetailView
-      .budget_inclusions
-      .non_transfers
-      .non_cash_flow
-      .between(date_range, include_pending: current?)
-      .total
-  end
 end
