@@ -6,10 +6,6 @@ module Transaction
 
     self.table_name = :transaction_detail_view
     self.primary_key = :id
-    has_one :view,
-            class_name: 'DetailView',
-            foreign_key: :id,
-            primary_key: :id
 
     belongs_to :account
 

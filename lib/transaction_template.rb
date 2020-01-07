@@ -27,9 +27,13 @@ class TransactionTemplate
   end
 
   def collection
-    @collection ||= transaction_views.between(
-      date_range, include_pending: options[:include_pending]
-    ).as_collection
+    @collection ||=
+      transaction_views
+      .between(
+        date_range, include_pending: options[:include_pending]
+      )
+      .ordered
+      .map(&:to_hash)
   end
 
   def date_range

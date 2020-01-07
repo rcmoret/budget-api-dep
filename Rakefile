@@ -35,10 +35,6 @@ namespace :app do
     Dir['./app/concerns/*.rb'].each { |f| require f }
     # transaction modules and classes
     require './app/models/transaction/shared'
-    require './app/models/transaction/view'
-    require './app/models/transaction/record'
-    require './app/models/transaction/sub_transaction'
-    require './app/models/transaction/primary_transaction'
     require './app/models/transaction'
     require './app/models/transaction/entry'
     require './app/models/transaction/entry_view'

@@ -24,17 +24,15 @@ RSpec.describe Transaction::Detail, type: :model do # rubocop:disable Metrics/Bl
     end
 
     describe 'entry validation' do
-      it 'validates presence of entry id' do
-        expect \
-          { described_class.new(transaction_entry_id: nil, amount: 0).valid? }
-          .to raise_error(Module::DelegationError)
+      it 'returns false for valid?' do
+        expect(described_class.new(transaction_entry_id: nil, amount: 0))
+          .not_to be_valid
       end
 
       it 'has an error if not present' do
         detail = described_class.new(transaction_entry_id: nil, amount: 0)
-        expect \
-          { detail.valid? }
-          .to raise_error(Module::DelegationError)
+        detail.valid?
+        expect(detail.errors[:entry]).to include 'must exist'
       end
     end
 

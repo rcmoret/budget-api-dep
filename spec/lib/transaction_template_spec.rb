@@ -65,13 +65,13 @@ RSpec.describe TransactionTemplate do # rubocop:disable Metrics/BlockLength
     end
 
     describe 'transactions in collection' do
-      let(:collection) { double(total: 0, as_collection: []) }
+      let(:ordered_collection) { double('ordered_collection', map: []) }
+      let(:collection) { double('collection', ordered: ordered_collection) }
       let(:transactions) { double('transactions', between: collection) }
       before { allow(account).to receive(:transaction_views) { transactions } }
 
-      it 'calls between and as_collection' do
+      it 'calls between' do
         expect(transactions).to receive(:between)
-        expect(collection).to receive(:as_collection)
         template
       end
     end

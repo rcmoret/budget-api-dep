@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Transaction::View, type: :model do # rubocop:disable Metrics/BlockLength
+RSpec.describe Transaction::EntryView, type: :model do # rubocop:disable Metrics/BlockLength
   it { should belong_to(:account) }
   it { should be_readonly }
 
@@ -58,7 +58,7 @@ RSpec.describe Transaction::View, type: :model do # rubocop:disable Metrics/Bloc
       )
     end
 
-    subject { Transaction::View.find(entry.id).to_hash }
+    subject { described_class.find(entry.id).to_hash }
 
     context 'one detail' do
       it { should eq expected_hash }
