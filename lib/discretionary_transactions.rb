@@ -18,7 +18,7 @@ class DiscretionaryTransactions
     @collection ||=
       Transaction::DetailView
       .discretionary
-      .non_transfer
+      .non_transfers
       .between(date_range, include_pending: current?)
   end
 
@@ -35,6 +35,7 @@ class DiscretionaryTransactions
   def charged
     Transaction::DetailView
       .budget_inclusions
+      .non_transfers
       .non_cash_flow
       .total
   end

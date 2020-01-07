@@ -10,7 +10,6 @@ module Transaction
     belongs_to :account
 
     scope :discretionary, -> { where(budget_item_id: nil) }
-    scope :non_transfer, -> { where(transfer_id: nil) }
 
     def self.total
       sum(:amount)
