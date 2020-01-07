@@ -91,7 +91,7 @@ module Transaction
           "(#{transfer? ? :transfer : :budget_exclusion}) "\
           'must have exactly 1 detail'
         )
-      else # budget_exclusion
+      else # non-tranfer; budget included
         errors.add(:details, 'Must have at least one detail for this entry')
       end
     end
