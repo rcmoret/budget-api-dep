@@ -29,7 +29,11 @@ class DiscretionaryTransactions
   private
 
   def balance
-    @balance ||= current? ? Account.available_cash.to_i + charged : 0
+    @balance ||= current? ? (available_cash + charged) : 0
+  end
+
+  def available_cash
+    Account.available_cash.to_i
   end
 
   def charged
@@ -37,6 +41,7 @@ class DiscretionaryTransactions
       .budget_inclusions
       .non_transfers
       .non_cash_flow
+      .between(date_range, include_pending: current?)
       .total
   end
 end
