@@ -87,7 +87,7 @@ Budget API
 | PUT       | /interval/:month/:year | 200 + resource  |
 
 ## ERD
-![Database Schema](./docs/budget-erd-v3.0.png)
+![Database Schema](./docs/budget-erd-v3.1.png)
 
 ## JSON Representations
 ### Accounts
