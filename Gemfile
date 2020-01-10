@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 group :development do
@@ -8,6 +10,7 @@ group :development do
   gem 'pg', '~> 0.18'
   gem 'rack-cors'
   gem 'rb-readline'
+  gem 'rubocop', require: false
   gem 'sinatra-activerecord'
   gem 'sqlite3', '~> 1.3.6'
   gem 'standalone_migrations'
