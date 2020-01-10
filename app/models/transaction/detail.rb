@@ -17,6 +17,7 @@ module Transaction
 
     scope :discretionary, -> { where(budget_item_id: nil) }
     scope :prior_to, ->(date) { joins(:entry).merge(Entry.prior_to(date)) }
+    scope :pending, -> { joins(:entry).merge(Entry.pending) }
     scope :budget_inclusions, -> { joins(:entry).merge(Entry.budget_inclusions) }
 
     delegate :monthly?, to: :budget_item, allow_nil: true, prefix: true

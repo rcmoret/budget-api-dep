@@ -30,34 +30,29 @@ class TransactionTemplate
     @collection ||=
       transaction_views
       .between(
-        date_range, include_pending: options[:include_pending]
+        date_range,
+        include_pending: options[:include_pending]
       )
       .map(&:to_hash)
   end
 
-  def date_range
-    @date_range ||= case
-                    when options[:date]
-                      Budget::Interval.for(date: options[:date]).date_range
-                    when options[:month]
-                      Budget::Interval.for(options).date_range
-                    when options[:first] && options[:last]
-                      (options[:first].to_date..options[:last].to_date)
-                    else
-                      Budget::Interval.current.date_range
-                    end
+  def date_range # rubocop:disable AbcSize
+    @date_range ||=
+      if options.key?(:date)
+        Budget::Interval.for(date: options[:date]).date_range
+      elsif options.key?(:month)
+        Budget::Interval.for(options).date_range
+      elsif options.key?(:first) && options.key?(:last)
+        (options[:first].to_date..options[:last].to_date)
+      else
+        Budget::Interval.current.date_range
+      end
   end
 
   def prior_balance
-    if date_range.first > Date.today
-      detail_views
-        .prior_to(date_range.first)
-        .or(detail_views.pending)
-        .total
-    else
-      detail_views
-        .prior_to(date_range.first)
-        .total
-    end
+    account.balance_prior_to(
+      date_range.first,
+      include_pending: (date_range.first > Date.today)
+    )
   end
 end

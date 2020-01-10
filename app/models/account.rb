@@ -18,26 +18,26 @@ class Account < ActiveRecord::Base
     def available_cash
       cash_flow.joins(:details).sum(:amount)
     end
-
-    def balance_prior_to(date)
-      cash_flow
-        .joins(:details)
-        .merge(Transaction::Detail.prior_to(date))
-        .sum(:amount)
-    end
   end
 
   delegate :to_json, to: :to_hash
 
   def to_hash
-    attributes.symbolize_keys.merge(balance: balance)
+    attributes
+      .symbolize_keys
+      .merge(balance: balance)
   end
 
-  def balance(prior_to: nil)
-    if prior_to.nil?
-      details.total
+  def balance_prior_to(date, include_pending:)
+    if include_pending
+      details
+        .prior_to(date)
+        .or(details.pending)
+        .total
     else
-      transactions.prior_to(prior_to).total
+      details
+        .prior_to(date)
+        .total
     end
   end
 
@@ -51,5 +51,11 @@ class Account < ActiveRecord::Base
 
   def to_s
     name
+  end
+
+  private
+
+  def balance
+    details.total
   end
 end

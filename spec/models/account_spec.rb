@@ -12,7 +12,9 @@ RSpec.describe Account, type: :model do
     it { should validate_uniqueness_of(:name) }
   end
 
-  describe '.balance' do
+  describe '.to_hash [balance]' do
+    subject { account.to_hash }
+
     let!(:account) { FactoryBot.create(:checking_account) }
     let(:transaction_entries) do
       FactoryBot.create_list(:transaction_entry, 2, account: account)
@@ -23,30 +25,51 @@ RSpec.describe Account, type: :model do
       allow(account).to receive(:details).and_return(details)
     end
 
-    context 'without any args' do
-      subject { account.balance }
-
-      it 'should call `total` on the transactions' do
-        expect(details).to receive(:total)
-        subject
-      end
+    it 'should call `total` on the transactions' do
+      expect(details).to receive(:total)
+      subject
     end
 
-    context 'without prior_to argument' do
-      subject { account.balance(prior_to: date) }
+    it 'returns the total' do
+      expect(subject[:balance]).to be details.total
+    end
 
+    describe '.balance_prior_to' do
       let(:budget_interval) { FactoryBot.build(:budget_interval, :current) }
       let(:date) { budget_interval.first_date }
-      let(:transactions) { double(prior_to: double(total: -1000)) }
 
       before do
-        allow(account).to receive(:transactions).and_return(transactions)
-        allow(transactions).to receive(:total)
+        allow(account).to receive(:details).and_return(details)
       end
 
-      it 'should call `total` on transactions' do
-        expect(transactions).to receive(:prior_to).with(date) { double(total: 0) }
-        subject
+      context 'when include pending is false' do
+        subject { account.balance_prior_to(date, include_pending: false) }
+
+        let(:details) { double(prior_to: double(total: -1000)) }
+        it 'should call `total` on details' do
+          expect(details)
+            .to receive(:prior_to)
+            .with(date)
+          subject
+        end
+      end
+
+      context 'when include pending is true' do
+        subject { account.balance_prior_to(date, include_pending: true) }
+
+        let(:totalable_double) { double(total: -1000) }
+        let(:scoped_details) { double('scoped_details', or: totalable_double) }
+        let(:details) do
+          double('details', prior_to: scoped_details, pending: scoped_details)
+        end
+        it 'should call `total` on details' do
+          expect(details)
+            .to receive(:prior_to)
+            .with(date)
+          expect(totalable_double)
+            .to receive(:total)
+          subject
+        end
       end
     end
   end

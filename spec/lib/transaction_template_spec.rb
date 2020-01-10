@@ -76,15 +76,29 @@ RSpec.describe TransactionTemplate do # rubocop:disable Metrics/BlockLength
     end
 
     describe 'transactions prior to' do
-      let(:transactions) { double('transactions', prior_to: collection) }
-      let(:collection) { double('collection', total: 0) }
+      let(:query) { { first: first_day, last: 30.days.from_now } }
+      let(:template) { TransactionTemplate.new(account, query).to_json }
 
-      before { allow(account).to receive(:detail_views) { transactions } }
+      context 'before today' do
+        let(:first_day) { Date.today }
 
-      it 'calls prior_to and total' do
-        expect(transactions).to receive(:prior_to)
-        expect(collection).to receive(:total)
-        template
+        it 'calls for the balance prior to and include pending is false' do
+          expect(account)
+            .to receive(:balance_prior_to)
+            .with(first_day, include_pending: false)
+          template
+        end
+      end
+
+      context 'after today' do
+        let(:first_day) { 1.day.from_now.to_date }
+
+        it 'calls for the balance prior to and include pending is false' do
+          expect(account)
+            .to receive(:balance_prior_to)
+            .with(first_day, include_pending: true)
+          template
+        end
       end
     end
   end
