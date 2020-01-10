@@ -44,7 +44,7 @@ RSpec.describe 'Budget Item request specs' do # rubocop:disable Metrics/BlockLen
           'total_days' => budget_interval.total_days,
           'year' => budget_interval.year,
           'is_set_up' => budget_interval.set_up?,
-          'is_closed_out' => budget_interval.closed_out?,
+          'is_closed_out' => budget_interval.closed_out?
         }
         expect(parsed_body['metadata']).to eq expected_metadata
       end

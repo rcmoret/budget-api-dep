@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SharedExamples
   module TransactionExamples
     shared_examples_for 'JSON transaction (base)' do
@@ -11,7 +13,7 @@ module SharedExamples
       it 'should have a clearance_date' do
         expect(subject['clearance_date']).to eq transaction_attributes[:clearance_date]
       end
-      it 'should have the account info'do
+      it 'should have the account info' do
         expect(subject['account_id']).to eq checking.id
         expect(subject['account_name']).to eq checking.name
       end

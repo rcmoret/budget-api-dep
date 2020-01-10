@@ -1,5 +1,6 @@
-module Budget
+# frozen_string_literal: true
 
+module Budget
   def self.table_name_prefix
     'budget_'
   end
@@ -38,7 +39,7 @@ module Budget
         icon_class_name: icon_class_name,
         month: interval.month,
         name: name,
-        year: interval.year,
+        year: interval.year
       }
     end
 

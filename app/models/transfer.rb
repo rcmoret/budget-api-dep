@@ -42,7 +42,9 @@ class Transfer < ActiveRecord::Base
     attr_reader :to_account, :from_account, :amount
 
     def initialize(to_account:, from_account:, amount:)
-      raise DuplicateAccountError, 'Must provide distinct accounts' if to_account == from_account
+      if to_account == from_account
+        raise DuplicateAccountError, 'Must provide distinct accounts'
+      end
 
       @to_account = to_account
       @from_account = from_account
@@ -70,7 +72,7 @@ class Transfer < ActiveRecord::Base
           description: from_description,
           account: from_account,
           details_attributes: [
-            { amount: -amount },
+            { amount: -amount }
           ]
         )
     end
@@ -85,7 +87,7 @@ class Transfer < ActiveRecord::Base
           description: to_description,
           account: to_account,
           details_attributes: [
-            { amount: amount },
+            { amount: amount }
           ]
         )
     end

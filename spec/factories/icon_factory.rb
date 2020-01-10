@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :icon do
     sequence(:class_name) { |n| "fa fa-icon-#{n}" }

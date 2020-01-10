@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rake'
 require './lib/colorize'
 require 'standalone_migrations'

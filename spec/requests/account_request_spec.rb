@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.shared_examples_for 'a JSON account' do
@@ -16,7 +18,6 @@ RSpec.shared_examples_for 'a JSON account' do
     end
   end
 end
-
 
 RSpec.describe 'AccountsApi', type: :request do
   describe 'GET routes' do
@@ -43,7 +44,7 @@ RSpec.describe 'AccountsApi', type: :request do
       end
 
       context 'random id' do
-        let(:endpoint) { "/accounts/#{checking.id}404"}
+        let(:endpoint) { "/accounts/#{checking.id}404" }
         let(:error) do
           { errors: ["Could not find a(n) account with id: #{checking.id}404"] }.to_json
         end

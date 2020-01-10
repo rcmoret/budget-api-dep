@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../colorize'
 include Colorize
 
@@ -16,6 +18,6 @@ namespace :pg do
     print_green "Beginning database dump from #{db_name} to #{file}"
     print_cyan  "EXECUTING: `#{command}'"
     `#{command}`
-    print_green "COMPLETE"
+    print_green 'COMPLETE'
   end
 end

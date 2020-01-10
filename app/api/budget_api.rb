@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BudgetApi < Sinatra::Base
   register Sinatra::Namespace
   include SharedHelpers
@@ -43,7 +45,9 @@ class BudgetApi < Sinatra::Base
           end
 
           delete '' do
-            render_error(422, "Item with id: #{item.id} could not be deleted") unless item.deletable?
+            unless item.deletable?
+              render_error(422, "Item with id: #{item.id} could not be deleted")
+            end
             item.destroy
             [204, {}]
           end
@@ -79,7 +83,7 @@ class BudgetApi < Sinatra::Base
   end
 
   get '/items' do
-    [200, { metadata: metadata, collection: items}.to_json]
+    [200, { metadata: metadata, collection: items }.to_json]
   end
 
   namespace '/discretionary' do
@@ -115,8 +119,8 @@ class BudgetApi < Sinatra::Base
   end
 
   def update_item!
-
     return if item.update(item_params)
+
     render_error(422, item.errors.to_hash)
   end
 
@@ -127,7 +131,6 @@ class BudgetApi < Sinatra::Base
   def category_id
     @category_id ||= params['category_id']
   end
-
 
   def category
     @category ||= find_or_build_category!
@@ -141,11 +144,13 @@ class BudgetApi < Sinatra::Base
 
   def create_category!
     return if category.save
+
     render_error(422, category.errors.to_hash)
   end
 
   def update_category!
     return if category.update(category_params)
+
     render_error(422, category.errors.to_hash)
   end
 

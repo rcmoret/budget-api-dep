@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-#
+
 require 'spec_helper'
 
 RSpec.describe Transfer, type: :model do # rubocop:disable Metric/BlockLength

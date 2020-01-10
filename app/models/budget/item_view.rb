@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Budget
   class ItemView < ActiveRecord::Base
     include Budget::Shared

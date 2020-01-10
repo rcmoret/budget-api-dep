@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class CreateMaturityIntervalsView < ActiveRecord::Migration[5.1]
-  VIEW_NAME = 'maturity_intervals_view'.freeze
+  VIEW_NAME = 'maturity_intervals_view'
 
   def up
     execute "DROP view if exists #{VIEW_NAME}"

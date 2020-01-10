@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameBudgetMonth < ActiveRecord::Migration[5.1]
   def change
     execute('DROP VIEW IF EXISTS budget_item_views')

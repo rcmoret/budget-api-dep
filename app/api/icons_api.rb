@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IconsApi < Sinatra::Base
   register Sinatra::Namespace
   include SharedHelpers
@@ -45,11 +47,13 @@ class IconsApi < Sinatra::Base
 
   def create_icon!
     return if icon.save
+
     render_error(422, icon.errors.to_hash)
   end
 
   def update_icon!
     return if icon.update(icon_params)
+
     render_error(422, icon.errors.to_hash)
   end
 

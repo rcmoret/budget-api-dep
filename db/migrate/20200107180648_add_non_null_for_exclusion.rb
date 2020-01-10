@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddNonNullForExclusion < ActiveRecord::Migration[5.1]
   def up
     change_column_null(:transaction_entries, :budget_exclusion, false)

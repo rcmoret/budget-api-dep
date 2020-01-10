@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TxnDetailView < ActiveRecord::Migration[5.1]
   UP_MIGRATION = <<-SQL
     CREATE view transaction_detail_view AS

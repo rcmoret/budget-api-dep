@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateTransactionsView < ActiveRecord::Migration[5.1]
   PG_SQL = <<-SQL
       CREATE VIEW transaction_view AS
@@ -34,7 +36,7 @@ class CreateTransactionsView < ActiveRecord::Migration[5.1]
         FROM transactions t LEFT OUTER JOIN budget_items ma ON ma.id = t.budget_item_id LEFT JOIN budget_categories b on b.id = ma.budget_category_id LEFT JOIN accounts a ON a.id = t.account_id
         LEFT JOIN icons ic ON ic.id = b.icon_id
         WHERE t.primary_transaction_id IS NULL
-    SQL
+  SQL
 
   LITE_SQL = <<-SQL
       CREATE VIEW transaction_view AS
@@ -76,7 +78,7 @@ class CreateTransactionsView < ActiveRecord::Migration[5.1]
         LEFT JOIN accounts a ON a.id = t.account_id
         LEFT JOIN icons ic ON ic.id = b.icon_id
         WHERE t.primary_transaction_id IS NULL
-    SQL
+  SQL
 
   def up
     adapter = ActiveRecord::Base.configurations.dig(ENV['RACK_ENV'], 'adapter')

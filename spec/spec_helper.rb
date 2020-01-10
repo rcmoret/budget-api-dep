@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ENV['RACK_ENV'] = 'test'
 require 'rake'
 require 'active_support/testing/time_helpers'
@@ -45,6 +47,6 @@ def app
     '/budget' => BudgetApi.new,
     '/icons' => IconsApi.new,
     '/intervals' => IntervalsApi.new,
-    '/transfers' => TransfersApi.new,
+    '/transfers' => TransfersApi.new
   )
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :budget_interval, class: 'Budget::Interval' do
     month { (1..12).to_a.sample }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Account < ActiveRecord::Base
   has_many :transaction_views, class_name: 'Transaction::EntryView'
   has_many :transactions, class_name: 'Transaction::Entry'

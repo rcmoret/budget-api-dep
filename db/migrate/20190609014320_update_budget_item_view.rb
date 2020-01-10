@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateBudgetItemView < ActiveRecord::Migration[5.1]
   def up
     execute('DROP VIEW if exists budget_item_views')

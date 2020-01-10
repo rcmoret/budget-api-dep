@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateTxnView < ActiveRecord::Migration[5.1]
   PG_SQL_UP = <<-SQL
       CREATE VIEW transaction_view AS

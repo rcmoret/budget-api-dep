@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'active_support/testing/time_helpers'
 include ActiveSupport::Testing::TimeHelpers
@@ -28,7 +30,7 @@ RSpec.describe Budget::ItemView, type: :model do
         expense: category.expense?,
         transaction_count: 0,
         maturity_month: nil,
-        maturity_year: nil,
+        maturity_year: nil
       }
     end
 

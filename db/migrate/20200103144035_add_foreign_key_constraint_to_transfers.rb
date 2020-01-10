@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddForeignKeyConstraintToTransfers < ActiveRecord::Migration[5.1]
   def up
     add_foreign_key :transfers, :transaction_entries, column: :to_transaction_id

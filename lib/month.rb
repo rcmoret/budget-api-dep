@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Month < Date
   alias succ :next_month
 end
