@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Transaction::Detail, type: :model do # rubocop:disable Metrics/BlockLength
+RSpec.describe Transaction::Detail, type: :model do
   describe 'associations' do
     subject do
       described_class.new(amount: -1000, budget_item: budget_item)
@@ -13,7 +13,7 @@ RSpec.describe Transaction::Detail, type: :model do # rubocop:disable Metrics/Bl
     it { should belong_to(:budget_item) }
   end
 
-  describe 'validations' do # rubocop:disable Metrics/BlockLength
+  describe 'validations' do
     let(:entry) { FactoryBot.create(:transaction_entry) }
 
     describe 'a valid detail' do

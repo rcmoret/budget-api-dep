@@ -13,12 +13,13 @@ module Budget
     scope :ordered, -> { order(year: :asc).order(month: :asc) }
 
     def self.for(**opts)
-      month, year = if opts[:date].present?
-                      [opts[:date].to_date.month, opts[:date].to_date.year]
-                    else
-                      today = Date.today
-                      [opts.fetch(:month, today.month), opts.fetch(:year, today.year)]
-      end
+      month, year =
+        if opts[:date].present?
+          [opts[:date].to_date.month, opts[:date].to_date.year]
+        else
+          today = Date.today
+          [opts.fetch(:month, today.month), opts.fetch(:year, today.year)]
+        end
       find_or_create_by(month: month, year: year)
     end
 

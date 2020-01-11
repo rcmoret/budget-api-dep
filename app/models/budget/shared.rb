@@ -28,7 +28,7 @@ module Budget
       delegate :to_json, to: :to_hash
     end
 
-    def to_hash
+    def to_hash # rubocop:disable Metrics/MethodLength
       {
         id: id,
         accural: accrual,

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metric/ClassLength
 class UpdateTransactionViewV2 < ActiveRecord::Migration[5.1]
   PG_SQL_UP = <<-SQL
       CREATE VIEW transaction_view AS
@@ -188,3 +189,4 @@ class UpdateTransactionViewV2 < ActiveRecord::Migration[5.1]
 
   AdapterError = Class.new(StandardError)
 end
+# rubocop:enable Metric/ClassLength

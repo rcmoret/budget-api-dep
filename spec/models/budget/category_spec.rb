@@ -133,7 +133,7 @@ RSpec.describe Budget::Category, type: :model do
 
       it 'soft deletes the record' do
         expect(category).to receive(:update).with(archived_at: Time.current)
-        expect { subject }.to_not change { described_class.count }
+        expect { subject }.to_not(change { described_class.count })
       end
     end
   end

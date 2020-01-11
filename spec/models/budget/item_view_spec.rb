@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'active_support/testing/time_helpers'
-include ActiveSupport::Testing::TimeHelpers
 
 RSpec.describe Budget::ItemView, type: :model do
   it { should be_readonly }

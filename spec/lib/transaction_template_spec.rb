@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TransactionTemplate do # rubocop:disable Metrics/BlockLength
+RSpec.describe TransactionTemplate do
   let(:account) { FactoryBot.create(:account) }
   let!(:transaction) do
     FactoryBot.create(
@@ -15,15 +15,15 @@ RSpec.describe TransactionTemplate do # rubocop:disable Metrics/BlockLength
   let(:template) { TransactionTemplate.new(account).to_json }
   let(:budget_interval) { FactoryBot.build(:budget_interval, :current) }
 
-  describe '#to_json' do # rubocop:disable Metrics/BlockLength
-    describe 'metadata' do # rubocop:disable Metrics/BlockLength
+  describe '#to_json' do
+    describe 'metadata' do
       it 'should return some metadata' do
         metadata = JSON.parse(template)['metadata']
         expect(metadata['prior_balance']).to eq detail.amount
         expect(metadata['query_options']).to be_empty
       end
 
-      describe 'date range' do # rubocop:disable Metrics/BlockLength
+      describe 'date range' do
         subject { JSON.parse(template)['metadata']['date_range'] }
 
         let(:template) { TransactionTemplate.new(account, query).to_json }

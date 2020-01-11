@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support/testing/time_helpers'
+
 ENV['RACK_ENV'] = 'test'
 require 'rake'
 require 'active_support/testing/time_helpers'
@@ -10,11 +12,10 @@ Rake::Task['app:setup'].invoke
 Dir['./spec/helpers/*.rb'].each { |f| require f }
 Dir['./spec/shared/*_examples.rb'].each { |f| require f }
 
-RSpec.configure do |config|
+RSpec.configure do |config| # rubocop:disable Metrics/BlockLength
   config.include(Helpers::CustomMatchers)
   config.include(Helpers::RequestHelpers)
   config.include(Rack::Test::Methods)
-  config.include(SharedExamples::TransactionExamples)
   config.include(Shoulda::Matchers::ActiveModel, type: :model)
   config.include(Shoulda::Matchers::ActiveRecord, type: :model)
   config.include(Shoulda::Matchers::Independent)

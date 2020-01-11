@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'transfer requests' do # rubocop:disable Metrics/BlockLength
-  describe 'index' do # rubocop:disable Metrics/BlockLength
+RSpec.describe 'transfer requests' do
+  describe 'index' do
     before { FactoryBot.create_list(:transfer, 11) }
 
     let(:endpoint) { '/transfers' }
@@ -99,7 +99,7 @@ RSpec.describe 'transfer requests' do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  describe 'post' do # rubocop:disable Metrics/BlockLength
+  describe 'post' do
     let(:endpoint) { '/transfers' }
     let(:checking_account) { FactoryBot.create(:account) }
     let(:savings_account) { FactoryBot.create(:account) }
@@ -116,7 +116,7 @@ RSpec.describe 'transfer requests' do # rubocop:disable Metrics/BlockLength
 
     subject { post endpoint, body }
 
-    context 'happy path' do # rubocop:disable Metrics/BlockLength
+    context 'happy path' do
       it 'returns a 201' do
         expect(subject.status).to be 201
       end

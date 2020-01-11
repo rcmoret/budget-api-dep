@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Transfer, type: :model do # rubocop:disable Metric/BlockLength
+RSpec.describe Transfer, type: :model do
   it { should belong_to(:from_transaction) }
   it { should belong_to(:to_transaction) }
 
@@ -15,7 +15,7 @@ RSpec.describe Transfer, type: :model do # rubocop:disable Metric/BlockLength
     end
   end
 
-  describe '.to_hash' do # rubocop:disable Metric/BlockLength
+  describe '.to_hash' do
     let(:checking_account) { FactoryBot.create(:account) }
     let(:savings_account) { FactoryBot.create(:savings_account) }
     let(:amount) { (100..1000).to_a.sample }

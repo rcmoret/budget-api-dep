@@ -60,7 +60,7 @@ RSpec.describe Budget::Item, type: :model do
     specify do
       budget_interval = FactoryBot.create(:budget_interval)
       category = FactoryBot.create(:category, :weekly)
-      item = FactoryBot.create(:budget_item, category: category, interval: budget_interval)
+      FactoryBot.create(:budget_item, category: category, interval: budget_interval)
 
       subject = FactoryBot.build(:budget_item, category: category, interval: budget_interval)
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class CreateTransactionEntries < ActiveRecord::Migration[5.1]
+  # rubocop:disable Metrics/MethodLength
   def up
     create_table :transaction_entries do |t|
       t.string :description, limit: 255
@@ -15,6 +16,7 @@ class CreateTransactionEntries < ActiveRecord::Migration[5.1]
       t.timestamps
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def down
     drop_table :transaction_entries

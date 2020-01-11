@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Transaction::EntryView, type: :model do # rubocop:disable Metrics/BlockLength
+RSpec.describe Transaction::EntryView, type: :model do
   it { should belong_to(:account) }
   it { should be_readonly }
 
   before { Timecop.freeze(Time.now.beginning_of_minute) }
 
-  describe '.attributes' do # rubocop:disable Metrics/BlockLength
+  describe '.attributes' do
     let(:amount) { (-100_00..-100).to_a.sample }
     let(:expected_hash) do
       {

@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'transaction endpoints', type: :request do # rubocop:disable Metrics/BlockLength
+RSpec.describe 'transaction endpoints', type: :request do
   # transactions index
-  describe 'GET /accounts/:id/transactions' do # rubocop:disable Metrics/BlockLength
+  describe 'GET /accounts/:id/transactions' do
     let(:checking) { FactoryBot.create(:account) }
     let(:query) { {} }
     let(:endpoint) { "/accounts/#{checking.id}/transactions?#{query.to_query}" }
@@ -84,7 +84,7 @@ RSpec.describe 'transaction endpoints', type: :request do # rubocop:disable Metr
   end
 
   # transactions POST
-  describe 'transactions POST' do # rubocop:disable Metrics/BlockLength
+  describe 'transactions POST' do
     let(:checking) { FactoryBot.create(:account) }
     let(:endpoint) { "/accounts/#{checking.id}/transactions" }
     let(:response) { post endpoint, transaction_attributes }
@@ -92,7 +92,7 @@ RSpec.describe 'transaction endpoints', type: :request do # rubocop:disable Metr
 
     subject { JSON.parse(response.body) }
 
-    context 'simple transaction' do # rubocop:disable Metrics/BlockLength
+    context 'simple transaction' do
       let(:item) { FactoryBot.create(:weekly_expense) }
       let(:transaction_attributes) do
         {
@@ -156,7 +156,7 @@ RSpec.describe 'transaction endpoints', type: :request do # rubocop:disable Metr
         end
       end
 
-      context 'transaction with details' do # rubocop:disable Metrics/BlockLength
+      context 'transaction with details' do
         let(:grocery) { FactoryBot.create(:weekly_expense) }
         let(:clothes) { FactoryBot.create(:weekly_expense) }
         let(:details_attributes) do
@@ -219,7 +219,7 @@ RSpec.describe 'transaction endpoints', type: :request do # rubocop:disable Metr
   end
 
   # transactions PUT
-  describe '/accounts/:account_id/transactions/:id' do # rubocop:disable Metrics/BlockLength
+  describe '/accounts/:account_id/transactions/:id' do
     context 'basic transaction' do
       let(:transaction) { FactoryBot.create(:transaction_entry) }
       let(:account) { transaction.account }
@@ -236,7 +236,7 @@ RSpec.describe 'transaction endpoints', type: :request do # rubocop:disable Metr
       end
     end
 
-    context 'with additional details' do # rubocop:disable Metrics/BlockLength
+    context 'with additional details' do
       let(:transaction_detail) { FactoryBot.create(:transaction_detail) }
       let(:transaction) { transaction_detail.entry }
       let(:account) { transaction.account }

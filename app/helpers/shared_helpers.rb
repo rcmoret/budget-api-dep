@@ -70,7 +70,7 @@ module SharedHelpers
     else
       {}
     end
-  rescue StandardError => e
+  rescue StandardError
     {}
   end
 

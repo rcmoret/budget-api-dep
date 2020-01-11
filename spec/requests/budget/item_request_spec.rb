@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Budget Item request specs' do # rubocop:disable Metrics/BlockLength
+RSpec.describe 'Budget Item request specs' do
   # index
-  describe 'GET /budget/items' do # rubocop:disable Metrics/BlockLength
+  describe 'GET /budget/items' do
     subject { get '/budget/items' }
 
     let(:today) { Date.today }
@@ -89,7 +89,7 @@ RSpec.describe 'Budget Item request specs' do # rubocop:disable Metrics/BlockLen
     end
 
     it 'updates the record' do
-      expect { subject }.to change { item.reload.amount }
+      expect { subject }.to(change { item.reload.amount })
     end
   end
 

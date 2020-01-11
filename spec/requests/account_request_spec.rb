@@ -139,7 +139,7 @@ RSpec.describe 'AccountsApi', type: :request do
     end
 
     it 'should update the account record' do
-      expect { request }.to change { account.reload.cash_flow }
+      expect { request }.to(change { account.reload.cash_flow })
     end
 
     subject { JSON.parse(response.body) }
@@ -174,7 +174,7 @@ RSpec.describe 'AccountsApi', type: :request do
       end
 
       it 'soft deletes the record' do
-        expect { response }.to_not change { Account.count }
+        expect { response }.to_not(change { Account.count })
       end
     end
   end

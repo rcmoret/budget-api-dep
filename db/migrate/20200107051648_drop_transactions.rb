@@ -7,7 +7,7 @@ class DropTransactions < ActiveRecord::Migration[5.1]
     drop_table :transactions
   end
 
-  def down
+  def down # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     create_table :transactions do |t|
       t.string 'description'
       t.integer 'amount'

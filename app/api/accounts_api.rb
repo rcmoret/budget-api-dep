@@ -14,7 +14,7 @@ class AccountsApi < Sinatra::Base # rubocop:disable Metrics/ClassLength
     render_new(account)
   end
 
-  namespace %r{/(?<account_id>\d+)} do # rubocop:disable Metrics/BlockLength
+  namespace %r{/(?<account_id>\d+)} do
     get '' do
       [200, account.to_json]
     end

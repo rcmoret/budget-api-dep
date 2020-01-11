@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 class UpdateTxnView < ActiveRecord::Migration[5.1]
   PG_SQL_UP = <<-SQL
       CREATE VIEW transaction_view AS
@@ -130,8 +131,7 @@ class UpdateTxnView < ActiveRecord::Migration[5.1]
 
   def up
     execute('DROP VIEW if exists transaction_view')
-    adapter = ActiveRecord::Base.configurations.dig(ENV['RACK_ENV'], 'adapter')
-    case adapter
+    case ActiveRecord::Base.configurations.dig(ENV['RACK_ENV'], 'adapter')
     when 'postgresql'
       execute(PG_SQL_UP)
     when 'sqlite3'
@@ -144,8 +144,7 @@ class UpdateTxnView < ActiveRecord::Migration[5.1]
 
   def down
     execute('DROP VIEW if exists transaction_view')
-    adapter = ActiveRecord::Base.configurations.dig(ENV['RACK_ENV'], 'adapter')
-    case adapter
+    case ActiveRecord::Base.configurations.dig(ENV['RACK_ENV'], 'adapter')
     when 'postgresql'
       execute(PG_SQL_DOWN)
     when 'sqlite3'
@@ -158,3 +157,4 @@ class UpdateTxnView < ActiveRecord::Migration[5.1]
 
   AdapterError = Class.new(StandardError)
 end
+# rubocop:enable Metrics/ClassLength

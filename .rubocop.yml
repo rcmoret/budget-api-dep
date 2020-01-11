@@ -1,0 +1,29 @@
+Layout/LineLength:
+  Max: 100
+  Exclude:
+    - db/schema.rb
+
+Metrics/BlockLength:
+  Max: 10
+  ExcludedMethods:
+    - before
+    - context
+    - create_table
+    - define
+    - describe
+    - factory
+    - group
+    - included
+    - it
+    - let
+    - namespace
+    - shared_context
+    - shared_examples_for
+    - task
+
+Style/Documentation:
+  Enabled: false
+
+Style/GlobalVars:
+  AllowedVariables:
+    - $logger

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-FactoryBot.define do # rubocop:disable Metrics/BlockLength
-  factory :transaction_entry, class: Transaction::Entry do # rubocop:disable Metrics/BlockLength
+FactoryBot.define do
+  factory :transaction_entry, class: Transaction::Entry do
     association :account
     budget_exclusion { false }
     details_attributes do

@@ -165,17 +165,3 @@ RSpec.describe 'IconsApi', type: :request do
     end
   end
 end
-
-# let!(:account) { FactoryBot.create(:account) }
-# let(:endpoint) { "/accounts/#{account.id}" }
-# let(:response) { delete endpoint }
-
-# context 'no transactions' do
-#   it 'returns a 204' do
-#     expect(response.status).to be 204
-#   end
-
-#   it 'hard deletes the record' do
-#     expect { response }.to change { Icon.count }.by(-1)
-#   end
-# end

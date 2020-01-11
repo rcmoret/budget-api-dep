@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Transaction::Entry, type: :model do # rubocop:disable Metrics/BlockLength
+RSpec.describe Transaction::Entry, type: :model do
   it { should belong_to(:account) }
   it { should have_many(:details) }
   it { should have_one(:view) }
@@ -35,7 +35,7 @@ RSpec.describe Transaction::Entry, type: :model do # rubocop:disable Metrics/Blo
     end
   end
 
-  describe 'validation around budget exclusions' do # rubocop:disable Metrics/BlockLength
+  describe 'validation around budget exclusions' do
     describe 'must belong to a non-cash flow account' do
       subject { transaction_entry.valid? }
 
@@ -61,7 +61,7 @@ RSpec.describe Transaction::Entry, type: :model do # rubocop:disable Metrics/Blo
       end
     end
 
-    describe 'must have one and only one detail' do # rubocop:disable Metrics/BlockLength
+    describe 'must have one and only one detail' do
       subject { transaction }
 
       context 'when there are no details' do

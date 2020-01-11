@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Budget::Metadata do # rubocop:disable Metrics/BlockLength
+RSpec.describe Budget::Metadata do
   subject { described_class.for(budget_interval) }
 
   let(:spent) { (-1000..-10).to_a.sample }
