@@ -32,3 +32,9 @@ Style/Documentation:
 Style/GlobalVars:
   AllowedVariables:
     - $logger
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
