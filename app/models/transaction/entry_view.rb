@@ -1,10 +1,13 @@
-module Transaction
-  class View < ActiveRecord::Base
-    include SharedMethods
-    include Scopes
+# frozen_string_literal: true
 
+module Transaction
+  class EntryView < ActiveRecord::Base
+    include Scopes
     self.table_name = :transaction_view
     self.primary_key = :id
+
+    belongs_to :account, required: true
+    belongs_to :transfer, required: false
 
     def readonly?
       true
@@ -12,12 +15,13 @@ module Transaction
 
     def to_hash
       attributes
-        .merge(subtransactions: subtransactions)
+        .merge(details: details)
         .deep_symbolize_keys
     end
 
-    def subtransactions
+    def details
       return JSON.parse(super) if CONFIG.dig(:db_config, 'adapter') == 'sqlite3'
+
       super
     end
   end

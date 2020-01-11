@@ -8,7 +8,8 @@ Budget API
 * Budget::Items
 * Budget::Intervals
 * Budget::CategoryMaturityIntervals
-* Transfers
+* Transfer::Entries
+* Transfer::Details
 * Icons
 
 ## Endpoints
@@ -86,7 +87,7 @@ Budget API
 | PUT       | /interval/:month/:year | 200 + resource  |
 
 ## ERD
-![Database Schema](./docs/budget-erd-v3.0.png)
+![Database Schema](./docs/budget-erd-v3.1.png)
 
 ## JSON Representations
 ### Accounts
@@ -141,40 +142,28 @@ Budget API
 
   "transactions": [
     {
-      "id": 12,
-      "description": "",
-      "budget_category": null,
-      "icon_class_name": null,
-      "budget_item_id": null,
-      "clearance_date": null,
-      "amount": 19,
-      "account_name": "Checking",
-      "account_id": 1,
+      "id": 12236,
+      "description": "Transfer from Aspiration",
       "check_number": null,
+      "clearance_date": null,
+      "account_id": 12,
+      "notes": null,
+      "budget_exclusion": null,
+      "transfer_id": 110,
       "receipt": null,
-      "notes": "",
-      "budget_exclusion": false,
-      "subtransactions": [
-        {
-          "id": 13,
-          "budget_category": "Pets",
-          "budget_item_id": 3,
-          "description": "",
-          "amount": 9,
-          "primary_transaction_id": 12,
-          "icon_class_name": null
-        },
-        {
-          "id": 14,
-          "budget_category": "Grocery",
-          "budget_item_id": 2,
-          "description": "",
-          "amount": 10,
-          "primary_transaction_id": 12,
-          "icon_class_name": null
-        }
-      ],
-      "updated_at": "2019-01-14T02:47:34.167Z"
+      "created_at": "2020-01-03T15: 02: 01.502Z",
+      "updated_at": "2020-01-03T15: 02: 01.507Z",
+      "account_name": "Student Loan",
+      "details":
+        [
+          {
+            "id": 13066,
+            "budget_category": null,
+            "budget_item_id": null,
+            "amount": 5500,
+            "icon_class_name": null
+          }
+        ]
     },
     ...
   ]
@@ -182,25 +171,37 @@ Budget API
 ```
 
 #### Resource
-This resource will be returned after PUT and POST requests
-
+This resource will be returned after PUT and POST requests and for the GET (show) route
 ```
 {
-  "id": 65,
-  "description": "Black Pearl",
-  "budget_category": null,
-  "icon_class_name": null,
-  "budget_item_id": null,
-  "clearance_date": null,
-  "amount": -2000,
-  "account_name": "Checking",
-  "account_id": 1,
-  "check_number": null,
-  "receipt": null,
+  "id": 12202,
+  "description": "TTB Merch",
+  "check_number": "",
+  "clearance_date": "2019-07-26",
+  "account_id": 11,
   "notes": null,
   "budget_exclusion": false,
-  "subtransactions": [],
-  "updated_at": "2019-03-03T03:00:00.903Z"
+  "transfer_id": null,
+  "receipt": null,
+  "created_at": "2019-07-27T15: 34: 13.294Z",
+  "updated_at": "2019-07-27T15: 34: 13.294Z",
+  "account_name": "Cash on Hand",
+  "details": [
+    {
+      "id": 13026,
+      "budget_category": "Vacation",
+      "budget_item_id": 2652,
+      "amount": -6500,
+      "icon_class_name": "fas fa-plane-departure"
+    },
+    {
+      "id": 13025,
+      "budget_category": "Clothes and Shoes",
+      "budget_item_id": 2643,
+      "amount": -3000,
+      "icon_class_name": "fas fa-tshirt"
+    }
+  ]
 }
 ```
 
@@ -321,26 +322,30 @@ A full version of the resource is returned after POST or PUT requests
 ##### Transactions
 Get a simplified set of transactions for a budget item
 ```
-[
-  {
-    "id": 3,
-    "description": "Costco",
-    "amount": -900,
-    "clearance_date": "2019-01-02",
-    "check_number": null,
-    "account_id": 1,
-    "budget_item_id": 3,
-    "primary_transaction_id": 2,
-    "notes": null,
-    "receipt": null,
-    "budget_exclusion": false,
-    "transfer_id": null,
-    "created_at": "2019-01-03T20:35:46.464Z",
-    "updated_at": "2019-01-03T20:35:46.464Z",
-    "account_name": "Checking"
-  },
-  ...
-]
+  [
+    {
+      "id": 12144,
+      "transaction_entry_id": 11426,
+      "budget_item_id": 2278,
+      "amount": -80000,
+      "created_at": "2019-12-27T19: 13: 34.787Z",
+      "updated_at": "2019-12-27T19: 13: 34.787Z",
+      "entry_id": 11426,
+      "account_id": 11,
+      "clearance_date": "2019-03-22",
+      "description": null,
+      "budget_exclusion": false,
+      "notes": null,
+      "receipt": null,
+      "transfer_id": null,
+      "entry_created_at": "2019-03-22T16: 26: 44.367Z",
+      "entry_updated_at": "2019-03-22T16: 26: 44.367Z",
+      "account_name": "Cash on Hand",
+      "category_name": "Rent",
+      "icon_class_name": "fas fa-home"
+    },
+    ...
+  ]
 ```
 
 ### Transfers
@@ -348,44 +353,58 @@ Get a simplified set of transactions for a budget item
 ##### Resource
 ```
 {
-  "id": 1,
-  "to_transaction_id": 2,
-  "from_transaction_id": 1,
-  "created_at": "2019-03-20T04: 59: 57.953Z",
-  "updated_at": "2019-03-20T04: 59: 57.953Z",
+  "id": 110,
+  "to_transaction_id": 12236,
+  "from_transaction_id": 12235,
+  "created_at": "2020-01-03T15: 02: 01.503Z",
+  "updated_at": "2020-01-03T15: 02: 01.503Z",
   "to_transaction": {
-    "id": 2,
-    "description": "Transfer to 33rd City Bank",
-    "budget_category": null,
-    "icon_class_name": null,
-    "budget_item_id": null,
-    "clearance_date": null,
-    "amount": 279,
-    "account_name": "33rd City Bank",
-    "account_id": 1,
+    "id": 12236,
+    "description": "Transfer from Aspiration",
     "check_number": null,
-    "receipt": null,
+    "clearance_date": null,
+    "account_id": 12,
     "notes": null,
-    "budget_exclusion": false,
-    "subtransactions": [],
-    "updated_at": "2019-03-20T04: 59: 57.960Z"
+    "budget_exclusion": null,
+    "transfer_id": 110,
+    "receipt": null,
+    "created_at": "2020-01-03T15: 02: 01.502Z",
+    "updated_at": "2020-01-03T15: 02: 01.507Z",
+    "account_name": "Student Loan",
+    "details": [
+      {
+        "id": 13066,
+        "transaction_entry_id": 12236,
+        "budget_item_id": null,
+        "amount": 5500,
+        "created_at": "2020-01-03T15: 02: 01.503Z",
+        "updated_at": "2020-01-03T15: 02: 01.503Z"
+      }
+    ]
   },
   "from_transaction": {
-    "id": 1,
-    "description": "Transfer to 33rd City Bank",
-    "budget_category": null,
-    "icon_class_name": null,
-    "budget_item_id": null,
-    "clearance_date": null,
-    "amount": -279,
-    "account_name": "34th City Bank",
-    "account_id": 2,
+    "id": 12235,
+    "description": "Transfer to Student Loan",
     "check_number": null,
-    "receipt": null,
+    "clearance_date": null,
+    "account_id": 17,
     "notes": null,
-    "budget_exclusion": false,
-    "subtransactions": [],
-    "updated_at": "2019-03-20T04: 59: 57.969Z"
+    "budget_exclusion": null,
+    "transfer_id": 110,
+    "receipt": null,
+    "created_at": "2020-01-03T15: 02: 01.499Z",
+    "updated_at": "2020-01-03T15: 02: 01.510Z",
+    "account_name": "Aspiration",
+    "details": [
+      {
+        "id": 13065,
+        "transaction_entry_id": 12235,
+        "budget_item_id": null,
+        "amount": -5500,
+        "created_at": "2020-01-03T15: 02: 01.500Z",
+        "updated_at": "2020-01-03T15: 02: 01.500Z"
+      }
+    ]
   }
 }
 ```
@@ -404,44 +423,58 @@ Get a simplified set of transactions for a budget item
   },
   "transfers": [
     {
-      "id": 1,
-      "to_transaction_id": 67,
-      "from_transaction_id": 66,
-      "created_at": "2019-03-03T03:22:45.333Z",
-      "updated_at": "2019-03-03T03:22:45.333Z",
+      "id": 110,
+      "to_transaction_id": 12236,
+      "from_transaction_id": 12235,
+      "created_at": "2020-01-03T15: 02: 01.503Z",
+      "updated_at": "2020-01-03T15: 02: 01.503Z",
       "to_transaction": {
-        "id": 67,
-        "description": "Transfer to 12th tn",
-        "budget_category": null,
-        "icon_class_name": null,
-        "budget_item_id": null,
-        "clearance_date": null,
-        "amount": 2000,
-        "account_name": "12th tn",
-        "account_id": 21,
+        "id": 12236,
+        "description": "Transfer from Aspiration",
         "check_number": null,
-        "receipt": null,
+        "clearance_date": null,
+        "account_id": 12,
         "notes": null,
-        "budget_exclusion": false,
-        "subtransactions": [],
-        "updated_at": "2019-03-03T03:22:45.369Z"
+        "budget_exclusion": null,
+        "transfer_id": 110,
+        "receipt": null,
+        "created_at": "2020-01-03T15: 02: 01.502Z",
+        "updated_at": "2020-01-03T15: 02: 01.507Z",
+        "account_name": "Student Loan",
+        "details": [
+          {
+            "id": 13066,
+            "transaction_entry_id": 12236,
+            "budget_item_id": null,
+            "amount": 5500,
+            "created_at": "2020-01-03T15: 02: 01.503Z",
+            "updated_at": "2020-01-03T15: 02: 01.503Z"
+          }
+        ]
       },
       "from_transaction": {
-        "id": 66,
-        "description": "Transfer to 12th tn",
-        "budget_category": null,
-        "icon_class_name": null,
-        "budget_item_id": null,
-        "clearance_date": null,
-        "amount": -2000,
-        "account_name": "Checking",
-        "account_id": 1,
+        "id": 12235,
+        "description": "Transfer to Student Loan",
         "check_number": null,
-        "receipt": null,
+        "clearance_date": null,
+        "account_id": 17,
         "notes": null,
-        "budget_exclusion": false,
-        "subtransactions": [],
-        "updated_at": "2019-03-03T03:22:45.377Z"
+        "budget_exclusion": null,
+        "transfer_id": 110,
+        "receipt": null,
+        "created_at": "2020-01-03T15: 02: 01.499Z",
+        "updated_at": "2020-01-03T15: 02: 01.510Z",
+        "account_name": "Aspiration",
+        "details": [
+          {
+            "id": 13065,
+            "transaction_entry_id": 12235,
+            "budget_item_id": null,
+            "amount": -5500,
+            "created_at": "2020-01-03T15: 02: 01.500Z",
+            "updated_at": "2020-01-03T15: 02: 01.500Z"
+          }
+        ]
       }
     }
   ]
@@ -493,32 +526,36 @@ Budget Categories are types of expenses and revenues. They are also categorized 
 a nice grouping. The default amount is a nice to have for things that stay the same or for things that are divided up
 over several months. An accrual is a category that is not expected each interval. See items for more information.
 
+### Budget Interval
+Currently represents a month (month + year combination) but could be changed to be quarterly etc. An interval has many
+budget items. It also contains information about set up and finalization.
+
 ### Budget Items
 Budget Items are a month's instance of a budget category. They can have whatever amount (as longer expenses are <= 0 and
 revenues are >= 0) is needed. Weekly and monthly can have different rules for how they are treated and how they are used
 to determine information about the state of the budget. This app certainly hints at how that could be done but is not
-prescriptive. When returning a collection a SQL view is used to return all data on the record plus additional information:
-`name`, `monthly` and `weekly` come from the parent category, `icon_name` and `icon_class_name` come from the Icon (through
-Category), `transaction_count` is a count query of related transactions, `spent` is a sum total on related transactions.
+prescriptive.
 
 ### Transaction
-This concept ties together the other concept described. A transaction belongs to an account (required) and belongs to
-a budget item (optional).
+A transaction entry plus its associated details together constitute the concept of a transaction.
 
-#### Primary Transaction
-Most transactions will fall into this bucket. `amount` is required (unless there are subtransactions). `budget_item_id` is
-not required but not allowed if there are subtransactions.
+### Transaction Entry
+This concept ties a lot of the other items together. This model belongs to an account and represents the high level data about
+a transaction. If the transaction belongs to a non-cashflow account it can be a budget exclusion. This record maintains a
+transaction's clearance date, description, notes, receipt (not currently functional) and check number.
 
-#### Subtransactions
-Sometimes you might spend money that is a single transaction that does not map perfectly to a budget item. A subtransaction
-lives in the transactions table and maps nicely to a budget item. `amount` is required and things like `account` and
-`clearance_date` are updated from the parent through callbacks
+### Transaction Detail
+A transaction entry must have at least one detail. Transfers and budget exclusions may only have one detail. The
+detail captures amount and budget item id. This allows for entries to have multiple budget items associated with them in a
+line-item sort of way.
 
-#### View
-A SQL view is used return all the data on the record plus additional info: `budget_category` is the name of a `BudgetCategory`
-(through `budget_item`), `icon_class_name` comes from `Icon` (though `BudgetCategory`), `amount` is the `amount` OR the sum of
-any subtransactions, `account_name` comes from the parent `Account`. Subtransactions are a JSON array that includes: its `id`,
-its `budget_category` (name), its `budget_item_id`, its `description`, its `amount` and its `icon_class_name`.
+#### Views
+Several views (with associated models) have been create to neatly present the attributes for a record plus useful supplemental
+data. For transactions, there is an entry view that includes the account name, and the details (amount, budget item id, plus budget
+category name and icon class name if available). The detail view merges the entry's data with the detail's and also includes the
+account name. A budget item view was created that includes the item's attribute, plus data from the category, the number of assoicated
+transcations, the sum of those transactions, the month and year are included from the budget interval, also the next upcoming
+maturity interval is calculated.
 
 #### Budget Exclusion
 This option is available for transactions of non-cashflow accounts. This would be used for a transaction that will change

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :category, class: 'Budget::Category' do
     default_amount { (-100..0).to_a.sample * 100 }

@@ -1,30 +1,34 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe TransactionTemplate do
   let(:account) { FactoryBot.create(:account) }
   let!(:transaction) do
-    FactoryBot.create(:transaction, account: account, clearance_date: '2000-01-01'.to_date)
+    FactoryBot.create(
+      :transaction_entry,
+      account: account,
+      clearance_date: '2000-01-01'.to_date
+    )
   end
+  let(:detail) { transaction.details.first }
   let(:template) { TransactionTemplate.new(account).to_json }
   let(:budget_interval) { FactoryBot.build(:budget_interval, :current) }
 
   describe '#to_json' do
-    subject { JSON.parse(template) }
-
     describe 'metadata' do
-      subject { super()['metadata'] }
       it 'should return some metadata' do
-        expect(subject['prior_balance']).to eq transaction.amount
-        expect(subject['query_options']).to be_empty
+        metadata = JSON.parse(template)['metadata']
+        expect(metadata['prior_balance']).to eq detail.amount
+        expect(metadata['query_options']).to be_empty
       end
 
       describe 'date range' do
+        subject { JSON.parse(template)['metadata']['date_range'] }
+
         let(:template) { TransactionTemplate.new(account, query).to_json }
         let(:beginning_date) { Date.new(year, month, 1) }
         let(:ending_date) { Date.new(year, month, -1) }
-
-        subject { super()['date_range'] }
-
         let(:month) { (1..12).to_a.sample }
         let(:year) { (2000..2099).to_a.sample }
 
@@ -61,26 +65,40 @@ RSpec.describe TransactionTemplate do
     end
 
     describe 'transactions in collection' do
-      let(:collection) { double(total: 0, as_collection: []) }
+      let(:collection) { double('collection', map: []) }
       let(:transactions) { double('transactions', between: collection) }
       before { allow(account).to receive(:transaction_views) { transactions } }
 
-      it 'calls between and as_collection' do
+      it 'calls between' do
         expect(transactions).to receive(:between)
-        expect(collection).to receive(:as_collection)
-        subject
+        template
       end
     end
 
     describe 'transactions prior to' do
-      let(:collection) { double(total: 0, as_collection: []) }
-      let(:transactions) { double('transactions', prior_to: collection) }
-      before { allow(account).to receive(:transactions) { transactions } }
+      let(:query) { { first: first_day, last: 30.days.from_now } }
+      let(:template) { TransactionTemplate.new(account, query).to_json }
 
-      it 'calls prior_to and total' do
-        expect(transactions).to receive(:prior_to)
-        expect(collection).to receive(:total)
-        subject
+      context 'before today' do
+        let(:first_day) { Date.today }
+
+        it 'calls for the balance prior to and include pending is false' do
+          expect(account)
+            .to receive(:balance_prior_to)
+            .with(first_day, include_pending: false)
+          template
+        end
+      end
+
+      context 'after today' do
+        let(:first_day) { 1.day.from_now.to_date }
+
+        it 'calls for the balance prior to and include pending is false' do
+          expect(account)
+            .to receive(:balance_prior_to)
+            .with(first_day, include_pending: true)
+          template
+        end
       end
     end
   end

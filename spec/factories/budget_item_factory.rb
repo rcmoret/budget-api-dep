@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :budget_item, class: 'Budget::Item' do
     amount { -10 }
@@ -9,37 +11,37 @@ FactoryBot.define do
     end
 
     trait :revenue do
-      amount { (1000..10000).to_a.sample }
+      amount { (1000..10_000).to_a.sample }
     end
 
     factory :monthly_item do
       revenue
-      association :category, factory: [:category, :monthly, :revenue]
+      association :category, factory: %i[category monthly revenue]
     end
 
     factory :monthly_expense do
       expense
-      association :category, factory: [:category, :monthly, :expense]
+      association :category, factory: %i[category monthly expense]
     end
 
     factory :monthly_revenue do
       revenue
-      association :category, factory: [:category, :monthly, :revenue]
+      association :category, factory: %i[category monthly revenue]
     end
 
     factory :weekly_item do
       expense
-      association :category, factory: [:category, :weekly]
+      association :category, factory: %i[category weekly]
     end
 
     factory :weekly_expense do
       expense
-      association :category, factory: [:category, :weekly, :expense]
+      association :category, factory: %i[category weekly expense]
     end
 
     factory :weekly_revenue do
       revenue
-      association :category, factory: [:category, :weekly, :revenue]
+      association :category, factory: %i[category weekly revenue]
     end
   end
 end

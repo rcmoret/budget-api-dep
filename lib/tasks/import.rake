@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require_relative '../colorize'
-include Colorize
 
 namespace :pg do
   desc 'importing a database dump'
   task :import do
+    include Colorize
     ENV['RACK_ENV'] ||= 'development'
     require 'bundler/setup'
     Bundler.require(:development)
@@ -18,6 +20,6 @@ namespace :pg do
     print_green "Beginning database import from #{file} to #{db_name}"
     print_cyan  "EXECUTING: `#{command}'"
     `#{command}`
-    print_green "COMPLETE"
+    print_green 'COMPLETE'
   end
 end

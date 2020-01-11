@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Transfer, type: :model do
@@ -8,17 +10,21 @@ RSpec.describe Transfer, type: :model do
     let(:transfer) { FactoryBot.create(:transfer) }
     it 'adds its id to the transactions' do
       expect { transfer }.to change {
-        Primary::Transaction.where.not(transfer_id: nil).count
+        Transaction::Entry.where.not(transfer_id: nil).count
       }.by(2)
     end
   end
 
-  describe 'to_hash' do
+  describe '.to_hash' do
     let(:checking_account) { FactoryBot.create(:account) }
     let(:savings_account) { FactoryBot.create(:savings_account) }
     let(:amount) { (100..1000).to_a.sample }
     let(:transfer) do
-      Transfer::Generator.create(from_account: checking_account, to_account: savings_account, amount: amount)
+      Transfer::Generator.create(
+        from_account: checking_account,
+        to_account: savings_account,
+        amount: amount
+      )
     end
 
     subject { transfer.to_hash }
@@ -36,13 +42,15 @@ RSpec.describe Transfer, type: :model do
     end
 
     it 'includes the to_transaction as a hash' do
-      expect(subject[:to_transaction][:amount]).to be amount
+      expect(subject[:to_transaction][:details].first[:amount]).to be amount
       expect(subject[:to_transaction][:account_name]).to eq savings_account.name
     end
 
     it 'includes the from_transaction as a hash' do
-      expect(subject[:from_transaction][:amount]).to be -amount
-      expect(subject[:from_transaction][:account_name]).to eq checking_account.name
+      expect(subject[:from_transaction][:details].first[:amount])
+        .to be(amount * -1)
+      expect(subject[:from_transaction][:account_name])
+        .to eq checking_account.name
     end
   end
 
@@ -50,7 +58,7 @@ RSpec.describe Transfer, type: :model do
     let!(:transfer) { FactoryBot.create(:transfer) }
     subject { transfer.destroy }
     it 'destroys the related transactions' do
-      expect { subject }.to change { Primary::Transaction.count }.by(-2)
+      expect { subject }.to change { Transaction::Entry.count }.by(-2)
     end
 
     it 'destroys itself' do

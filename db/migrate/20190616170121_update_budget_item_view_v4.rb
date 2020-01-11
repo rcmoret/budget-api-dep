@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class UpdateBudgetItemViewV4 < ActiveRecord::Migration[5.1]
-  VIEW_NAME = 'budget_item_views'.freeze
+  VIEW_NAME = 'budget_item_views'
 
   def up
     execute("DROP VIEW if exists #{VIEW_NAME}")

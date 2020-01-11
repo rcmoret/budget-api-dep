@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TransfersApi < Sinatra::Base
   register Sinatra::Namespace
   include SharedHelpers

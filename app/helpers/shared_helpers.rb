@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'logger'
 
 module SharedHelpers
@@ -12,10 +14,10 @@ module SharedHelpers
   end
 
   def sym_params
-    @sym_params ||= request_params.reduce({}) { |memo, (k,v)| memo.merge(k.to_sym => v) }
+    @sym_params ||= request_params.reduce({}) { |memo, (k, v)| memo.merge(k.to_sym => v) }
   end
 
-  %w(post get put delete).each do |http_verb|
+  %w[post get put delete].each do |http_verb|
     define_method "#{http_verb}_request?" do
       request.request_method == http_verb.upcase
     end
@@ -44,7 +46,7 @@ module SharedHelpers
 
   def params_for(klass)
     case klass.to_s
-    when 'Primary::Transaction'
+    when 'Transaction::Entry'
       filtered_transaction_params
     else
       request_params.slice(*klass::PUBLIC_ATTRS)
@@ -68,7 +70,7 @@ module SharedHelpers
     else
       {}
     end
-  rescue => e
+  rescue StandardError
     {}
   end
 

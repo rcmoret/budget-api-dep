@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BudgetItewViewV2 < ActiveRecord::Migration[5.1]
   def up
     execute('DROP VIEW budget_item_views')

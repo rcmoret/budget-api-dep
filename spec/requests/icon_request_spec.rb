@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'IconsApi', type: :request do
@@ -26,7 +28,7 @@ RSpec.describe 'IconsApi', type: :request do
       end
 
       context 'random id' do
-        let(:endpoint) { "/icons/#{save.id}404"}
+        let(:endpoint) { "/icons/#{save.id}404" }
         let(:error) do
           { errors: ["Could not find a(n) icon with id: #{save.id}404"] }.to_json
         end
@@ -163,17 +165,3 @@ RSpec.describe 'IconsApi', type: :request do
     end
   end
 end
-
-    # let!(:account) { FactoryBot.create(:account) }
-    # let(:endpoint) { "/accounts/#{account.id}" }
-    # let(:response) { delete endpoint }
-
-    # context 'no transactions' do
-    #   it 'returns a 204' do
-    #     expect(response.status).to be 204
-    #   end
-
-    #   it 'hard deletes the record' do
-    #     expect { response }.to change { Icon.count }.by(-1)
-    #   end
-    # end

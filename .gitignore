@@ -14,5 +14,6 @@
 .gitmodules
 
 /config/database.yml
+/config/settings.rb
 
 .ruby-version

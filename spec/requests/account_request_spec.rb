@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.shared_examples_for 'a JSON account' do
@@ -16,7 +18,6 @@ RSpec.shared_examples_for 'a JSON account' do
     end
   end
 end
-
 
 RSpec.describe 'AccountsApi', type: :request do
   describe 'GET routes' do
@@ -43,7 +44,7 @@ RSpec.describe 'AccountsApi', type: :request do
       end
 
       context 'random id' do
-        let(:endpoint) { "/accounts/#{checking.id}404"}
+        let(:endpoint) { "/accounts/#{checking.id}404" }
         let(:error) do
           { errors: ["Could not find a(n) account with id: #{checking.id}404"] }.to_json
         end
@@ -138,7 +139,7 @@ RSpec.describe 'AccountsApi', type: :request do
     end
 
     it 'should update the account record' do
-      expect { request }.to change { account.reload.cash_flow }
+      expect { request }.to(change { account.reload.cash_flow })
     end
 
     subject { JSON.parse(response.body) }
@@ -162,17 +163,18 @@ RSpec.describe 'AccountsApi', type: :request do
     end
 
     context 'transactions exist' do
-      before { FactoryBot.create(:transaction, account: account) }
+      before { FactoryBot.create(:transaction_entry, account: account) }
+
       it 'returns a 204' do
         expect(response.status).to be 204
       end
 
       it 'updates deleted_at on the record' do
-        expect { response }.to change { account.reload.archived_at }
+        expect { response }.to(change { account.reload.archived_at })
       end
 
       it 'soft deletes the record' do
-        expect { response }.to_not change { Account.count }
+        expect { response }.to_not(change { Account.count })
       end
     end
   end

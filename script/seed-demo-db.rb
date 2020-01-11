@@ -1,4 +1,5 @@
 #!/Users/ryanmoret/.rvm/rubies/ruby-2.3.0/bin/ruby
+# frozen_string_literal: true
 
 abort unless ENV['RACK_ENV'] == 'demo'
 require 'bundler/setup'
@@ -23,9 +24,7 @@ ActiveRecord::Base.logger = nil
 
 # cleanup
 
-[Primary::Transaction, Account, Budget::Amount, Budget::Item].each do |klass|
-  klass.destroy_all
-end
+[Primary::Transaction, Account, Budget::Amount, Budget::Item].each(&:destroy_all)
 
 # Accounts
 
@@ -33,13 +32,13 @@ account_attrs = [
   {
     name: 'Checking',
     cash_flow: true,
-    priority: 1,
+    priority: 1
   },
   {
     name: 'Savings',
     cash_flow: false,
-    priority: 100,
-  },
+    priority: 100
+  }
 ]
 
 accounts = account_attrs.reduce({}) do |acts, attrs|
@@ -53,7 +52,7 @@ accounts.values.each do |account|
     account: account,
     description: 'Initial Balance',
     amount: rand(1000),
-    clearance_date: 1.month.ago,
+    clearance_date: 1.month.ago
   )
 end
 
@@ -67,7 +66,7 @@ category_attrs = [
     default_amount: -800,
     expense: true,
     monthly: true,
-    icon: Icon.find_or_create_by(class_name: 'fas fa-home'),
+    icon: Icon.find_or_create_by(class_name: 'fas fa-home')
   },
   {
     key: 'electric_bill',
@@ -75,7 +74,7 @@ category_attrs = [
     default_amount: -100,
     expense: true,
     monthly: true,
-    icon: Icon.find_or_create_by(class_name: 'fas fa-plug'),
+    icon: Icon.find_or_create_by(class_name: 'fas fa-plug')
   },
   # monthly revenue
   {
@@ -84,7 +83,7 @@ category_attrs = [
     default_amount: 3000,
     expense: false,
     monthly: true,
-    icon: Icon.find_or_create_by(class_name: 'fas fa-dollar-sign'),
+    icon: Icon.find_or_create_by(class_name: 'fas fa-dollar-sign')
   },
   # weekly revenue
   {
@@ -93,7 +92,7 @@ category_attrs = [
     default_amount: 300,
     expense: false,
     monthly: false,
-    icon: Icon.find_or_create_by(class_name: 'fas fa-car'),
+    icon: Icon.find_or_create_by(class_name: 'fas fa-car')
   },
   # weekly expense
   {
@@ -102,7 +101,7 @@ category_attrs = [
     default_amount: -200,
     expense: true,
     monthly: false,
-    icon: Icon.find_or_create_by(class_name: 'fas fa-tshirt'),
+    icon: Icon.find_or_create_by(class_name: 'fas fa-tshirt')
   },
   {
     key: 'grocery',
@@ -110,8 +109,8 @@ category_attrs = [
     default_amount: -500,
     expense: true,
     monthly: false,
-    icon: Icon.find_or_create_by(class_name: 'fas fa-car'),
-  },
+    icon: Icon.find_or_create_by(class_name: 'fas fa-car')
+  }
 ]
 
 categories = category_attrs.reduce({}) do |hash, attrs|
@@ -123,7 +122,11 @@ end
 budget_interval = Budget::Interval.current
 
 categories.values.each do |category|
-  Budget::Item.create(budget_interval: budget_interval, category: category, amount: category.default_amount)
+  Budget::Item.create(
+    budget_interval: budget_interval,
+    category: category,
+    amount: category.default_amount
+  )
 end
 
 exit 1

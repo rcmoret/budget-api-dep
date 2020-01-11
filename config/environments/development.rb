@@ -1,5 +1,8 @@
-if CONFIG[:debug?] == true
-  ActiveRecord::Base.logger = Logger.new(STDOUT)
-else
-  ActiveRecord::Base.logger = Logger.new($logger)
-end
+# frozen_string_literal: true
+
+ActiveRecord::Base.logger =
+  if CONFIG[:debug?] == true
+    Logger.new(STDOUT)
+  else
+    Logger.new($logger)
+  end

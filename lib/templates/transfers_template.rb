@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TransfersTemplate
   def initialize(limit:, offset:)
     @limit = limit.to_i
@@ -17,9 +19,9 @@ class TransfersTemplate
         limit: limit,
         offset: offset,
         viewing: [first, last],
-        total: total,
+        total: total
       },
-      transfers: transfers,
+      transfers: transfers
     }
   end
 

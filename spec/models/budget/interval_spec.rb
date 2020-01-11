@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Budget::Interval, type: :model do
@@ -28,7 +30,7 @@ RSpec.describe Budget::Interval, type: :model do
       end
     end
 
-    context 'month is 1-12'do
+    context 'month is 1-12' do
       specify do
         subject = FactoryBot.build(:budget_interval, month: (1..12).to_a.sample)
 
@@ -181,7 +183,6 @@ RSpec.describe Budget::Interval, type: :model do
           expect(subject.current?).to be true
         end
       end
-
     end
 
     describe '#days_remaining' do

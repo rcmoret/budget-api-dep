@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Budget::Item, type: :model do
@@ -16,13 +18,13 @@ RSpec.describe Budget::Item, type: :model do
 
     subject { described_class.current.to_sql }
 
-    it { should include
-         %Q{WHERE "budget_items"."month" = '#{month}' AND "budget_items"."year" = '#{year}'}
+    it {
+      should include
+      %(WHERE "budget_items"."month" = '#{month}' AND "budget_items"."year" = '#{year}')
     }
   end
 
   describe 'expense/revenue amount validation' do
-
     subject { FactoryBot.build(:budget_item, category: category, amount: amount) }
 
     context 'category is an expense' do
@@ -58,7 +60,7 @@ RSpec.describe Budget::Item, type: :model do
     specify do
       budget_interval = FactoryBot.create(:budget_interval)
       category = FactoryBot.create(:category, :weekly)
-      item = FactoryBot.create(:budget_item, category: category, interval: budget_interval)
+      FactoryBot.create(:budget_item, category: category, interval: budget_interval)
 
       subject = FactoryBot.build(:budget_item, category: category, interval: budget_interval)
 

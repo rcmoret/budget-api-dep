@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Budget
   class CategoryMaturityInterval < ActiveRecord::Base
     belongs_to :interval, foreign_key: :budget_interval_id
@@ -23,6 +25,7 @@ module Budget
 
     def category_accrual?
       return if category.accrual?
+
       errors.add(:budget_category, 'must be an accrual')
     end
   end

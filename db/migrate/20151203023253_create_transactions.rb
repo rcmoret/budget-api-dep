@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 class CreateTransactions < ActiveRecord::Migration[5.1]
+  # rubocop:disable Metrics/MethodLength
   def change
     create_table :transactions do |t|
       t.string  :description
@@ -17,4 +20,5 @@ class CreateTransactions < ActiveRecord::Migration[5.1]
     end
     add_foreign_key :transactions, :accounts
   end
+  # rubocop:enable Metrics/MethodLength
 end

@@ -1,5 +1,6 @@
-class TransactionTemplate
+# frozen_string_literal: true
 
+class TransactionTemplate
   attr_reader :account, :options
 
   def initialize(account, **options)
@@ -8,7 +9,7 @@ class TransactionTemplate
   end
 
   delegate :to_json, to: :hash
-  delegate :transactions, :transaction_views, to: :account
+  delegate :detail_views, :transaction_views, to: :account
 
   private
 
@@ -20,34 +21,37 @@ class TransactionTemplate
     @metadata ||= {
       date_range: [date_range.first, date_range.last],
       prior_balance: prior_balance,
-      query_options: options,
+      query_options: options
     }
   end
 
   def collection
-    @collection ||= transaction_views.between(
-      date_range, include_pending: options[:include_pending]
-    ).as_collection
+    @collection ||=
+      transaction_views
+      .between(
+        date_range,
+        include_pending: options[:include_pending]
+      )
+      .map(&:to_hash)
   end
 
-  def date_range
-    @date_range ||= case
-                    when options[:date]
-                      Budget::Interval.for(date: options[:date]).date_range
-                    when options[:month]
-                      Budget::Interval.for(options).date_range
-                    when options[:first] && options[:last]
-                      (options[:first].to_date..options[:last].to_date)
-                    else
-                      Budget::Interval.current.date_range
-                    end
+  def date_range # rubocop:disable AbcSize
+    @date_range ||=
+      if options.key?(:date)
+        Budget::Interval.for(date: options[:date]).date_range
+      elsif options.key?(:month)
+        Budget::Interval.for(options).date_range
+      elsif options.key?(:first) && options.key?(:last)
+        (options[:first].to_date..options[:last].to_date)
+      else
+        Budget::Interval.current.date_range
+      end
   end
 
   def prior_balance
-    if date_range.first > Date.today
-      transactions.prior_to(date_range.first).or(transactions.pending).total
-    else
-      transactions.prior_to(date_range.first).total
-    end
+    account.balance_prior_to(
+      date_range.first,
+      include_pending: (date_range.first > Date.today)
+    )
   end
 end

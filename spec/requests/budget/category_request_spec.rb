@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'budget category requests' do
@@ -51,7 +53,7 @@ RSpec.describe 'budget category requests' do
     end
 
     it 'updates the record' do
-      expect { subject }.to change { category.reload.default_amount }
+      expect { subject }.to(change { category.reload.default_amount })
     end
   end
 
@@ -79,7 +81,7 @@ RSpec.describe 'budget category requests' do
       end
 
       it 'soft deletes the record' do
-        expect { subject }.to change { category.reload.archived_at }
+        expect { subject }.to(change { category.reload.archived_at })
       end
     end
   end

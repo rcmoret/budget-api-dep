@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Transfer::Generator do
@@ -12,7 +14,7 @@ RSpec.describe Transfer::Generator do
     end
 
     it 'creates 2 new transactions' do
-      expect { subject }.to change { Transaction::Record.count }.by(+2)
+      expect { subject }.to change { Transaction::Entry.count }.by(+2)
     end
 
     it 'creates a new transer' do

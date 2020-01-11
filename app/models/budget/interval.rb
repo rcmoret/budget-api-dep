@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Budget
   class Interval < ActiveRecord::Base
     has_many :items, foreign_key: :budget_interval_id
@@ -6,17 +8,18 @@ module Budget
     validates :month, presence: true, inclusion: (1..12)
     validates :year, presence: true, inclusion: (2000..2099)
 
-    PUBLIC_ATTRS = %i[close_out_completed_at set_up_completed_at]
+    PUBLIC_ATTRS = %i[close_out_completed_at set_up_completed_at].freeze
 
     scope :ordered, -> { order(year: :asc).order(month: :asc) }
 
     def self.for(**opts)
-      month, year = if opts[:date].present?
-        [opts[:date].to_date.month, opts[:date].to_date.year]
-      else
-        today = Date.today
-        [opts.fetch(:month, today.month), opts.fetch(:year, today.year)]
-      end
+      month, year =
+        if opts[:date].present?
+          [opts[:date].to_date.month, opts[:date].to_date.year]
+        else
+          today = Date.today
+          [opts.fetch(:month, today.month), opts.fetch(:year, today.year)]
+        end
       find_or_create_by(month: month, year: year)
     end
 
@@ -50,6 +53,7 @@ module Budget
 
     def days_remaining
       return total_days - today.day + 1 if current?
+
       total_days
     end
 

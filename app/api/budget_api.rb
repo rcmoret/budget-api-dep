@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/ClassLength
 class BudgetApi < Sinatra::Base
   register Sinatra::Namespace
   include SharedHelpers
@@ -43,7 +46,9 @@ class BudgetApi < Sinatra::Base
           end
 
           delete '' do
-            render_error(422, "Item with id: #{item.id} could not be deleted") unless item.deletable?
+            unless item.deletable?
+              render_error(422, "Item with id: #{item.id} could not be deleted")
+            end
             item.destroy
             [204, {}]
           end
@@ -79,7 +84,7 @@ class BudgetApi < Sinatra::Base
   end
 
   get '/items' do
-    [200, { metadata: metadata, collection: items}.to_json]
+    [200, { metadata: metadata, collection: items }.to_json]
   end
 
   namespace '/discretionary' do
@@ -110,11 +115,13 @@ class BudgetApi < Sinatra::Base
 
   def create_item!
     return if item.save
+
     render_error(422, item.errors.to_hash)
   end
 
   def update_item!
     return if item.update(item_params)
+
     render_error(422, item.errors.to_hash)
   end
 
@@ -126,7 +133,6 @@ class BudgetApi < Sinatra::Base
     @category_id ||= params['category_id']
   end
 
-
   def category
     @category ||= find_or_build_category!
   rescue ActiveRecord::RecordNotFound
@@ -134,16 +140,22 @@ class BudgetApi < Sinatra::Base
   end
 
   def find_or_build_category!
-    category_id.present? ? Budget::Category.find_by_id(category_id) : Budget::Category.new(category_params)
+    if category_id.present?
+      Budget::Category.find(category_id)
+    else
+      Budget::Category.new(category_params)
+    end
   end
 
   def create_category!
     return if category.save
+
     render_error(422, category.errors.to_hash)
   end
 
   def update_category!
     return if category.update(category_params)
+
     render_error(422, category.errors.to_hash)
   end
 
@@ -187,7 +199,10 @@ class BudgetApi < Sinatra::Base
     if maturity_interval_id
       category.maturity_intervals.find(maturity_interval_id)
     else
-      Budget::CategoryMaturityInterval.find_or_create_by(interval: budget_interval, category: category)
+      Budget::CategoryMaturityInterval.find_or_create_by(
+        interval: budget_interval,
+        category: category
+      )
     end
   end
 
@@ -195,3 +210,4 @@ class BudgetApi < Sinatra::Base
     maturity_interval.update(interval: budget_interval)
   end
 end
+# rubocop:enable Metrics/ClassLength

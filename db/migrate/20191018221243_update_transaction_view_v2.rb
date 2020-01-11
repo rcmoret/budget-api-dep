@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metric/ClassLength
 class UpdateTransactionViewV2 < ActiveRecord::Migration[5.1]
   PG_SQL_UP = <<-SQL
       CREATE VIEW transaction_view AS
@@ -35,7 +38,7 @@ class UpdateTransactionViewV2 < ActiveRecord::Migration[5.1]
         FROM transactions t LEFT OUTER JOIN budget_items ma ON ma.id = t.budget_item_id LEFT JOIN budget_categories b on b.id = ma.budget_category_id LEFT JOIN accounts a ON a.id = t.account_id
         LEFT JOIN icons ic ON ic.id = b.icon_id
         WHERE t.primary_transaction_id IS NULL
-    SQL
+  SQL
 
   LITE_SQL_UP = <<-SQL
       CREATE VIEW transaction_view AS
@@ -78,7 +81,7 @@ class UpdateTransactionViewV2 < ActiveRecord::Migration[5.1]
         LEFT JOIN accounts a ON a.id = t.account_id
         LEFT JOIN icons ic ON ic.id = b.icon_id
         WHERE t.primary_transaction_id IS NULL
-    SQL
+  SQL
   PG_SQL_DOWN = <<-SQL
       CREATE VIEW transaction_view AS
         SELECT t.id,
@@ -114,7 +117,7 @@ class UpdateTransactionViewV2 < ActiveRecord::Migration[5.1]
         FROM transactions t LEFT OUTER JOIN budget_items ma ON ma.id = t.budget_item_id LEFT JOIN budget_categories b on b.id = ma.budget_category_id LEFT JOIN accounts a ON a.id = t.account_id
         LEFT JOIN icons ic ON ic.id = b.icon_id
         WHERE t.primary_transaction_id IS NULL
-    SQL
+  SQL
 
   LITE_SQL_DOWN = <<-SQL
       CREATE VIEW transaction_view AS
@@ -156,7 +159,7 @@ class UpdateTransactionViewV2 < ActiveRecord::Migration[5.1]
         LEFT JOIN accounts a ON a.id = t.account_id
         LEFT JOIN icons ic ON ic.id = b.icon_id
         WHERE t.primary_transaction_id IS NULL
-    SQL
+  SQL
 
   def up
     execute('DROP VIEW if exists transaction_view')
@@ -183,4 +186,7 @@ class UpdateTransactionViewV2 < ActiveRecord::Migration[5.1]
       raise AdapterError, "No SQL defined for #{adapter} to create transaction views"
     end
   end
+
+  AdapterError = Class.new(StandardError)
 end
+# rubocop:enable Metric/ClassLength

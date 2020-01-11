@@ -1,7 +1,12 @@
+# frozen_string_literal: true
+
 class Account < ActiveRecord::Base
-  has_many :transaction_views, class_name: 'Transaction::View'
-  has_many :transactions, class_name: 'Transaction::Record'
-  has_many :primary_transactions, class_name: 'Primary::Transaction'
+  has_many :transaction_views, class_name: 'Transaction::EntryView'
+  has_many :transactions, class_name: 'Transaction::Entry'
+  has_many :details,
+           class_name: 'Transaction::Detail',
+           through: :transactions
+  has_many :detail_views, class_name: 'Transaction::DetailView'
   scope :active, -> { where(archived_at: nil) }
   scope :by_priority, -> { order('priority asc') }
   scope :cash_flow, -> { where(cash_flow: true) }
@@ -9,43 +14,32 @@ class Account < ActiveRecord::Base
   validates_presence_of :name, :priority
   validates_uniqueness_of :name, :priority
 
-  PUBLIC_ATTRS = %w(name cash_flow priority).freeze
+  PUBLIC_ATTRS = %w[name cash_flow priority].freeze
 
   class << self
-    def total
-      sum(:amount)
-    end
-
     def available_cash
-      cash_flow.joins(:transactions).total
-    end
-
-    def charged(budget_interval = Budget::Interval.current)
-      non_cash_flow.joins(:transactions).merge(
-        Transaction::Record.budget_inclusions.between(
-          budget_interval.date_range, include_pending: budget_interval.current?
-        )
-      ).total
-    end
-
-    def balance_prior_to(date)
-      cash_flow.joins(:transactions).merge(
-        Transaction::Record.cleared.prior_to(date)
-      ).total
+      cash_flow.joins(:details).sum(:amount)
     end
   end
 
   delegate :to_json, to: :to_hash
 
   def to_hash
-    attributes.symbolize_keys.merge(balance: balance)
+    attributes
+      .symbolize_keys
+      .merge(balance: balance)
   end
 
-  def balance(prior_to: nil)
-    if prior_to.nil?
-      transactions.total
+  def balance_prior_to(date, include_pending:)
+    if include_pending
+      details
+        .prior_to(date)
+        .or(details.pending)
+        .total
     else
-      transactions.prior_to(prior_to).total
+      details
+        .prior_to(date)
+        .total
     end
   end
 
@@ -59,5 +53,11 @@ class Account < ActiveRecord::Base
 
   def to_s
     name
+  end
+
+  private
+
+  def balance
+    details.total
   end
 end
