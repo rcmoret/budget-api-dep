@@ -87,7 +87,7 @@ RSpec.describe Account, type: :model do
         archived_at: nil,
         priority: account.priority,
         created_at: account.created_at,
-        updated_at: account.updated_at
+        updated_at: account.updated_at,
       }
     end
 

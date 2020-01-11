@@ -20,7 +20,7 @@ module Budget
         days_remaining: days_remaining,
         total_days: total_days,
         spent: spent,
-        balance: balance
+        balance: balance,
       }
     end
 

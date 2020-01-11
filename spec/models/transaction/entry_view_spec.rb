@@ -25,12 +25,12 @@ RSpec.describe Transaction::EntryView, type: :model do
           budget_category: category.name,
           budget_item_id: budget_item.id,
           amount: amount,
-          icon_class_name: icon.class_name
+          icon_class_name: icon.class_name,
         }],
         budget_exclusion: false,
         updated_at: entry.updated_at,
         created_at: entry.created_at,
-        transfer_id: nil
+        transfer_id: nil,
       }
     end
     let(:icon) { FactoryBot.create(:icon) }
@@ -53,7 +53,7 @@ RSpec.describe Transaction::EntryView, type: :model do
         description: 'KMart',
         details_attributes: [{
           amount: amount,
-          budget_item: budget_item
+          budget_item: budget_item,
         }]
       )
     end
@@ -77,7 +77,7 @@ RSpec.describe Transaction::EntryView, type: :model do
           budget_category: category.name,
           budget_item_id: budget_item.id,
           amount: amount,
-          icon_class_name: icon.class_name
+          icon_class_name: icon.class_name,
         }
       end
       let(:expected_hash) do

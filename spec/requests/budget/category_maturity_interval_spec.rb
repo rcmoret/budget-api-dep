@@ -80,7 +80,7 @@ RSpec.describe 'budget category maturity intervals' do
         id: maturity_interval.id,
         category_id: category.id,
         month: (month + 1),
-        year: year
+        year: year,
       }
       expect(parsed_body).to eq expected_body
     end

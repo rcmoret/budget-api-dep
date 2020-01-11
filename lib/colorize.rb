@@ -13,7 +13,7 @@ module Colorize
     blue: 34,
     magenta: 35,
     cyan: 36,
-    white: 37
+    white: 37,
   }.each do |color, code|
     define_method "print_#{color}" do |text|
       color_print(text, code)

@@ -44,7 +44,7 @@ RSpec.describe 'Budget Item request specs' do
           'total_days' => budget_interval.total_days,
           'year' => budget_interval.year,
           'is_set_up' => budget_interval.set_up?,
-          'is_closed_out' => budget_interval.closed_out?
+          'is_closed_out' => budget_interval.closed_out?,
         }
         expect(parsed_body['metadata']).to eq expected_metadata
       end
@@ -117,8 +117,8 @@ RSpec.describe 'Budget Item request specs' do
           details_attributes: [
             {
               budget_item: item,
-              amount: -10_000
-            }
+              amount: -10_000,
+            },
           ]
         )
       end
@@ -140,8 +140,8 @@ RSpec.describe 'Budget Item request specs' do
         details_attributes: [
           {
             budget_item: item,
-            amount: -100
-          }
+            amount: -100,
+          },
         ]
       )
     end

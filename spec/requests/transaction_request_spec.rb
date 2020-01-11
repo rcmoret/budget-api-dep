@@ -100,8 +100,8 @@ RSpec.describe 'transaction endpoints', type: :request do
           clearance_date: '2015-01-04',
           details_attributes: [{
             amount: -60.0,
-            budget_item_id: item.id
-          }]
+            budget_item_id: item.id,
+          }],
         }
       end
 
@@ -125,7 +125,7 @@ RSpec.describe 'transaction endpoints', type: :request do
               'budget_category' => item.name,
               'budget_item_id' => item.id,
               'amount' => -60,
-              'icon_class_name' => item.category.icon&.class_name
+              'icon_class_name' => item.category.icon&.class_name,
             }]
           )
       end
@@ -142,7 +142,7 @@ RSpec.describe 'transaction endpoints', type: :request do
           {
             description: 'Kroger',
             clearance_date: '2015-01-04',
-            details_attributes: [{ budget_item_id: item.id }]
+            details_attributes: [{ budget_item_id: item.id }],
           }
         end
 
@@ -167,7 +167,7 @@ RSpec.describe 'transaction endpoints', type: :request do
         let(:base_attrs) do
           {
             description: 'Kroger',
-            clearance_date: clearance_date
+            clearance_date: clearance_date,
           }
         end
         let(:transaction_attributes) do
@@ -206,7 +206,7 @@ RSpec.describe 'transaction endpoints', type: :request do
                   'budget_item_id' => clothes.id,
                   'icon_class_name' => clothes.category.icon&.class_name,
                   'amount' => -2000
-                )
+                ),
               ]
             )
         end
@@ -250,7 +250,7 @@ RSpec.describe 'transaction endpoints', type: :request do
           {
             details_attributes: [{
               id: transaction_detail.id, amount: 10_000
-            }]
+            }],
           }
         end
 
@@ -275,8 +275,8 @@ RSpec.describe 'transaction endpoints', type: :request do
           {
             details_attributes: [{
               id: transaction_detail.id,
-              _destroy: true
-            }]
+              _destroy: true,
+            }],
           }
         end
 

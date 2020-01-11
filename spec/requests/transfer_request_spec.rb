@@ -110,7 +110,7 @@ RSpec.describe 'transfer requests' do
       {
         to_account_id: to_account_id,
         from_account_id: from_account_id,
-        amount: amount
+        amount: amount,
       }
     end
 

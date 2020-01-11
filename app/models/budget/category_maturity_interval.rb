@@ -17,7 +17,7 @@ module Budget
         id: id,
         category_id: category.id,
         month: month,
-        year: year
+        year: year,
       }
     end
 

@@ -70,7 +70,7 @@ class Transfer < ActiveRecord::Base
           description: from_description,
           account: from_account,
           details_attributes: [
-            { amount: -amount }
+            { amount: -amount },
           ]
         )
     end
@@ -85,7 +85,7 @@ class Transfer < ActiveRecord::Base
           description: to_description,
           account: to_account,
           details_attributes: [
-            { amount: amount }
+            { amount: amount },
           ]
         )
     end
