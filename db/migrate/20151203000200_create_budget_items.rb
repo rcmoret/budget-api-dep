@@ -7,11 +7,10 @@ class CreateBudgetItems < ActiveRecord::Migration[5.1]
       t.integer :year
       t.integer :amount
       t.integer :budget_category_id
+      t.references :budget_category, null: false, foreign_key: true
+      t.references :budget_interval, null: false, foreign_key: true
 
       t.timestamps
     end
-
-    add_foreign_key :budget_items, :budget_categories
-    add_foreign_key :transactions, :budget_items
   end
 end

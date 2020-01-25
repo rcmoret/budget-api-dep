@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class CreateBudgetMonths < ActiveRecord::Migration[5.1]
+class CreateBudgetIntervals < ActiveRecord::Migration[5.1]
   def change
-    create_table :budget_months do |t|
+    create_table :budget_intervals do |t|
       t.integer :month, null: false
       t.integer :year, null: false
       t.datetime :set_up_completed_at

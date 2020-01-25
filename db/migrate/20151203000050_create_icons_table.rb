@@ -7,7 +7,5 @@ class CreateIconsTable < ActiveRecord::Migration[5.1]
       t.string :class_name, limit: 100, null: false
       t.timestamps
     end
-
-    add_reference :budget_categories, :icon, foreign_key: true
   end
 end
