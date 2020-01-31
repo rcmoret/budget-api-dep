@@ -18,6 +18,7 @@ class DiscretionaryTransactions
     @collection ||=
       Transaction::DetailView
       .discretionary
+      .budget_inclusions
       .non_transfers
       .between(date_range, include_pending: current?)
   end
