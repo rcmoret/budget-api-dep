@@ -8,7 +8,7 @@ class CreateTransactionEntries < ActiveRecord::Migration[5.1]
       t.date :clearance_date
       t.references :account, foreign_key: true, null: false
       t.text :notes
-      t.boolean :budget_exclusion, null: false
+      t.boolean :budget_exclusion, null: false, default: false
       t.references :transfer, foreign_key: true, null: true
       t.string :receipt, limit: 255
 
