@@ -2,7 +2,6 @@
 
 require 'rake'
 require './lib/colorize'
-require 'standalone_migrations'
 require 'yaml'
 
 Dir.glob('lib/tasks/*.rake').each { |r| load r }
@@ -11,7 +10,6 @@ task default: 'app:start'
 task console: 'app:console'
 task server: 'app:start'
 
-StandaloneMigrations::Tasks.load_tasks
 
 namespace :app do
   desc 'Start application in development'
@@ -32,6 +30,7 @@ namespace :app do
     Bundler.require(:development)
     require './config/settings'
     require './config/environments'
+    require 'active_support/core_ext/integer/inflections'
     Dir['./app/*.rb'].each { |f| require f }
     Dir['./app/helpers/*_helpers.rb'].each { |f| require f }
     Dir['./app/api/*.rb'].each { |f| require f }

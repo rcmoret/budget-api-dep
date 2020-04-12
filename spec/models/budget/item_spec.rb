@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Budget::Item, type: :model do
-  it { should belong_to(:category) }
-  it { should belong_to(:interval) }
+  xit { should belong_to(:category).required }
+  xit { should belong_to(:interval).required }
   it { should have_many(:transactions) }
   it { should delegate_method(:name).to(:category) }
   it { should delegate_method(:icon_class_name).to(:category) }

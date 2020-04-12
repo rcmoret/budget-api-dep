@@ -6,7 +6,7 @@ module Transaction
     self.table_name = :transaction_view
     self.primary_key = :id
 
-    belongs_to :account, required: true
+    belongs_to :account, required: false
     belongs_to :transfer, required: false
 
     def readonly?

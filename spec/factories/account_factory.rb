@@ -12,7 +12,7 @@ FactoryBot.define do
     end
 
     trait :non_cash_flow do
-      cash_flow false
+      cash_flow { false }
     end
   end
 end

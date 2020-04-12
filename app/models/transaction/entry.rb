@@ -4,7 +4,7 @@ module Transaction
   class Entry < ActiveRecord::Base
     include Scopes
 
-    belongs_to :account, required: true
+    belongs_to :account
     belongs_to :transfer, required: false
     has_one :view,
             class_name: 'EntryView',

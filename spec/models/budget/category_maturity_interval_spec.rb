@@ -3,10 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe Budget::CategoryMaturityInterval, type: :model do
-  it { should belong_to(:interval) }
-  it { should belong_to(:category) }
   it { should delegate_method(:month).to(:interval) }
   it { should delegate_method(:year).to(:interval) }
+
+  describe 'belongs to' do
+    let(:category) { FactoryBot.create(:category, :accrual) }
+    let(:interval) { FactoryBot.create(:budget_interval) }
+    subject { described_class.new(category: category, interval: interval) }
+
+    it { should belong_to(:interval) }
+    xit { should belong_to(:category) }
+  end
 
   describe 'requires interval and catgory' do
     context 'budget interval is null' do

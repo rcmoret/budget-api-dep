@@ -9,7 +9,7 @@ RSpec.describe Transaction::Detail, type: :model do
     end
 
     let(:budget_item) { FactoryBot.create(:budget_item) }
-    it { should belong_to(:entry) }
+    it { should belong_to(:entry).required }
     it { should belong_to(:budget_item) }
   end
 
