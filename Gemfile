@@ -13,7 +13,7 @@ group :development do
   gem 'rubocop', require: false
   gem 'sinatra-activerecord'
   gem 'sqlite3', '~> 1.3.6'
-  gem 'standalone_migrations'
+  gem 'standalone_migrations', git: 'https://github.com/madkin10/standalone-migrations.git'
   gem 'whenever', require: false
 end
 
