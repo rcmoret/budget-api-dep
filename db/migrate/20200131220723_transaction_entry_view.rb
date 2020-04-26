@@ -90,7 +90,7 @@ class TransactionEntryView < ActiveRecord::Migration[5.1]
 
   def up
     execute('DROP VIEW if exists transaction_view')
-    adapter = ActiveRecord::Base.configurations.dig(ENV['RACK_ENV'], 'adapter')
+    adapter = ActiveRecord::Base.configurations.find_db_config(ENV['RACK_ENV'] || 'development').config['adapter']
     case adapter
     when 'postgresql'
       execute(PG_SQL_UP)

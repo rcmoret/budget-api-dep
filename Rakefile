@@ -2,6 +2,7 @@
 
 require 'rake'
 require './lib/colorize'
+require 'standalone_migrations'
 require 'yaml'
 
 Dir.glob('lib/tasks/*.rake').each { |r| load r }
@@ -10,6 +11,7 @@ task default: 'app:start'
 task console: 'app:console'
 task server: 'app:start'
 
+StandaloneMigrations::Tasks.load_tasks
 
 namespace :app do
   desc 'Start application in development'
