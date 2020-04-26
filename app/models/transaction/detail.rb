@@ -13,6 +13,7 @@ module Transaction
             primary_key: :id
     validates :amount, presence: true
     validates :budget_item_id, uniqueness: true, if: :budget_item_monthly?
+    validates :budget_item_id, presence: true, if: :amount_zero?
     validate :amount_static!, if: :transfer?, on: :update
 
     scope :discretionary, -> { where(budget_item_id: nil) }
@@ -22,6 +23,7 @@ module Transaction
 
     delegate :monthly?, to: :budget_item, allow_nil: true, prefix: true
     delegate :transfer?, to: :entry
+    delegate :zero?, to: :amount, prefix: true
 
     PUBLIC_ATTRS = %w[
       id
