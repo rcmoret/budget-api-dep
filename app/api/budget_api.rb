@@ -107,7 +107,7 @@ module API
 
     def find_or_initialize_item!
       if item_id.present?
-        Budget::Item.find_by(id: item_id, budget_category_id: category_id)
+        ::Budget::Item.find_by(id: item_id, budget_category_id: category_id)
       else
         category.items.new(item_params.merge(budget_interval_id: budget_interval.id))
       end
@@ -126,7 +126,7 @@ module API
     end
 
     def item_params
-      @item_params ||= params_for(Budget::Item)
+      @item_params ||= params_for(::Budget::Item)
     end
 
     def category_id
@@ -141,9 +141,9 @@ module API
 
     def find_or_build_category!
       if category_id.present?
-        Budget::Category.find(category_id)
+        ::Budget::Category.find(category_id)
       else
-        Budget::Category.new(category_params)
+        ::Budget::Category.new(category_params)
       end
     end
 
@@ -160,23 +160,19 @@ module API
     end
 
     def category_params
-      @category_params ||= params_for(Budget::Category)
+      @category_params ||= params_for(::Budget::Category)
     end
 
     def categories
-      @categories ||= Budget::Category.active
+      @categories ||= ::Budget::Category.active
     end
 
     def items
       @items ||= budget_interval.item_views
     end
 
-    def budget_interval
-      @budget_interval ||= Budget::Interval.for(sym_params)
-    end
-
     def metadata
-      @metadata ||= Budget::Metadata.for(budget_interval)
+      @metadata ||= ::Budget::Metadata.for(budget_interval)
     end
 
     def discretionary_transactions
@@ -199,7 +195,7 @@ module API
       if maturity_interval_id
         category.maturity_intervals.find(maturity_interval_id)
       else
-        Budget::CategoryMaturityInterval.find_or_create_by(
+        ::Budget::CategoryMaturityInterval.find_or_create_by(
           interval: budget_interval,
           category: category
         )

@@ -23,7 +23,8 @@ module Transaction
 
     delegate :monthly?, to: :budget_item, allow_nil: true, prefix: true
     delegate :transfer?, to: :entry
-    delegate :zero?, to: :amount, prefix: true
+    # allowing nil is the only way to let it pass to the nil check :\
+    delegate :zero?, to: :amount, prefix: true, allow_nil: true
 
     PUBLIC_ATTRS = %w[
       id

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Transfers < Sinatra::Base
+  class Transfers < Base
     register Sinatra::Namespace
 
     get %r{/?} do

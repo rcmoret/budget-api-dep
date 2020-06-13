@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class IconsApi < Base
+  class Icons < Base
     register Sinatra::Namespace
 
     get %r{/?} do

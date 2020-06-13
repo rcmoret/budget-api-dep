@@ -33,6 +33,7 @@ namespace :app do
     require './config/settings'
     require './config/environments'
     require 'active_support/core_ext/integer/inflections'
+    # Base API class then all the subclasses
     require './app/api/base'
     Dir['./app/api/*_api.rb'].sort.each { |f| require f }
     # transaction modules and classes
@@ -50,7 +51,6 @@ namespace :app do
     require './app/models/budget/category_maturity_interval'
     require './app/models/budget/item_view'
     Dir['./app/models/*.rb'].sort.each { |f| require f }
-    Dir['./app/templates/*.rb'].sort.each { |f| require f }
     Dir['./lib/*.rb'].sort.each { |f| require f }
   end
 end

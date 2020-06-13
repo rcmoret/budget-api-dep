@@ -60,7 +60,7 @@ module API
     end
 
     def budget_interval
-      @budget_interval ||= Budget::Interval.for(sym_params)
+      @budget_interval ||= ::Budget::Interval.for(sym_params)
     end
   end
 end
