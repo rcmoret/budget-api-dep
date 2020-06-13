@@ -3,6 +3,7 @@
 module API
   class Base < Sinatra::Base
     before { content_type 'application/json' }
+    before { authenticate! }
 
     def sym_params
       @sym_params ||= request_params.reduce({}) { |memo, (k, v)| memo.merge(k.to_sym => v) }
@@ -19,6 +20,10 @@ module API
 
     def render_404(resource, id)
       halt(404, "Could not find a(n) #{resource} with id: #{id}")
+    end
+
+    def render_unauthenticated
+      halt 401, { error: 'no or incorrect credentials provided' }.to_json
     end
 
     def render_new(resource)
@@ -61,6 +66,12 @@ module API
 
     def budget_interval
       @budget_interval ||= ::Budget::Interval.for(sym_params)
+    end
+
+    def authenticate!
+      return if request_params.fetch('key', '') == Secret::KEY
+
+      render_unauthenticated
     end
   end
 end

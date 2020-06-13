@@ -32,6 +32,7 @@ namespace :app do
     Bundler.require(:development)
     require './config/settings'
     require './config/environments'
+    require './config/secret'
     require 'active_support/core_ext/integer/inflections'
     # Base API class then all the subclasses
     require './app/api/base'
