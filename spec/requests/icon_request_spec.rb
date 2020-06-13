@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'IconsApi', type: :request do
+RSpec.describe 'API::Icons', type: :request do
   describe 'GET routes' do
     let(:save) { FactoryBot.create(:icon, name: 'Save', class_name: 'fas fa-save') }
     let(:add) { FactoryBot.create(:icon, name: 'Add', class_name: 'fas fa-plus') }

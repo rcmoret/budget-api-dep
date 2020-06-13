@@ -44,10 +44,10 @@ end
 
 def app
   Rack::URLMap.new(
-    '/accounts' => AccountsApi.new,
-    '/budget' => BudgetApi.new,
-    '/icons' => IconsApi.new,
-    '/intervals' => IntervalsApi.new,
-    '/transfers' => TransfersApi.new
+    '/accounts' => API::Accounts.new,
+    '/budget' => API::Budget.new,
+    '/icons' => API::Icons.new,
+    '/intervals' => API::Intervals.new,
+    '/transfers' => API::Transfers.new
   )
 end

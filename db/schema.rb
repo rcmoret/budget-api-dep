@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2020_04_15_220723) do
     t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "slug", limit: 30
   end
 
   create_table "budget_categories", force: :cascade do |t|

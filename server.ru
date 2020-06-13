@@ -8,21 +8,21 @@ use Rack::Cors do
 end
 
 map '/accounts' do
-  run AccountsApi.new
+  run API::Accounts.new
 end
 
 map '/budget' do
-  run BudgetApi.new
+  run API::Budget.new
 end
 
 map '/icons' do
-  run IconsApi.new
+  run API::Icons.new
 end
 
 map '/intervals' do
-  run IntervalsApi.new
+  run API::Intervals.new
 end
 
 map '/transfers' do
-  run TransfersApi.new
+  run API::Transfers.new
 end

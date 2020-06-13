@@ -13,8 +13,10 @@ class Account < ActiveRecord::Base
   scope :non_cash_flow, -> { where(cash_flow: false) }
   validates_presence_of :name, :priority
   validates_uniqueness_of :name, :priority
+  validates_uniqueness_of :slug, unless: -> { slug.nil? }
+  validates_format_of :slug, with: /\A[a-z-]+\Z/, unless: -> { slug.nil? }
 
-  PUBLIC_ATTRS = %w[name cash_flow priority].freeze
+  PUBLIC_ATTRS = %w[name cash_flow priority slug].freeze
 
   class << self
     def available_cash

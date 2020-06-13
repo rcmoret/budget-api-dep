@@ -12,6 +12,25 @@ RSpec.describe Account, type: :model do
     it { should validate_presence_of(:priority) }
     it { should validate_uniqueness_of(:priority) }
     it { should validate_uniqueness_of(:name) }
+    it { should validate_uniqueness_of(:slug) }
+    # it { should validate_format_of(:slug).with(/\A[a-z-]+\Z/) }
+
+    describe 'slug format validation' do
+      context 'when it is all lower case with a dash' do
+        it 'is valid' do
+          account = FactoryBot.build(:account, slug: 'bank-acct')
+          expect(account.valid?).to be true
+        end
+      end
+
+      context 'when it is has uppercase' do
+        it 'is valid' do
+          account = FactoryBot.build(:account, slug: 'bankAcct')
+          expect(account.valid?).to be false
+          expect(account.errors[:slug]).to include 'is invalid'
+        end
+      end
+    end
   end
 
   describe '.to_hash [balance]' do
