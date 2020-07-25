@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_15_220723) do
+ActiveRecord::Schema.define(version: 2020_06_19_215920) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,8 +54,6 @@ ActiveRecord::Schema.define(version: 2020_04_15_220723) do
   end
 
   create_table "budget_items", force: :cascade do |t|
-    t.integer "month"
-    t.integer "year"
     t.integer "amount"
     t.bigint "budget_category_id", null: false
     t.bigint "budget_interval_id", null: false
