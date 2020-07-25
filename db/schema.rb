@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_19_215920) do
+ActiveRecord::Schema.define(version: 2020_07_25_004744) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,13 @@ ActiveRecord::Schema.define(version: 2020_06_19_215920) do
     t.datetime "close_out_completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "budget_item_event_types", force: :cascade do |t|
+    t.string "name", limit: 50, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_budget_item_event_types_on_name", unique: true
   end
 
   create_table "budget_items", force: :cascade do |t|
