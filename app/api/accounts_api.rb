@@ -59,16 +59,6 @@ module API
       end
     end
 
-    not_found do
-      msg = if body.include?('<h1>Not Found</h1>')
-              "#{request.fullpath} is not a valid route"
-            else
-              body
-            end
-      status 404
-      json(errors: msg)
-    end
-
     private
 
     def account_id
@@ -84,7 +74,7 @@ module API
     end
 
     def find_or_build_account!
-      account_id.present? ? Account.find(account_id) : Account.new(account_params)
+      account_id.present? ? Account.active.find(account_id) : Account.new(account_params)
     rescue ActiveRecord::RecordNotFound
       render_404('account', account_id)
     end
