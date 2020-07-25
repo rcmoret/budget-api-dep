@@ -62,7 +62,7 @@ module API
     def amount
       @amount ||= request_params.fetch('amount').to_i
     rescue KeyError
-      render_error(422, 'Amount not provided')
+      render_error(422, amount: ['not provided'])
     end
 
     def template_params

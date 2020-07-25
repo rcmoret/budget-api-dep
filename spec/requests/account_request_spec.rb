@@ -20,6 +20,8 @@ RSpec.shared_examples_for 'a JSON account' do
 end
 
 RSpec.describe 'API::Accounts', type: :request do
+  before { allow(Secret).to receive(:key).and_return('') }
+
   describe 'GET routes' do
     let(:checking) { FactoryBot.create(:checking_account, name: '1st Tenn') }
     let(:savings) { FactoryBot.create(:savings_account, name: 'Savings') }

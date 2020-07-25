@@ -13,17 +13,18 @@ module API
       [200, collection.map(&:to_hash).to_json]
     end
 
-    def render_error(code, message = nil)
-      $logger.warn message unless ENV['RACK_ENV'] == 'test'
-      halt code, { errors: message }.to_json
+    def render_error(code, *messages)
+      $logger.warn messages.join('; ') unless ENV['RACK_ENV'] == 'test'
+
+      halt code, { 'Content-Type' => 'application/json' }, { errors: messages }.to_json
     end
 
     def render_404(resource, id)
-      halt(404, "Could not find a(n) #{resource} with id: #{id}")
+      render_error(404, { resource.to_sym => ["Could not find a(n) #{resource} with id: #{id}"] })
     end
 
     def render_unauthenticated
-      halt 401, { error: 'no or incorrect credentials provided' }.to_json
+      render_error(401, { api: ['no or incorrect credentials provided'] })
     end
 
     def render_new(resource)
@@ -69,7 +70,7 @@ module API
     end
 
     def authenticate!
-      return if request_params.fetch('key', '') == Secret::KEY
+      return if request_params.fetch('key', '') == Secret.key
 
       render_unauthenticated
     end

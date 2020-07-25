@@ -42,7 +42,7 @@ module API
     def find_or_build_icon!
       icon_id.present? ? Icon.find(icon_id) : Icon.new(icon_params)
     rescue ActiveRecord::RecordNotFound
-      render_error(404, ["Could not find a(n) icon with id: #{icon_id}"])
+      render_error(404, { icon: ["Could not find a(n) icon with id: #{icon_id}"] })
     end
 
     def create_icon!
