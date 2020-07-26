@@ -157,7 +157,7 @@ RSpec.describe Budget::Item, type: :model do
       before { travel_to Time.current }
       after { travel_back }
       context 'when transaction details are present' do
-        fit 'raises an error' do
+        it 'raises an error' do
           transaction_detail = FactoryBot.create(:transaction_detail)
           subject = transaction_detail.budget_item
 
