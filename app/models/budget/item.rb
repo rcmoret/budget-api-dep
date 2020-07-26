@@ -30,5 +30,7 @@ module Budget
     def amount
       events.sum(:amount)
     end
+
+    NonDeleteableError = Class.new(StandardError)
   end
 end

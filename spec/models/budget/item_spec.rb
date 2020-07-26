@@ -35,4 +35,176 @@ RSpec.describe Budget::Item, type: :model do
       expect(subject).to be_invalid
     end
   end
+
+  describe 'event recording' do
+    context 'creating a new item' do
+      before { allow(Budget::ItemEvent).to receive(:create!).and_call_original }
+
+      it 'creates a item_create event' do
+        subject = FactoryBot.build(:budget_item)
+        expect { subject.save }
+          .to change { subject.events.item_create.count }
+          .from(0)
+          .to(+1)
+      end
+
+      it 'creates a item_create event' do
+        subject = FactoryBot.build(:budget_item)
+        expect { subject.save }
+          .to change { subject.events.item_create.sum(:amount) }
+          .from(0)
+          .to(subject.amount)
+      end
+
+      it 'only allows one create event to be recorded' do
+        subject = FactoryBot.create(:budget_item) # will create an event
+        expect { subject.events.create!(type: Budget::ItemEventType.for(:item_create), amount: 0) }
+          .to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'updating an existing item' do
+      context 'when the item is an expense' do
+        it 'creates an event' do
+          subject = FactoryBot.create(:budget_item, :expense, amount: -15_00)
+          expect { subject.update(amount: -17_50) }
+            .to change { subject.events.item_adjust.count }
+            .from(0)
+            .to(+1)
+        end
+
+        it 'creates an event where the amount is the difference in the old amount and the new' do
+          subject = FactoryBot.create(:budget_item, :expense, amount: -15_00)
+          expect { subject.update(amount: -17_50) }
+            .to change { subject.events.sum(:amount) }
+            .from(-15_00)
+            .to(-17_50)
+        end
+
+        it 'allows multiple events to be recorded' do
+          subject = FactoryBot.create(:budget_item, :expense, amount: -15_00)
+          expect do
+            subject.update(amount: -17_50)
+            subject.update(amount: -12_50)
+          end
+            .to(
+              change { subject.events.item_adjust.count }
+              .from(0)
+              .to(+2)
+            )
+        end
+
+        it 'maintains the sum of events equal to the amount of the item' do
+          subject = FactoryBot.create(:budget_item, :expense, amount: -15_00)
+          expect do
+            subject.update(amount: -17_50)
+            subject.update(amount: -12_50)
+          end
+            .to(
+              change { subject.events.sum(:amount) }
+              .from(-15_00)
+              .to(-12_50)
+            )
+        end
+      end
+
+      context 'when the item is an revenue' do
+        it 'creates an event' do
+          subject = FactoryBot.create(:budget_item, :revenue, amount: 75_00)
+          expect { subject.update(amount: 97_50) }
+            .to change { subject.events.item_adjust.count }
+            .from(0)
+            .to(+1)
+        end
+
+        it 'creates an event where the amount is the difference in the old amount and the new' do
+          subject = FactoryBot.create(:budget_item, :revenue, amount: 75_00)
+          expect { subject.update(amount: 97_50) }
+            .to change { subject.events.sum(:amount) }
+            .from(75_00)
+            .to(97_50)
+        end
+
+        it 'allows multiple events to be recorded' do
+          subject = FactoryBot.create(:budget_item, :revenue, amount: 75_00)
+          expect do
+            subject.update(amount: 57_50)
+            subject.update(amount: 82_75)
+          end
+            .to(
+              change { subject.events.item_adjust.count }
+              .from(0)
+              .to(+2)
+            )
+        end
+
+        it 'maintains the sum of events equal to the amount of the item' do
+          subject = FactoryBot.create(:budget_item, :revenue, amount: 75_00)
+          expect do
+            subject.update(amount: 57_50)
+            subject.update(amount: 82_75)
+          end
+            .to(
+              change { subject.events.sum(:amount) }
+              .from(75_00)
+              .to(82_75)
+            )
+        end
+      end
+    end
+
+    context 'deleting an item' do
+      before { travel_to Time.current }
+      after { travel_back }
+      context 'when transaction details are present' do
+        fit 'raises an error' do
+          transaction_detail = FactoryBot.create(:transaction_detail)
+          subject = transaction_detail.budget_item
+
+          expect { subject.delete }.to raise_error(described_class::NonDeleteableError)
+        end
+      end
+
+      context 'when transaction details are not present' do
+        it 'updates the deleted at time stamp' do
+          subject = FactoryBot.create(:budget_item)
+
+          expect { subject.delete }
+            .to(
+              change { subject.reload.deleted_at }
+              .from(nil)
+              .to(Time.current)
+            )
+        end
+
+        it 'records an event' do
+          subject = FactoryBot.create(:budget_item)
+
+          expect { subject.delete }
+            .to(
+              change { subject.events.item_delete.count }
+              .from(0)
+              .to(+1)
+            )
+        end
+
+        it 'includes an amount that will zero out the total' do
+          subject = FactoryBot.create(:budget_item)
+
+          expect { subject.delete }
+            .to(
+              change { subject.events.sum(:amount) }
+              .from(subject.amount)
+              .to(0)
+            )
+        end
+
+        it 'only allows one delete event' do
+          subject = FactoryBot.create(:budget_item)
+          subject.delete
+          expect { subject.delete }.to raise_error(ActiveRecord::RecordInvalid)
+        end
+      end
+    end
+  end
 end
