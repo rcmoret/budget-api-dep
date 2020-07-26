@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_25_004744) do
+ActiveRecord::Schema.define(version: 2020_07_25_005051) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,6 +58,17 @@ ActiveRecord::Schema.define(version: 2020_07_25_004744) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name"], name: "index_budget_item_event_types_on_name", unique: true
+  end
+
+  create_table "budget_item_events", force: :cascade do |t|
+    t.bigint "budget_item_id"
+    t.bigint "budget_item_event_type_id"
+    t.integer "amount", null: false
+    t.json "data"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["budget_item_event_type_id"], name: "index_budget_item_events_on_budget_item_event_type_id"
+    t.index ["budget_item_id"], name: "index_budget_item_events_on_budget_item_id"
   end
 
   create_table "budget_items", force: :cascade do |t|
