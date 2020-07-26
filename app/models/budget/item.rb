@@ -30,5 +30,13 @@ module Budget
     def amount
       events.sum(:amount)
     end
+
+    def delete
+      raise NonDeleteableError if transaction_details.any?
+
+      update(deleted_at: Time.current)
+    end
+
+    NonDeleteableError = Class.new(StandardError)
   end
 end
