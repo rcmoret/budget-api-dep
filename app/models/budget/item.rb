@@ -18,13 +18,34 @@ module Budget
     scope :weekly, -> { joins(:category).merge(Category.weekly) }
     scope :monthly, -> { joins(:category).merge(Category.monthly) }
 
+    has_many :events, class_name: 'ItemEvent'
+    after_commit :add_create_event!, on: :create
+    after_update :add_adjustment_event!, if: :saved_change_to_amount?
+
     PUBLIC_ATTRS = %w[amount budget_category_id budget_interval_id].freeze
 
-    delegate :accrual, :name, :icon_class_name, :expense?, :monthly?,
+    delegate :accrual,
+             :expense?,
+             :icon_class_name,
+             :monthly?,
+             :name,
              to: :category
 
     def view
       @view ||= ItemView.find(id)
+    end
+
+    private
+
+    def add_event!(type, event_amount)
+      events.create!(
+        type: ItemEventType.for(type),
+        amount: event_amount
+      )
+    end
+
+    def add_create_event!
+      add_event!(ItemEventType::ITEM_CREATE, amount)
     end
   end
 end

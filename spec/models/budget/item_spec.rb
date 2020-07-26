@@ -67,4 +67,32 @@ RSpec.describe Budget::Item, type: :model do
       expect(subject).to be_invalid
     end
   end
+
+  describe 'event recording' do
+    context 'creating a new item' do
+      before { allow(Budget::ItemEvent).to receive(:create!).and_call_original }
+
+      it 'creates a item_create event' do
+        subject = FactoryBot.build(:budget_item)
+        expect { subject.save }
+          .to change { subject.events.item_create.count }
+          .from(0)
+          .to(+1)
+      end
+
+      it 'creates a item_create event' do
+        subject = FactoryBot.build(:budget_item)
+        expect { subject.save }
+          .to change { subject.events.item_create.sum(:amount) }
+          .from(0)
+          .to(subject.amount)
+      end
+
+      it 'only allows one create event to be recorded' do
+        subject = FactoryBot.create(:budget_item) # will create an event
+        expect { subject.events.create!(type: Budget::ItemEventType.for(:item_create), amount: 0) }
+          .to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+  end
 end
