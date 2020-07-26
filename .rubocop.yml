@@ -4,7 +4,7 @@ AllCops:
     - 'db/migrate/*.rb'
 
 Layout/LineLength:
-  Max: 100
+  Max: 120
   Exclude:
     - db/schema.rb
 
@@ -29,6 +29,15 @@ Metrics/BlockLength:
 Style/Documentation:
   Enabled: false
 
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
 Style/GlobalVars:
   AllowedVariables:
     - $logger
+
+Sytle/MultilineBlockChain:
+  Enabled: false
