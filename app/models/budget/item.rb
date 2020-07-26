@@ -47,5 +47,10 @@ module Budget
     def add_create_event!
       add_event!(ItemEventType::ITEM_CREATE, amount)
     end
+
+    def add_adjustment_event!
+      delta = previous_changes[:amount].reverse.reduce(:-)
+      add_event!(ItemEventType::ITEM_ADJUST, delta)
+    end
   end
 end

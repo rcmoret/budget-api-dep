@@ -94,5 +94,23 @@ RSpec.describe Budget::Item, type: :model do
           .to raise_error(ActiveRecord::RecordInvalid)
       end
     end
+
+    context 'updating an existing item' do
+      it 'creates an event' do
+        subject = FactoryBot.create(:budget_item, :expense, amount: -15_00)
+        expect { subject.update(amount: -17_50) }
+          .to change { subject.events.item_adjust.count }
+          .from(0)
+          .to(+1)
+      end
+
+      it 'creates an event where the amount is the difference in the old amount and the new' do
+        subject = FactoryBot.create(:budget_item, :expense, amount: -15_00)
+        expect { subject.update(amount: -17_50) }
+          .to change { subject.events.sum(:amount) }
+          .from(-15_00)
+          .to(-17_50)
+      end
+    end
   end
 end
