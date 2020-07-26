@@ -49,7 +49,7 @@ module API
               unless item.deletable?
                 render_error(422, "Item with id: #{item.id} could not be deleted")
               end
-              item.destroy
+              item.delete
               [204, {}]
             end
 
@@ -168,7 +168,7 @@ module API
     end
 
     def items
-      @items ||= budget_interval.item_views
+      @items ||= budget_interval.item_views.active
     end
 
     def metadata

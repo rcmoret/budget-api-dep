@@ -23,6 +23,9 @@ module Budget
       scope :in, lambda { |month:, year:|
         where(budget_interval_id: Interval.for(month: month, year: year).id)
       }
+      scope :active, -> { where(deleted_at: nil) }
+      scope :deleted, -> { where.not(deleted_at: nil) }
+
       validates :category, presence: true
 
       delegate :to_json, to: :to_hash
@@ -39,7 +42,7 @@ module Budget
         icon_class_name: icon_class_name,
         month: interval.month,
         name: name,
-        year: interval.year
+        year: interval.year,
       }
     end
 

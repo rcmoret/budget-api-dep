@@ -184,5 +184,59 @@ RSpec.describe Budget::Item, type: :model do
         end
       end
     end
+
+    context 'deleting an item' do
+      before { travel_to Time.current }
+      after { travel_back }
+      context 'when transaction details are present' do
+        it 'raises an error' do
+          transaction_detail = FactoryBot.create(:transaction_detail)
+          subject = transaction_detail.budget_item
+
+          expect { subject.delete }.to raise_error(described_class::NonDeleteableError)
+        end
+      end
+
+      context 'when transaction details are not present' do
+        it 'updates the deleted at time stamp' do
+          subject = FactoryBot.create(:budget_item)
+
+          expect { subject.delete }
+            .to(
+              change { subject.reload.deleted_at }
+              .from(nil)
+              .to(Time.current)
+            )
+        end
+
+        it 'records an event' do
+          subject = FactoryBot.create(:budget_item)
+
+          expect { subject.delete }
+            .to(
+              change { subject.events.item_delete.count }
+              .from(0)
+              .to(+1)
+            )
+        end
+
+        it 'includes an amount that will zero out the total' do
+          subject = FactoryBot.create(:budget_item)
+
+          expect { subject.delete }
+            .to(
+              change { subject.events.sum(:amount) }
+              .from(subject.amount)
+              .to(0)
+            )
+        end
+
+        it 'only allows one delete event' do
+          subject = FactoryBot.create(:budget_item)
+          subject.delete
+          expect { subject.delete }.to raise_error(ActiveRecord::RecordInvalid)
+        end
+      end
+    end
   end
 end

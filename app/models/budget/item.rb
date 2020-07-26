@@ -35,6 +35,13 @@ module Budget
       @view ||= ItemView.find(id)
     end
 
+    def delete
+      raise NonDeleteableError if transaction_details.any?
+
+      update(deleted_at: Time.current)
+      add_event!(ItemEventType::ITEM_DELETE, (amount * -1))
+    end
+
     private
 
     def add_event!(type, event_amount)
@@ -52,5 +59,7 @@ module Budget
       delta = previous_changes[:amount].reverse.reduce(:-)
       add_event!(ItemEventType::ITEM_ADJUST, delta)
     end
+
+    NonDeleteableError = Class.new(StandardError)
   end
 end

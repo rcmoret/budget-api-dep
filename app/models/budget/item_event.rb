@@ -8,7 +8,8 @@ module Budget
     alias_attribute :type_id, :budget_item_event_type_id
     alias_attribute :item_id, :budget_item_id
 
-    validates :item_id, uniqueness: { scoped: :type_id }, if: :item_create?
+    validates :type_id, uniqueness: { scope: :item_id }, if: :item_create?
+    validates :type_id, uniqueness: { scope: :item_id }, if: :item_delete?
 
     ItemEventType::VALID_TYPES.each do |event_type|
       scope event_type.to_sym, -> { where(type: ItemEventType.for(event_type)) }

@@ -5,7 +5,8 @@ module Budget
     VALID_TYPES = [
       ITEM_ADJUST = 'item_adjust',
       ITEM_CREATE = 'item_create',
-      LEGACY_ITEM_CREATE = 'legacy_item_create'
+      ITEM_DELETE = 'item_delete',
+      LEGACY_ITEM_CREATE = 'legacy_item_create',
     ].freeze
 
     validates :name,
