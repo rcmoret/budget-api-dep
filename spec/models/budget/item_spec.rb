@@ -96,20 +96,92 @@ RSpec.describe Budget::Item, type: :model do
     end
 
     context 'updating an existing item' do
-      it 'creates an event' do
-        subject = FactoryBot.create(:budget_item, :expense, amount: -15_00)
-        expect { subject.update(amount: -17_50) }
-          .to change { subject.events.item_adjust.count }
-          .from(0)
-          .to(+1)
+      context 'when the item is an expense' do
+        it 'creates an event' do
+          subject = FactoryBot.create(:budget_item, :expense, amount: -15_00)
+          expect { subject.update(amount: -17_50) }
+            .to change { subject.events.item_adjust.count }
+            .from(0)
+            .to(+1)
+        end
+
+        it 'creates an event where the amount is the difference in the old amount and the new' do
+          subject = FactoryBot.create(:budget_item, :expense, amount: -15_00)
+          expect { subject.update(amount: -17_50) }
+            .to change { subject.events.sum(:amount) }
+            .from(-15_00)
+            .to(-17_50)
+        end
+
+        it 'allows multiple events to be recorded' do
+          subject = FactoryBot.create(:budget_item, :expense, amount: -15_00)
+          expect do
+            subject.update(amount: -17_50)
+            subject.update(amount: -12_50)
+          end
+            .to(
+              change { subject.events.item_adjust.count }
+              .from(0)
+              .to(+2)
+            )
+        end
+
+        it 'maintains the sum of events equal to the amount of the item' do
+          subject = FactoryBot.create(:budget_item, :expense, amount: -15_00)
+          expect do
+            subject.update(amount: -17_50)
+            subject.update(amount: -12_50)
+          end
+            .to(
+              change { subject.events.sum(:amount) }
+              .from(-15_00)
+              .to(-12_50)
+            )
+        end
       end
 
-      it 'creates an event where the amount is the difference in the old amount and the new' do
-        subject = FactoryBot.create(:budget_item, :expense, amount: -15_00)
-        expect { subject.update(amount: -17_50) }
-          .to change { subject.events.sum(:amount) }
-          .from(-15_00)
-          .to(-17_50)
+      context 'when the item is an revenue' do
+        it 'creates an event' do
+          subject = FactoryBot.create(:budget_item, :revenue, amount: 75_00)
+          expect { subject.update(amount: 97_50) }
+            .to change { subject.events.item_adjust.count }
+            .from(0)
+            .to(+1)
+        end
+
+        it 'creates an event where the amount is the difference in the old amount and the new' do
+          subject = FactoryBot.create(:budget_item, :revenue, amount: 75_00)
+          expect { subject.update(amount: 97_50) }
+            .to change { subject.events.sum(:amount) }
+            .from(75_00)
+            .to(97_50)
+        end
+
+        it 'allows multiple events to be recorded' do
+          subject = FactoryBot.create(:budget_item, :revenue, amount: 75_00)
+          expect do
+            subject.update(amount: 57_50)
+            subject.update(amount: 82_75)
+          end
+            .to(
+              change { subject.events.item_adjust.count }
+              .from(0)
+              .to(+2)
+            )
+        end
+
+        it 'maintains the sum of events equal to the amount of the item' do
+          subject = FactoryBot.create(:budget_item, :revenue, amount: 75_00)
+          expect do
+            subject.update(amount: 57_50)
+            subject.update(amount: 82_75)
+          end
+            .to(
+              change { subject.events.sum(:amount) }
+              .from(75_00)
+              .to(82_75)
+            )
+        end
       end
     end
   end

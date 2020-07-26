@@ -11,6 +11,7 @@ FactoryBot.define do
     end
 
     trait :revenue do
+      association :category, factory: %i[category revenue]
       amount { (1000..10_000).to_a.sample }
     end
 
