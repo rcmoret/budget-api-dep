@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'requests to intervals api', type: :request do
+  before { allow(Secret).to receive(:key).and_return('') }
+
   let(:interval) { FactoryBot.create(:budget_interval) }
   let(:endpoint) { "/intervals/#{interval.month}/#{interval.year}" }
   let(:request_body) { {} }

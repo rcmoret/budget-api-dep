@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'budget category maturity intervals' do
+  before { allow(Secret).to receive(:key).and_return('') }
+
   describe 'the index route' do
     let(:category) { FactoryBot.create(:category, :accrual) }
     let(:endpoint) { "/budget/categories/#{category.id}/maturity_intervals" }

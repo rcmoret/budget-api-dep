@@ -45,7 +45,8 @@ module API
     end
 
     def request_params
-      @request_params ||= params.merge(request_body)
+      # do not cache this
+      params.merge(request_body)
     end
 
     def request_body

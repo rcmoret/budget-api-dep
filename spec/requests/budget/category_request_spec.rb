@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'budget category requests' do
+  before { allow(Secret).to receive(:key).and_return('') }
+
   describe 'GET /categories INDEX' do
     let(:grocery) { FactoryBot.create(:category, :weekly, :expense, default_amount: -100) }
     let(:paycheck) { FactoryBot.create(:category, :monthly, :revenue, default_amount: 100) }

@@ -20,7 +20,7 @@ RSpec.describe TransactionTemplate do
       it 'should return some metadata' do
         metadata = JSON.parse(template)['metadata']
         expect(metadata['prior_balance']).to eq detail.amount
-        expect(metadata['query_options']).to be_empty
+        expect(metadata['query_options']).to eq({ 'account_id' => account.id })
       end
 
       describe 'date range' do

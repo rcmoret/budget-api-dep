@@ -48,7 +48,13 @@ RSpec.describe 'API::Accounts', type: :request do
       context 'random id' do
         let(:endpoint) { "/accounts/#{checking.id}404" }
         let(:error) do
-          { errors: ["Could not find a(n) account with id: #{checking.id}404"] }.to_json
+          {
+            errors: [
+              {
+                account: ["Could not find a(n) account with id: #{checking.id}404"]
+              }
+            ]
+          }.to_json
         end
 
         it 'should return a 404' do
@@ -89,7 +95,7 @@ RSpec.describe 'API::Accounts', type: :request do
         it { expect(status).to be 422 }
 
         it 'should have an error message' do
-          expect(response_body['errors']).to eq('priority' => ["can't be blank"])
+          expect(response_body['errors']).to include('priority' => ["can't be blank"])
         end
       end
 
@@ -99,7 +105,7 @@ RSpec.describe 'API::Accounts', type: :request do
         it { expect(status).to be 422 }
 
         it 'should have an error message' do
-          expect(response_body['errors']).to eq('name' => ["can't be blank"])
+          expect(response_body['errors']).to include('name' => ["can't be blank"])
         end
       end
 
@@ -110,7 +116,7 @@ RSpec.describe 'API::Accounts', type: :request do
 
         it { expect(status).to be 422 }
         it 'should have an error message' do
-          expect(response_body['errors']).to eq('name' => ['has already been taken'])
+          expect(response_body['errors']).to include('name' => ['has already been taken'])
         end
       end
 
@@ -121,7 +127,7 @@ RSpec.describe 'API::Accounts', type: :request do
 
         it { expect(status).to be 422 }
         it 'should have an error message' do
-          expect(response_body['errors']).to eq('priority' => ['has already been taken'])
+          expect(response_body['errors']).to include('priority' => ['has already been taken'])
         end
       end
     end

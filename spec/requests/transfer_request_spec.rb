@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'transfer requests' do
+  before { allow(Secret).to receive(:key).and_return('') }
+
   describe 'index' do
     before { FactoryBot.create_list(:transfer, 11) }
 
@@ -170,8 +172,8 @@ RSpec.describe 'transfer requests' do
       end
 
       it 'responds with an error message' do
-        expect(subject.body)
-          .to eq "Could not find a(n) account with id: #{to_account_id}"
+        expect(JSON.parse(subject.body)['errors'])
+          .to include({ 'account' => ["Could not find a(n) account with id: #{to_account_id}"] })
       end
     end
 
@@ -182,8 +184,8 @@ RSpec.describe 'transfer requests' do
       end
 
       it 'responds with an error message' do
-        expect(subject.body)
-          .to eq "Could not find a(n) account with id: #{from_account_id}"
+        expect(JSON.parse(subject.body)['errors'])
+          .to include({ 'account' => ["Could not find a(n) account with id: #{from_account_id}"] })
       end
     end
 
@@ -197,7 +199,7 @@ RSpec.describe 'transfer requests' do
       end
 
       it 'responds with an error message' do
-        expect(JSON.parse(subject.body)['errors']).to eq 'Amount not provided'
+        expect(JSON.parse(subject.body)['errors']).to include('amount' => ['not provided'])
       end
     end
   end
@@ -231,8 +233,8 @@ RSpec.describe 'transfer requests' do
       end
 
       it 'includes an error message' do
-        expect(subject.body)
-          .to eq "Could not find a(n) transfer with id: 1#{transfer.id}"
+        expect(JSON.parse(subject.body)['errors'])
+          .to include({ 'transfer' => ["Could not find a(n) transfer with id: 1#{transfer.id}"] })
       end
     end
   end

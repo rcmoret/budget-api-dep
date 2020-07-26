@@ -21,7 +21,7 @@ class TransactionTemplate
     @metadata ||= {
       date_range: [date_range.first, date_range.last],
       prior_balance: prior_balance,
-      query_options: options
+      query_options: options.merge(account_id: account.id)
     }
   end
 

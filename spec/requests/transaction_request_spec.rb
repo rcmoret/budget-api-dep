@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'transaction endpoints', type: :request do
+  before { allow(Secret).to receive(:key).and_return('') }
+
   # transactions index
   describe 'GET /accounts/:id/transactions' do
     let(:checking) { FactoryBot.create(:account) }
@@ -22,7 +24,7 @@ RSpec.describe 'transaction endpoints', type: :request do
 
       it 'responds with an error message' do
         expect(JSON.parse(response.body)['errors'])
-          .to include "Could not find a(n) account with id: 40#{checking.id}4"
+          .to include({ 'account' => ["Could not find a(n) account with id: 40#{checking.id}4"] })
       end
     end
 
@@ -152,7 +154,7 @@ RSpec.describe 'transaction endpoints', type: :request do
 
         it 'returns an error message' do
           expect(JSON.parse(response.body)['errors'])
-            .to eq('details.amount' => ['can\'t be blank'])
+            .to include('details.amount' => ['can\'t be blank'])
         end
       end
 

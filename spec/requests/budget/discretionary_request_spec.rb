@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'discretionary endpoint' do
+  before { allow(Secret).to receive(:key).and_return('') }
+
   let(:transaction) { FactoryBot.create(:transaction_entry, :discretionary) }
   let(:endpoint) { '/budget/discretionary/transactions' }
   let(:response) { get endpoint }

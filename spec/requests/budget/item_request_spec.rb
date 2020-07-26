@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Budget Item request specs' do
+  before { allow(Secret).to receive(:key).and_return('') }
+
   # index
   describe 'GET /budget/items' do
     subject { get '/budget/items' }

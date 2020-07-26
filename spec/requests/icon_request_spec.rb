@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'API::Icons', type: :request do
+  before { allow(Secret).to receive(:key).and_return('') }
+
   describe 'GET routes' do
     let(:save) { FactoryBot.create(:icon, name: 'Save', class_name: 'fas fa-save') }
     let(:add) { FactoryBot.create(:icon, name: 'Add', class_name: 'fas fa-plus') }
@@ -30,7 +32,7 @@ RSpec.describe 'API::Icons', type: :request do
       context 'random id' do
         let(:endpoint) { "/icons/#{save.id}404" }
         let(:error) do
-          { errors: ["Could not find a(n) icon with id: #{save.id}404"] }.to_json
+          { errors: [{ icon: ["Could not find a(n) icon with id: #{save.id}404"] }] }.to_json
         end
 
         it 'should return a 404' do
@@ -67,7 +69,7 @@ RSpec.describe 'API::Icons', type: :request do
         it { expect(status).to be 422 }
 
         it 'should have an error message' do
-          expect(response_body['errors']).to eq('class_name' => ["can't be blank"])
+          expect(response_body['errors']).to include('class_name' => ["can't be blank"])
         end
       end
 
@@ -76,7 +78,7 @@ RSpec.describe 'API::Icons', type: :request do
         it { expect(status).to be 422 }
 
         it 'should have an error message' do
-          expect(response_body['errors']).to eq('name' => ["can't be blank"])
+          expect(response_body['errors']).to include('name' => ["can't be blank"])
         end
       end
 
@@ -87,7 +89,7 @@ RSpec.describe 'API::Icons', type: :request do
 
         it { expect(status).to be 422 }
         it 'should have an error message' do
-          expect(response_body['errors']).to eq('name' => ['has already been taken'])
+          expect(response_body['errors']).to include('name' => ['has already been taken'])
         end
       end
 
@@ -98,7 +100,7 @@ RSpec.describe 'API::Icons', type: :request do
 
         it { expect(status).to be 422 }
         it 'should have an error message' do
-          expect(response_body['errors']).to eq('class_name' => ['has already been taken'])
+          expect(response_body['errors']).to include('class_name' => ['has already been taken'])
         end
       end
     end
