@@ -56,6 +56,10 @@ module API
             get '/transactions' do
               render_collection(item.transactions)
             end
+
+            get '/events' do
+              render_collection(item.events)
+            end
           end
         end
 

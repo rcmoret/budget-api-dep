@@ -18,5 +18,11 @@ module Budget
         type_id == ItemEventType.for(event_type).id
       end
     end
+
+    def to_hash
+      attributes
+        .symbolize_keys
+        .merge(budget_item_event_type: type.name)
+    end
   end
 end

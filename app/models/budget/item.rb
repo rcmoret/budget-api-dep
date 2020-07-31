@@ -18,7 +18,6 @@ module Budget
     scope :weekly, -> { joins(:category).merge(Category.weekly) }
     scope :monthly, -> { joins(:category).merge(Category.monthly) }
 
-    has_many :events, class_name: 'ItemEvent'
     after_commit :add_create_event!, on: :create
     after_update :add_adjustment_event!, if: :saved_change_to_amount?
 
