@@ -14,7 +14,7 @@ module API
 
     delete %r{/(?<id>\d+)} do
       transfer.destroy
-      [200, {}]
+      [204, {}]
     end
 
     private
