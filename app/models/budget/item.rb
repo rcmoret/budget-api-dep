@@ -18,7 +18,6 @@ module Budget
     scope :weekly, -> { joins(:category).merge(Category.weekly) }
     scope :monthly, -> { joins(:category).merge(Category.monthly) }
 
-    after_commit :add_create_event!, on: :create
     after_update :add_adjustment_event!, if: :saved_change_to_amount?
 
     PUBLIC_ATTRS = %w[amount budget_category_id budget_interval_id].freeze
@@ -48,10 +47,6 @@ module Budget
         type: ItemEventType.for(type),
         amount: event_amount
       )
-    end
-
-    def add_create_event!
-      add_event!(ItemEventType::ITEM_CREATE, amount)
     end
 
     def add_adjustment_event!

@@ -7,6 +7,7 @@ RSpec.describe Budget::ItemView, type: :model do
 
   around { |ex| travel_to(Time.current.beginning_of_minute) { ex.run } }
   describe '.to_hash' do
+    before { FactoryBot.create(:budget_item_event, item: item, amount: item.amount) }
     let(:budget_interval) { FactoryBot.create(:budget_interval, :current) }
     let(:item) { FactoryBot.create(:weekly_item, interval: budget_interval) }
     let(:category) { item.category }
