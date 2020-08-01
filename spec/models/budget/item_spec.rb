@@ -87,12 +87,6 @@ RSpec.describe Budget::Item, type: :model do
           .from(0)
           .to(subject.amount)
       end
-
-      it 'only allows one create event to be recorded' do
-        subject = FactoryBot.create(:budget_item) # will create an event
-        expect { subject.events.create!(type: Budget::ItemEventType.for(:item_create), amount: 0) }
-          .to raise_error(ActiveRecord::RecordInvalid)
-      end
     end
 
     context 'updating an existing item' do
@@ -229,12 +223,6 @@ RSpec.describe Budget::Item, type: :model do
               .from(subject.amount)
               .to(0)
             )
-        end
-
-        it 'only allows one delete event' do
-          subject = FactoryBot.create(:budget_item)
-          subject.delete
-          expect { subject.delete }.to raise_error(ActiveRecord::RecordInvalid)
         end
       end
     end

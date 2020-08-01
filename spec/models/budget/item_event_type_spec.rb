@@ -6,7 +6,7 @@ RSpec.describe Budget::ItemEventType, type: :model do
   describe 'name format validation' do
     context 'underscored lowercase string no numbers' do
       it 'is valid' do
-        name = described_class::VALID_TYPES.sample
+        name = Budget::EventTypes::VALID_ITEM_TYPES.sample
         object = described_class.for(name)
         expect(object).to be_valid
       end

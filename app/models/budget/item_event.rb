@@ -2,6 +2,7 @@
 
 module Budget
   class ItemEvent < ActiveRecord::Base
+    include EventTypes
     belongs_to :item, class_name: 'Item', foreign_key: :budget_item_id
     belongs_to :type, class_name: 'ItemEventType', foreign_key: :budget_item_event_type_id
 
@@ -11,7 +12,7 @@ module Budget
     validates :type_id, uniqueness: { scope: :item_id }, if: :item_create?
     validates :type_id, uniqueness: { scope: :item_id }, if: :item_delete?
 
-    ItemEventType::VALID_TYPES.each do |event_type|
+    VALID_ITEM_TYPES.each do |event_type|
       scope event_type.to_sym, -> { where(type: ItemEventType.for(event_type)) }
 
       define_method "#{event_type}?" do

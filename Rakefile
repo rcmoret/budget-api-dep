@@ -45,6 +45,7 @@ namespace :app do
     require './app/models/transaction/detail'
     require './app/models/transaction/detail_view'
     # budget module and classes
+    require './app/models/budget/event_types'
     require './app/models/budget/shared'
     require './app/models/budget/category'
     require './app/models/budget/interval'
