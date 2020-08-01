@@ -8,6 +8,17 @@ module Budget
           applicable_event_types.include?(event_type)
         end
 
+        def handler_registered?(event_type)
+          registered_event_types.include?(event_type)
+        end
+
+        def handler_gateway(event_type)
+          handler = registered_classes.find { |potential_hanlder| potential_hanlder.applies?(event_type) }
+          return handler unless handler.nil?
+
+          raise MissingHandlerError, "no handler register for #{event_type}"
+        end
+
         def register!(klass)
           raise DuplicateEventTypeRegistrationError if (registered_event_types & klass.applicable_event_types).any?
 
@@ -30,6 +41,7 @@ module Budget
         end
       end
 
+      MissingHandlerError = Class.new(StandardError)
       DuplicateEventTypeRegistrationError = Class.new(StandardError)
     end
   end

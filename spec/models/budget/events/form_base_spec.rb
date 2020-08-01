@@ -18,6 +18,39 @@ RSpec.describe Budget::Events::FormBase do
     end
   end
 
+  describe '.handler_registered?' do
+    context 'when providing one that is registered' do
+      it 'returns true' do
+        event_type = Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES.sample
+        expect(described_class.handler_registered?(event_type)).to be true
+      end
+    end
+
+    context 'when providing one that is not registered' do
+      it 'returns false' do
+        event_type = 'unregistered_event'
+        expect(described_class.handler_registered?(event_type)).to be false
+      end
+    end
+  end
+
+  describe 'handler_gateway' do
+    context 'when a create event' do
+      it 'returns the create event form object' do
+        event_type = Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES.sample
+        expect(described_class.handler_gateway(event_type)).to eq Budget::Events::CreateItemForm
+      end
+    end
+
+    context 'when an unregistered event' do
+      it 'raises an error' do
+        event_type = 'unregistered_event'
+        expect { described_class.handler_gateway(event_type) }
+          .to raise_error(described_class::MissingHandlerError)
+      end
+    end
+  end
+
   describe '.register!' do
     context 'when registering a class w/ an event type that has been registered' do
       let(:klass) do
