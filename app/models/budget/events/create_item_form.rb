@@ -2,7 +2,7 @@
 
 module Budget
   module Events
-    class CreateItemForm < Form
+    class CreateItemForm < FormBase
       include ActiveModel::Model
       include EventTypes
 
@@ -103,7 +103,7 @@ module Budget
       attr_reader :month
       attr_reader :year
 
-      Form.register!(self)
+      FormBase.register!(self)
     end
   end
 end

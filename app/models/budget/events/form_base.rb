@@ -2,7 +2,7 @@
 
 module Budget
   module Events
-    class Form
+    class FormBase
       class << self
         def applies?(event_type)
           applicable_event_types.include?(event_type)
@@ -15,10 +15,6 @@ module Budget
           registered_classes << klass
         end
 
-        def registered_classes
-          @registered_classes ||= []
-        end
-
         protected
 
         def applicable_event_types
@@ -27,6 +23,10 @@ module Budget
 
         def registered_event_types
           @registered_event_types ||= []
+        end
+
+        def registered_classes
+          @registered_classes ||= []
         end
       end
 

@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Budget::Events::Form do
+RSpec.describe Budget::Events::FormBase do
   describe '.registered_classes' do
     it 'includes the item create form' do
-      expect(described_class.registered_classes).to include Budget::Events::CreateItemForm
+      expect(described_class.send(:registered_classes)).to include Budget::Events::CreateItemForm
     end
 
     # it 'includes other forms'
@@ -54,7 +54,7 @@ RSpec.describe Budget::Events::Form do
           .to change { described_class.send(:registered_event_types) }
           .from(Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES)
           .to([*Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES, *klass.applicable_event_types])
-          .and change { described_class.registered_classes }
+          .and change { described_class.send(:registered_classes) }
           .from([Budget::Events::CreateItemForm])
           .to([Budget::Events::CreateItemForm, TestForm])
       end
