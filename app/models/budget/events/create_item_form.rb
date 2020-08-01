@@ -47,6 +47,10 @@ module Budget
 
       alias to_hash attributes
 
+      def to_s
+        'create_item_form'
+      end
+
       private
 
       def objects
