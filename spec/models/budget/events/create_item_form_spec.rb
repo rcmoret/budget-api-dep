@@ -190,6 +190,22 @@ RSpec.describe Budget::Events::CreateItemForm do
     end
   end
 
+  describe '.applies?' do
+    context 'when applicable' do
+      specify do
+        event_type = described_class::APPLICABLE_EVENT_TYPES.sample
+        expect(described_class.applies?(event_type)).to be true
+      end
+    end
+
+    context 'when not applicable' do
+      specify do
+        event_type = 'foo_bar_biz'
+        expect(described_class.applies?(event_type)).to be false
+      end
+    end
+  end
+
   def today
     @today ||= Time.current
   end
