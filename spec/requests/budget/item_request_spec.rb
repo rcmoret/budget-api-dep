@@ -59,16 +59,33 @@ RSpec.describe 'Budget Item request specs' do
     end
   end
 
-  describe 'POST /budget/categories/:category_id/items' do
+  describe 'POST /budget/items/events' do
     let(:month) { (1..12).to_a.sample }
     let(:year) { (2000..2088).to_a.sample }
     let(:category) { FactoryBot.create(:category, :revenue) }
-    let(:endpoint) { "/budget/categories/#{category.id}/items" }
-    let(:body) { { amount: (100..900).to_a.sample } }
+    let(:endpoint) { '/budget/items/events' }
+    let(:body) do
+      {
+        events: [
+          {
+            amount: (100..900).to_a.sample,
+            budget_category_id: category.id,
+            event_type: Budget::Events::CreateItemForm::ITEM_CREATE,
+            month: month,
+            year: year,
+          },
+        ],
+      }
+    end
+
     subject { post endpoint, body }
 
     it 'returns a 201' do
       expect(subject.status).to be 201
+    end
+
+    it 'creates an event' do
+      expect { subject }.to(change { Budget::ItemEvent.count }.by(+1))
     end
 
     it 'creates a record' do
@@ -119,8 +136,8 @@ RSpec.describe 'Budget Item request specs' do
           details_attributes: [
             {
               budget_item: item,
-              amount: -10_000
-            }
+              amount: -10_000,
+            },
           ]
         )
       end

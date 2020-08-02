@@ -25,6 +25,10 @@ module Budget
         false
       end
 
+      def attributes
+        forms.map(&:attributes)
+      end
+
       private
 
       def all_valid_event_types

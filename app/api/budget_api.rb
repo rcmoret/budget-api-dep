@@ -5,6 +5,15 @@ module API
   class Budget < Base
     register Sinatra::Namespace
 
+    post '/items/events' do
+      form = ::Budget::Events::Form.new(sym_params)
+      if form.save
+        render_new(form.attributes)
+      else
+        render_error(422, item.errors.to_hash)
+      end
+    end
+
     namespace '/categories' do
       get '' do
         render_collection(categories)
@@ -30,11 +39,6 @@ module API
         end
 
         namespace '/items' do
-          post '' do
-            create_item!
-            render_new(item.view.to_hash)
-          end
-
           namespace %r{/(?<item_id>\d+)} do
             get '' do
               [200, item.view.to_hash.to_json]
@@ -115,12 +119,6 @@ module API
       else
         category.items.new(item_params.merge(budget_interval_id: budget_interval.id))
       end
-    end
-
-    def create_item!
-      return if item.save
-
-      render_error(422, item.errors.to_hash)
     end
 
     def update_item!

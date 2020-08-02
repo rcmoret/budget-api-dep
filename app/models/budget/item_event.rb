@@ -20,10 +20,12 @@ module Budget
       end
     end
 
-    def to_hash
-      attributes
+    def attributes
+      super
         .symbolize_keys
         .merge(budget_item_event_type: type.name)
     end
+
+    alias to_hash attributes
   end
 end
