@@ -57,6 +57,7 @@ namespace :app do
     require './app/models/budget/events/form_base'
     require './app/models/budget/events/form'
     require './app/models/budget/events/create_item_form'
+    require './app/models/budget/events/delete_item_form'
     Dir['./app/models/*.rb'].sort.each { |f| require f }
     Dir['./lib/*.rb'].sort.each { |f| require f }
   end
