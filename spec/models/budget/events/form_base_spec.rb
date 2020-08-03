@@ -8,7 +8,9 @@ RSpec.describe Budget::Events::FormBase do
       expect(described_class.send(:registered_classes)).to include Budget::Events::CreateItemForm
     end
 
-    # it 'includes other forms'
+    it 'includes the item delete form' do
+      expect(described_class.send(:registered_classes)).to include Budget::Events::DeleteItemForm
+    end
   end
 
   describe '.applies?' do
@@ -82,14 +84,21 @@ RSpec.describe Budget::Events::FormBase do
         TestForm
       end
 
+      let(:event_types) do
+        [
+          *Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES,
+          *Budget::Events::DeleteItemForm::APPLICABLE_EVENT_TYPES,
+        ]
+      end
+
       it 'adds the event type the registry' do
         expect { described_class.register!(klass) }
           .to change { described_class.send(:registered_event_types) }
-          .from(Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES)
-          .to([*Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES, *klass.applicable_event_types])
+          .from(event_types)
+          .to([*event_types, *klass.applicable_event_types])
           .and change { described_class.send(:registered_classes) }
-          .from([Budget::Events::CreateItemForm])
-          .to([Budget::Events::CreateItemForm, TestForm])
+          .from([Budget::Events::CreateItemForm, Budget::Events::DeleteItemForm])
+          .to([Budget::Events::CreateItemForm, Budget::Events::DeleteItemForm, TestForm])
       end
     end
   end

@@ -10,6 +10,10 @@ module Budget
         ITEM_DELETE,
       ].freeze
 
+      def self.applicable_event_types
+        APPLICABLE_EVENT_TYPES
+      end
+
       validates :budget_item, presence: true
       validates :event_type, inclusion: { in: APPLICABLE_EVENT_TYPES }
       validate :transaction_detail_count!
@@ -65,6 +69,8 @@ module Budget
 
       attr_reader :budget_item_id
       attr_reader :event_type
+
+      FormBase.register!(self)
     end
   end
 end
