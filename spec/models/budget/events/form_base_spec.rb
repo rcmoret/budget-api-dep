@@ -4,6 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Budget::Events::FormBase do
   describe '.registered_classes' do
+    it 'includes the item adjust form' do
+      expect(described_class.send(:registered_classes)).to include Budget::Events::AdjustItemForm
+    end
+
     it 'includes the item create form' do
       expect(described_class.send(:registered_classes)).to include Budget::Events::CreateItemForm
     end
@@ -84,11 +88,15 @@ RSpec.describe Budget::Events::FormBase do
         TestForm
       end
 
-      let(:event_types) do
+      let(:event_classes) do
         [
-          *Budget::Events::CreateItemForm::APPLICABLE_EVENT_TYPES,
-          *Budget::Events::DeleteItemForm::APPLICABLE_EVENT_TYPES,
+          Budget::Events::AdjustItemForm,
+          Budget::Events::CreateItemForm,
+          Budget::Events::DeleteItemForm,
         ]
+      end
+      let(:event_types) do
+        event_classes.flat_map { |klass| klass::APPLICABLE_EVENT_TYPES }
       end
 
       it 'adds the event type the registry' do
@@ -97,8 +105,8 @@ RSpec.describe Budget::Events::FormBase do
           .from(event_types)
           .to([*event_types, *klass.applicable_event_types])
           .and change { described_class.send(:registered_classes) }
-          .from([Budget::Events::CreateItemForm, Budget::Events::DeleteItemForm])
-          .to([Budget::Events::CreateItemForm, Budget::Events::DeleteItemForm, TestForm])
+          .from(event_classes)
+          .to([*event_classes, TestForm])
       end
     end
   end

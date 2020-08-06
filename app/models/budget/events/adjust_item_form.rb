@@ -11,6 +11,10 @@ module Budget
         ITEM_ROLLOVER,
       ].freeze
 
+      def self.applicable_event_types
+        APPLICABLE_EVENT_TYPES
+      end
+
       validates :amount, numericality: { only_integer: true }
       validates :amount, numericality: { less_than_or_equal_to: 0 }, if: :expense?
       validates :amount, numericality: { greater_than_or_equal_to: 0 }, if: :revenue?
@@ -71,6 +75,8 @@ module Budget
       attr_reader :amount
       attr_reader :budget_item_id
       attr_reader :event_type
+
+      FormBase.register!(self)
     end
   end
 end
