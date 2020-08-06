@@ -6,6 +6,7 @@ module Budget
       ITEM_ADJUST = 'item_adjust',
       ITEM_CREATE = 'item_create',
       ITEM_DELETE = 'item_delete',
+      ITEM_ROLLOVER = 'item_rollover',
       LEGACY_ITEM_CREATE = 'legacy_item_create',
       PRE_SETUP_ITEM_CREATE = 'pre_setup_item_create',
       SETUP_ITEM_CREATE = 'setup_item_create',
