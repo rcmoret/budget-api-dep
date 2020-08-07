@@ -16,7 +16,8 @@ module Budget
 
       validates :budget_item, presence: true
       validates :event_type, inclusion: { in: APPLICABLE_EVENT_TYPES }
-      validate :transaction_detail_count!
+      validate :no_transaction_details_present!
+      validate :no_delete_events_present!
 
       def initialize(params)
         @event_type = params[:event_type]
@@ -55,10 +56,17 @@ module Budget
         budget_item.transaction_details
       end
 
-      def transaction_detail_count!
+      def no_transaction_details_present!
         return if transaction_details.size.zero?
 
         errors.add(:budget_item, 'cannot delete an item with transaction details')
+      end
+
+      def no_delete_events_present!
+        return if budget_item.nil?
+        return unless Budget::ItemEvent.item_delete.exists?(item_id: budget_item.id)
+
+        errors.add(:budget_item, 'cannot record a subsequent delete event')
       end
 
       def promote_errors(model_errors)

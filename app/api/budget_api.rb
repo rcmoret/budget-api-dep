@@ -49,14 +49,6 @@ module API
               render_updated(item.view.to_hash)
             end
 
-            delete '' do
-              unless item.deletable?
-                render_error(422, "Item with id: #{item.id} could not be deleted")
-              end
-              item.delete
-              [204, {}]
-            end
-
             get '/transactions' do
               render_collection(item.transactions)
             end

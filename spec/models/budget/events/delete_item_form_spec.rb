@@ -75,6 +75,14 @@ RSpec.describe Budget::Events::DeleteItemForm do
         end
       end
     end
+
+    describe 'cannot call a duplicate delete event' do
+      it 'is invalid' do
+        FactoryBot.create(:budget_item_event, :item_delete, item: budget_item, amount: 0)
+        form = build_form
+        expect(form).to_not be_valid
+      end
+    end
   end
 
   describe 'save' do
@@ -155,6 +163,7 @@ RSpec.describe Budget::Events::DeleteItemForm do
                                                   update: false,
                                                   amount: 0,
                                                   transaction_details: [],
+                                                  id: rand(100),
                                                   errors: item_errors)
   end
 
