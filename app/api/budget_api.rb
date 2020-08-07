@@ -44,11 +44,6 @@ module API
               [200, item.view.to_hash.to_json]
             end
 
-            put '' do
-              update_item!
-              render_updated(item.view.to_hash)
-            end
-
             get '/transactions' do
               render_collection(item.transactions)
             end
