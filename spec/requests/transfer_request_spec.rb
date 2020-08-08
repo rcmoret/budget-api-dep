@@ -217,8 +217,8 @@ RSpec.describe 'transfer requests' do
       expect { subject }.to change { Transaction::Entry.count }.by(-2)
     end
 
-    it 'returns a 200' do
-      expect(subject.status).to be 200
+    it 'returns a 204' do
+      expect(subject.status).to be 204
     end
 
     it 'returns an empty body' do
