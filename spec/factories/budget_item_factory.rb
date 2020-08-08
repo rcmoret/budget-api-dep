@@ -2,17 +2,15 @@
 
 FactoryBot.define do
   factory :budget_item, class: 'Budget::Item' do
-    amount { -10 }
     association :category
     association :interval, factory: :budget_interval
 
     trait :expense do
-      amount { (-1000..-100).to_a.sample }
+      association :category, factory: %i[category expense]
     end
 
     trait :revenue do
       association :category, factory: %i[category revenue]
-      amount { (1000..10_000).to_a.sample }
     end
 
     factory :monthly_item do

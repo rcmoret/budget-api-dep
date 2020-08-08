@@ -26,5 +26,9 @@ module Budget
     def view
       @view ||= ItemView.find(id)
     end
+
+    def amount
+      events.sum(:amount)
+    end
   end
 end

@@ -8,7 +8,8 @@ module Budget
 
       APPLICABLE_EVENT_TYPES = [
         ITEM_ADJUST,
-        ITEM_ROLLOVER,
+        ROLLOVER_ITEM_ADJUST,
+        SETUP_ITEM_ADJUST,
       ].freeze
 
       def self.applicable_event_types
@@ -39,6 +40,10 @@ module Budget
 
       def attributes
         { item: item_attributes }
+      end
+
+      def to_s
+        'adjust_item_form'
       end
 
       private

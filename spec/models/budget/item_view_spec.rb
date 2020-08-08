@@ -7,17 +7,18 @@ RSpec.describe Budget::ItemView, type: :model do
 
   around { |ex| travel_to(Time.current.beginning_of_minute) { ex.run } }
   describe '.to_hash' do
-    before { FactoryBot.create(:budget_item_event, item: item, amount: item.amount) }
+    before { FactoryBot.create(:budget_item_event, :item_create, item: item, amount: amount) }
     let(:budget_interval) { FactoryBot.create(:budget_interval, :current) }
     let(:item) { FactoryBot.create(:weekly_item, interval: budget_interval) }
     let(:category) { item.category }
     let(:spent) { 0 }
+    let(:amount) { category.expense? ? (-1 * rand(1000)) : rand(1000) }
     let(:deletable?) { true }
     let(:expected_hash) do
       {
         id: item.id,
         name: category.name,
-        amount: item.amount,
+        amount: amount,
         accrual: category.accrual,
         spent: spent,
         budget_category_id: category.id,
@@ -31,7 +32,6 @@ RSpec.describe Budget::ItemView, type: :model do
         maturity_month: nil,
         maturity_year: nil,
         deleted_at: nil,
-        legacy_amount: item.amount,
       }
     end
 

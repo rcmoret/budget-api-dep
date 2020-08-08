@@ -24,38 +24,6 @@ RSpec.describe Budget::Item, type: :model do
     }
   end
 
-  describe 'expense/revenue amount validation' do
-    subject { FactoryBot.build(:budget_item, category: category, amount: amount) }
-
-    context 'category is an expense' do
-      let(:category) { FactoryBot.create(:category, :expense) }
-
-      context "budget item's amount is < 0" do
-        let(:amount) { -100 }
-        it { should be_valid }
-      end
-
-      context "budget item's amount is > 0" do
-        let(:amount) { 100 }
-        it { should_not be_valid }
-      end
-    end
-
-    context 'category is a revenue' do
-      let(:category) { FactoryBot.create(:category, :revenue) }
-
-      context "budget item's amount is < 0" do
-        let(:amount) { -100 }
-        it { should_not be_valid }
-      end
-
-      context "budget item's amount is > 0" do
-        let(:amount) { 100 }
-        it { should be_valid }
-      end
-    end
-  end
-
   describe 'validation of uniqueness for weekly items per interval' do
     specify do
       budget_interval = FactoryBot.create(:budget_interval)

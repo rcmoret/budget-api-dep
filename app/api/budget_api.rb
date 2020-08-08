@@ -10,7 +10,7 @@ module API
       if form.save
         render_new(form.attributes)
       else
-        render_error(422, item.errors.to_hash)
+        render_error(422, form.errors.to_hash)
       end
     end
 
@@ -95,23 +95,9 @@ module API
     end
 
     def item
-      @item ||= find_or_initialize_item!
+      @item ||= ::Budget::Item.find_by(id: item_id, budget_category_id: category_id)
     rescue ActiveRecord::RecordNotFound
       render_404('budget_item', item_id)
-    end
-
-    def find_or_initialize_item!
-      if item_id.present?
-        ::Budget::Item.find_by(id: item_id, budget_category_id: category_id)
-      else
-        category.items.new(item_params.merge(budget_interval_id: budget_interval.id))
-      end
-    end
-
-    def update_item!
-      return if item.update(item_params)
-
-      render_error(422, item.errors.to_hash)
     end
 
     def item_params

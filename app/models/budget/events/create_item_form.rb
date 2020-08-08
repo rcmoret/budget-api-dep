@@ -8,6 +8,7 @@ module Budget
 
       APPLICABLE_EVENT_TYPES = [
         ITEM_CREATE,
+        ROLLOVER_ITEM_CREATE,
         PRE_SETUP_ITEM_CREATE,
         SETUP_ITEM_CREATE,
       ].freeze
@@ -62,7 +63,7 @@ module Budget
       end
 
       def item
-        @item ||= Budget::Item.new(interval: interval, category: category, amount: 0)
+        @item ||= Budget::Item.new(interval: interval, category: category)
       end
 
       def category

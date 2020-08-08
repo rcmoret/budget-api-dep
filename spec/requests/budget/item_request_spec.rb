@@ -97,7 +97,7 @@ RSpec.describe 'Budget Item request specs' do
     before { FactoryBot.create(:budget_item_event, :item_create, item: item, amount: amount) }
     let(:month) { (1..12).to_a.sample }
     let(:year) { (2000..2088).to_a.sample }
-    let(:item) { FactoryBot.create(:monthly_expense, amount: amount) }
+    let(:item) { FactoryBot.create(:monthly_expense) }
     let(:endpoint) { '/budget/items/events' }
     let(:amount) { (-900..-100).to_a.sample }
     let(:body) do

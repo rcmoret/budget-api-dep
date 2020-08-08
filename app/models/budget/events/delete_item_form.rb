@@ -36,6 +36,10 @@ module Budget
         { event: event.attributes }
       end
 
+      def to_s
+        'delete_item_form'
+      end
+
       private
 
       def budget_item
