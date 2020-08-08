@@ -90,7 +90,7 @@ class TransactionEntryView < ActiveRecord::Migration[5.1]
 
   def up
     execute('DROP VIEW if exists transaction_view')
-    adapter = ActiveRecord::Base.configurations.find_db_config(ENV['RACK_ENV'] || 'development').config['adapter']
+    adapter = database_config.fetch(ENV['RACK_ENV'], {}).fetch('adapter', '')
     case adapter
     when 'postgresql'
       execute(PG_SQL_UP)
@@ -107,4 +107,10 @@ class TransactionEntryView < ActiveRecord::Migration[5.1]
   end
 
   AdapterError = Class.new(StandardError)
+
+  private
+
+  def database_config
+    YAML.load(File.read('./config/database.yml'))
+  end
 end
