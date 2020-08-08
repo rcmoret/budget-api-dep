@@ -19,6 +19,7 @@ class Account < ActiveRecord::Base
             uniqueness: true,
             presence: true,
             format: { with: /\A[a-z0-9-]+\Z/, message: SLUG_FORMAT_MESSAGE }
+  validates :priority, uniqueness: true, presence: true
 
   PUBLIC_ATTRS = %w[name cash_flow priority slug].freeze
 

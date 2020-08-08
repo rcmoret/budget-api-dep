@@ -27,7 +27,8 @@ RSpec.describe Account, type: :model do
         it 'is valid' do
           account = FactoryBot.build(:account, slug: 'bankAcct')
           expect(account.valid?).to be false
-          expect(account.errors[:slug]).to include 'must be combination of lowercase letters, numbers and dashes'
+          expect(account.errors[:slug])
+            .to include 'must be combination of lowercase letters, numbers and dashes'
         end
       end
     end
@@ -106,7 +107,7 @@ RSpec.describe Account, type: :model do
         archived_at: nil,
         priority: account.priority,
         created_at: account.created_at,
-        updated_at: account.updated_at
+        updated_at: account.updated_at,
       }
     end
 

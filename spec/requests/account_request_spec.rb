@@ -73,7 +73,7 @@ RSpec.describe 'API::Accounts', type: :request do
 
     context 'valid params' do
       let(:account_name) { '1st Tenn' }
-      let(:body) { { name: account_name, priority: rand(100), slug: ('a'..'z').to_a.sample } }
+      let(:body) { { name: account_name, priority: rand(100), slug: '1st-tennessee' } }
       let(:response) { post endpoint, body }
       it 'should create a new resource' do
         expect { response }.to change { Account.count }.by 1
