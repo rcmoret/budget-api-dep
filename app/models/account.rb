@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Account < ActiveRecord::Base
+  SLUG_FORMAT_MESSAGE = 'must be combination of lowercase letters, numbers and dashes'
+
   has_many :transaction_views, class_name: 'Transaction::EntryView'
   has_many :transactions, class_name: 'Transaction::Entry'
   has_many :details,
@@ -11,10 +13,12 @@ class Account < ActiveRecord::Base
   scope :by_priority, -> { order('priority asc') }
   scope :cash_flow, -> { where(cash_flow: true) }
   scope :non_cash_flow, -> { where(cash_flow: false) }
-  validates_presence_of :name, :priority
-  validates_uniqueness_of :name, :priority
-  validates_uniqueness_of :slug, unless: -> { slug.nil? }
-  validates_format_of :slug, with: /\A[a-z-]+\Z/, unless: -> { slug.nil? }
+  validates :name, uniqueness: true, presence: true
+  validates :priority, uniqueness: true, presence: true
+  validates :slug,
+            uniqueness: true,
+            presence: true,
+            format: { with: /\A[a-z0-9-]+\Z/, message: SLUG_FORMAT_MESSAGE }
 
   PUBLIC_ATTRS = %w[name cash_flow priority slug].freeze
 

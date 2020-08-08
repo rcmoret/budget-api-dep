@@ -27,7 +27,7 @@ RSpec.describe Account, type: :model do
         it 'is valid' do
           account = FactoryBot.build(:account, slug: 'bankAcct')
           expect(account.valid?).to be false
-          expect(account.errors[:slug]).to include 'is invalid'
+          expect(account.errors[:slug]).to include 'must be combination of lowercase letters, numbers and dashes'
         end
       end
     end

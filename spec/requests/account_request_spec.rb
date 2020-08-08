@@ -51,9 +51,9 @@ RSpec.describe 'API::Accounts', type: :request do
           {
             errors: [
               {
-                account: ["Could not find a(n) account with id: #{checking.id}404"]
-              }
-            ]
+                account: ["Could not find a(n) account with id: #{checking.id}404"],
+              },
+            ],
           }.to_json
         end
 
@@ -73,7 +73,7 @@ RSpec.describe 'API::Accounts', type: :request do
 
     context 'valid params' do
       let(:account_name) { '1st Tenn' }
-      let(:body) { { name: account_name, priority: rand(100) } }
+      let(:body) { { name: account_name, priority: rand(100), slug: ('a'..'z').to_a.sample } }
       let(:response) { post endpoint, body }
       it 'should create a new resource' do
         expect { response }.to change { Account.count }.by 1
@@ -90,7 +90,7 @@ RSpec.describe 'API::Accounts', type: :request do
       let(:response_body) { JSON.parse(response.body) }
 
       context 'invalid params - lacking "priority"' do
-        let(:post_body) { { name: 'Last National Credit Union' } }
+        let(:post_body) { { name: 'Last National Credit Union', slug: "slug-#{rand(100)}" } }
 
         it { expect(status).to be 422 }
 
@@ -100,7 +100,7 @@ RSpec.describe 'API::Accounts', type: :request do
       end
 
       context 'invalid params - lacking "name"' do
-        let(:post_body) { { priority: rand(100) } }
+        let(:post_body) { { priority: rand(100), slug: "slug-#{rand(100)}" } }
 
         it { expect(status).to be 422 }
 
@@ -112,7 +112,7 @@ RSpec.describe 'API::Accounts', type: :request do
       context 'duplicate account name' do
         let(:account) { FactoryBot.create(:account) }
         let(:priority) { Account.maximum(:priority).next }
-        let(:post_body) { { name: account.name, priority: priority } }
+        let(:post_body) { { name: account.name, priority: priority, slug: "#{rand(100)}-slug" } }
 
         it { expect(status).to be 422 }
         it 'should have an error message' do
@@ -123,7 +123,7 @@ RSpec.describe 'API::Accounts', type: :request do
       context 'duplicate priority' do
         let(:account) { FactoryBot.create(:account) }
         let(:priority) { account.priority }
-        let(:post_body) { { name: '23rd St. Bank', priority: priority } }
+        let(:post_body) { { name: '23rd St. Bank', priority: priority, slug: "#{rand(100)}-slug" } }
 
         it { expect(status).to be 422 }
         it 'should have an error message' do
