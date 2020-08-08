@@ -36,7 +36,6 @@ module Budget
       {
         id: id,
         accural: accrual,
-        amount: amount,
         budget_category_id: budget_category_id,
         budget_interval_id: interval.id,
         expense: expense?,

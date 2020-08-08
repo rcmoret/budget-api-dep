@@ -38,10 +38,7 @@ module Budget
       end
 
       def attributes
-        {
-          item: budget_item.reload.attributes,
-          event: event.attributes,
-        }
+        { item: item_attributes }
       end
 
       private
@@ -59,11 +56,18 @@ module Budget
       end
 
       def adjustment_amount
-        @adjustment_amount ||= amount - budget_item.amount
+        @adjustment_amount ||= amount.to_i - budget_item.amount
       end
 
       def type_id
         @type_id ||= Budget::ItemEventType.for(event_type).id
+      end
+
+      def item_attributes
+        budget_item
+          .reload
+          .attributes
+          .merge(events: [event.attributes])
       end
 
       def promote_errors(model_errors)

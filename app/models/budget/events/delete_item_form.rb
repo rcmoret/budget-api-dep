@@ -32,6 +32,10 @@ module Budget
         false
       end
 
+      def attributes
+        { event: event.attributes }
+      end
+
       private
 
       def budget_item

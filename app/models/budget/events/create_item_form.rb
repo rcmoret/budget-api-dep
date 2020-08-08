@@ -42,7 +42,7 @@ module Budget
       end
 
       def attributes
-        { item: item_attributes, event: event.attributes }
+        { item: item_attributes }
       end
 
       alias to_hash attributes
@@ -91,6 +91,16 @@ module Budget
         category.revenue?
       end
 
+      def item_attributes
+        item.to_hash.merge(
+          events: [event.attributes],
+          amount: amount,
+          monthly: category.monthly,
+          transaction_count: 0,
+          spent: 0
+        )
+      end
+
       def budget_item_event_type
         @budget_item_event_type ||= if event_type == SETUP_ITEM_CREATE
                                       Budget::ItemEventType.setup_item_create
@@ -100,24 +110,6 @@ module Budget
                                       Budget::ItemEventType.pre_setup_item_create
                                     end
       end
-
-      # rubocop:disable Metrics/MethodLength
-      def item_attributes
-        item
-          .attributes
-          .merge(
-            amount: amount,
-            name: category.name,
-            month: month,
-            year: year,
-            expense: category.expense,
-            monthly: category.monthly,
-            transaction_count: 0,
-            spent: 0,
-            icon_class_name: category.icon.try(:class_name)
-          )
-      end
-      # rubocop:enable Metrics/MethodLength
 
       attr_reader :amount
       attr_reader :budget_category_id
