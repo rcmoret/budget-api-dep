@@ -12,7 +12,7 @@ group :development do
   gem 'rb-readline'
   gem 'rubocop', require: false
   gem 'sinatra-activerecord'
-  gem 'sqlite3', '~> 1.3.6'
+  gem 'sqlite3', '~> 1.4'
   gem 'standalone_migrations', git: 'https://github.com/madkin10/standalone-migrations.git'
   gem 'whenever', require: false
 end
