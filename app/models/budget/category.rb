@@ -2,6 +2,7 @@
 
 module Budget
   class Category < ActiveRecord::Base
+    include Messages
     has_many :items, foreign_key: :budget_category_id
     has_many :transactions, through: :items
     has_many :maturity_intervals,
@@ -11,8 +12,18 @@ module Budget
     belongs_to :icon
 
     validates :default_amount, presence: true
-    validates :default_amount, numericality: { less_than_or_equal_to: 0 }, if: :expense?
-    validates :default_amount, numericality: { greater_than_or_equal_to: 0 }, if: :revenue?
+    validates :default_amount,
+              numericality: {
+                less_than_or_equal_to: 0,
+                message: EXPENSE_AMOUNT_VALIDATION_MESSAGE,
+              },
+              if: :expense?
+    validates :default_amount,
+              numericality: {
+                greater_than_or_equal_to: 0,
+                message: REVENUE_AMOUNT_VALIDATION_MESSAGE,
+              },
+              if: :revenue?
     validates :name, uniqueness: true, presence: true
     validate :accrual_on_expense
 
