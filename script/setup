@@ -1,5 +1,10 @@
-cp ./config/settings.rb.example ./config/settings.rb
-cp ./config/database.yml.example ./config/database.yml
+if [ ! -f ./config/settings.rb ]; then
+  cp ./config/settings.rb.example ./config/settings.rb
+fi
+
+if [ ! -f ./config/database.yml ]; then
+  cp ./config/database.yml.example ./config/database.yml
+fi
 
 bundle install
 
