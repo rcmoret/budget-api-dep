@@ -5,6 +5,7 @@ module Budget
     class CreateItemForm < FormBase
       include ActiveModel::Model
       include EventTypes
+      include Messages
 
       APPLICABLE_EVENT_TYPES = [
         ITEM_CREATE,
@@ -20,8 +21,18 @@ module Budget
       validates :event_type, inclusion: { in: APPLICABLE_EVENT_TYPES }
       validates :category, presence: true
       validates :amount, numericality: { only_integer: true }
-      validates :amount, numericality: { less_than_or_equal_to: 0 }, if: :expense?
-      validates :amount, numericality: { greater_than_or_equal_to: 0 }, if: :revenue?
+      validates :amount,
+                numericality: {
+                  less_than_or_equal_to: 0,
+                  message: EXPENSE_AMOUNT_VALIDATION_MESSAGE,
+                },
+                if: :expense?
+      validates :amount,
+                numericality: {
+                  greater_than_or_equal_to: 0,
+                  message: REVENUE_AMOUNT_VALIDATION_MESSAGE,
+                },
+                if: :revenue?
 
       def initialize(params)
         @event_type = params[:event_type]

@@ -152,7 +152,7 @@ RSpec.describe Budget::Events::CreateItemForm do
         category = budget_category(:revenue)
         form = new_object(amount: -22_50, budget_category_id: category.id)
         form.valid?
-        expect(form.errors['amount']).to include 'must be greater than or equal to 0'
+        expect(form.errors['amount']).to include 'revenue items must be greater than or equal to $0.00'
       end
     end
 
@@ -167,7 +167,7 @@ RSpec.describe Budget::Events::CreateItemForm do
         category = budget_category(:expense)
         form = new_object(amount: 22_50, budget_category_id: category.id)
         form.valid?
-        expect(form.errors['amount']).to include 'must be less than or equal to 0'
+        expect(form.errors['amount']).to include 'expense items must be less than or equal to $0.00'
       end
     end
 
