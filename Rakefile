@@ -35,6 +35,8 @@ namespace :app do
     # Base API class then all the subclasses
     require './app/api/base'
     Dir['./app/api/*_api.rb'].sort.each { |f| require f }
+    require './app/root/index'
+    require './app/root/assets'
     # transaction modules and classes
     require './app/models/transaction/shared'
     require './app/models/transaction'
