@@ -7,22 +7,30 @@ use Rack::Cors do
   end
 end
 
-map '/accounts' do
+map '/' do
+  run Root::Index.new
+end
+
+map '/public' do
+  run Root::Assets.new
+end
+
+map '/api/accounts' do
   run API::Accounts.new
 end
 
-map '/budget' do
+map '/api/budget' do
   run API::Budget.new
 end
 
-map '/icons' do
+map '/api/icons' do
   run API::Icons.new
 end
 
-map '/intervals' do
+map '/api/intervals' do
   run API::Intervals.new
 end
 
-map '/transfers' do
+map '/api/transfers' do
   run API::Transfers.new
 end
