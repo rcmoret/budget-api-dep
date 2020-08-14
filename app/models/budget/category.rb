@@ -3,7 +3,7 @@
 module Budget
   class Category < ActiveRecord::Base
     include Messages
-    SLUG_FORMAT_MESSAGE = 'must be combination of lowercase letters, numbers and dashes'
+    include Slugable
     has_many :items, foreign_key: :budget_category_id
     has_many :transactions, through: :items
     has_many :maturity_intervals,
@@ -27,10 +27,6 @@ module Budget
               if: :revenue?
     validates :name, uniqueness: true, presence: true
     validate :accrual_on_expense
-    validates :slug,
-              uniqueness: true,
-              presence: true,
-              format: { with: /\A[a-z0-9-]+\Z/, message: SLUG_FORMAT_MESSAGE }
 
     scope :active, -> { where(archived_at: nil) }
     scope :monthly, -> { where(monthly: true) }

@@ -37,6 +37,7 @@ namespace :app do
     Dir['./app/api/*_api.rb'].sort.each { |f| require f }
     require './app/root/index'
     require './app/root/assets'
+    require './app/models/slugable'
     # transaction modules and classes
     require './app/models/transaction/shared'
     require './app/models/transaction'

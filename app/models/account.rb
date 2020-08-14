@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Account < ActiveRecord::Base
-  SLUG_FORMAT_MESSAGE = 'must be combination of lowercase letters, numbers and dashes'
+  include Slugable
 
   has_many :transaction_views, class_name: 'Transaction::EntryView'
   has_many :transactions, class_name: 'Transaction::Entry'
@@ -19,7 +19,6 @@ class Account < ActiveRecord::Base
             uniqueness: true,
             presence: true,
             format: { with: /\A[a-z0-9-]+\Z/, message: SLUG_FORMAT_MESSAGE }
-  validates :priority, uniqueness: true, presence: true
 
   PUBLIC_ATTRS = %w[name cash_flow priority slug].freeze
 
