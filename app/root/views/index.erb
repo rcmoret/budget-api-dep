@@ -4,8 +4,9 @@
     <meta charset="utf-8">
     <link rel="shortcut icon" href="/public/favicon.png">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    <link rel="stylesheet" href="/public/1.7335e68e.chunk.css">
-    <link rel="stylesheet" href="/public/main.e9dee7b9.chunk.css">
+    <% stylesheets.each do |stylesheet| %>
+      <link rel="stylesheet" href="/public/<%= stylesheet %>">
+    <% end %>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Questrial">
     <link rel="manifest" href="/public/manifest.json">
@@ -16,8 +17,8 @@
       You need to enable JavaScript to run this app.
     </noscript>
     <div id="root"></div>
-    <script type="text/javascript" src="/public/1.5576e4b7.chunk.js"></script>
-    <script type="text/javascript" src="/public/main.75ed33f5.chunk.js"></script>
-    <script type="text/javascript" src="/public/runtime~main.229c360f.js"></script>
+    <% javascript_files.each do |js_file| %>
+      <script type="text/javascript" src="/public/<%= js_file %>"></script>
+    <% end %>
   </body>
 </html>

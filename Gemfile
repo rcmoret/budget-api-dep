@@ -7,7 +7,6 @@ group :development do
   gem 'sinatra-contrib'
 
   gem 'activerecord'
-  gem 'haml'
   gem 'pg', '~> 0.18'
   gem 'rack-cors'
   gem 'rb-readline'
