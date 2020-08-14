@@ -26,7 +26,7 @@ RSpec.describe 'budget category requests' do
   describe 'POST /categories' do
     let(:endpoint) { '/budget/categories' }
     let(:body) do
-      { name: 'Party Supplies', expense: true, monthly: false, default_amount: -100 }
+      { name: 'Party Supplies', expense: true, monthly: false, default_amount: -100, slug: "party-#{rand(1000)}" }
     end
 
     let(:response) { post endpoint, body }
