@@ -39,6 +39,17 @@ RSpec.describe 'budget category requests' do
     end
   end
 
+  describe 'GET /categories/:id' do
+    let(:endpoint) { "/budget/categories/#{category.id}" }
+    let(:category) { FactoryBot.create(:category, :expense) }
+    let(:response) { get endpoint }
+
+    it 'returns a JSON respresentation of the category' do
+      subject = JSON.parse(response.body)
+      expect(subject).to eq category.to_hash.stringify_keys
+    end
+  end
+
   describe 'PUT /categories/:id' do
     let(:endpoint) { "/budget/categories/#{category.id}" }
     let(:default_amount) { (100..900).to_a.sample * -1 }

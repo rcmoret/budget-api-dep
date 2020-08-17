@@ -25,6 +25,10 @@ module API
       end
 
       namespace %r{/(?<category_id>\d+)} do
+        get '' do
+          [200, category.to_json]
+        end
+
         put '' do
           update_category!
           render_updated(category)
