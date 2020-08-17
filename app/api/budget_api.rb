@@ -33,6 +33,10 @@ module API
           render_collection(category.events)
         end
 
+        get '/transactions' do
+          render_collection(category.transactions)
+        end
+
         put '' do
           update_category!
           render_updated(category)
