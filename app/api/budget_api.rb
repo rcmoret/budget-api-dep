@@ -29,6 +29,10 @@ module API
           [200, category.to_json]
         end
 
+        get '/events' do
+          render_collection(category.events)
+        end
+
         put '' do
           update_category!
           render_updated(category)
