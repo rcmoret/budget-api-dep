@@ -6,6 +6,7 @@ module Budget
     include Slugable
     has_many :items, foreign_key: :budget_category_id
     has_many :transactions, through: :items
+    has_many :events, through: :items
     has_many :maturity_intervals,
              -> { ordered },
              class_name: 'CategoryMaturityInterval',

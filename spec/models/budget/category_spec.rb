@@ -8,6 +8,7 @@ RSpec.describe Budget::Category, type: :model do
     it { should have_many(:transactions) }
     it { should belong_to(:icon) }
     it { should have_many(:maturity_intervals) }
+    it { should have_many(:events).through(:items) }
   end
 
   describe 'validations' do

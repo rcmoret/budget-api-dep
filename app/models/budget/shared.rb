@@ -15,7 +15,7 @@ module Budget
       has_many :transactions,
                class_name: 'Transaction::DetailView',
                foreign_key: :budget_item_id
-      has_many :events, class_name: 'ItemEvent'
+      has_many :events, class_name: 'ItemEvent', foreign_key: :budget_item_id
       belongs_to :category, foreign_key: :budget_category_id
       belongs_to :interval,
                  class_name: 'Interval',
