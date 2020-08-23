@@ -7,10 +7,6 @@ use Rack::Cors do
   end
 end
 
-map '/' do
-  run Root::Index.new
-end
-
 map '/public' do
   run Root::Assets.new
 end
@@ -33,4 +29,8 @@ end
 
 map '/api/transfers' do
   run API::Transfers.new
+end
+
+map '/' do
+  run Root::Index.new
 end

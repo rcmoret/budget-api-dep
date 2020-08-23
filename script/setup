@@ -1,3 +1,6 @@
+git stash
+git pull
+
 if [ ! -f ./config/settings.rb ]; then
   cp ./config/settings.rb.example ./config/settings.rb
 fi
@@ -8,9 +11,9 @@ fi
 
 bundle install
 
-bundle exec rake api:update_key
-
 RACK_ENV=development bundle exec rake db:create
 RACK_ENV=development bundle exec rake db:migrate
+
+bundle exec rake api:update_key
 
 RACK_ENV=development bundle exec rake

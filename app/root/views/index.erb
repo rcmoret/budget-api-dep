@@ -5,7 +5,7 @@
     <link rel="shortcut icon" href="/public/favicon.png">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <% stylesheets.each do |stylesheet| %>
-      <link rel="stylesheet" href="/public/<%= stylesheet %>">
+      <link rel="stylesheet" href="/<%= stylesheet %>">
     <% end %>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css?family=Questrial">
@@ -18,7 +18,7 @@
     </noscript>
     <div id="root"></div>
     <% javascript_files.each do |js_file| %>
-      <script type="text/javascript" src="/public/<%= js_file %>"></script>
+      <script type="text/javascript" src="/<%= js_file %>"></script>
     <% end %>
   </body>
 </html>

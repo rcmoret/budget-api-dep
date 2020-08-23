@@ -3,11 +3,11 @@
 module Root
   class Assets < Sinatra::Base
     get %r{/(?<file_name>\S+\.(css|css\.map))} do
-      send_file "./public/assets/css/#{params[:file_name]}"
+      send_file "./public/#{params[:file_name]}"
     end
 
     get %r{/(?<file_name>\S+\.(js|js\.map))} do
-      send_file "./public/assets/js/#{params[:file_name]}"
+      send_file "./public/#{params[:file_name]}"
     end
 
     get %r{/(?<file_name>\S+\.png)} do
