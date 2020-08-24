@@ -8,6 +8,7 @@ require 'yaml'
 task default: 'app:start'
 task console: 'app:console'
 task server: 'app:start'
+task setup: 'app:setup'
 
 StandaloneMigrations::Tasks.load_tasks
 
