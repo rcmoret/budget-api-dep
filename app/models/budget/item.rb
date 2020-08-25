@@ -6,6 +6,7 @@ module Budget
 
     validates_uniqueness_of :budget_category_id,
                             scope: :budget_interval_id,
+                            conditions: -> { active },
                             if: :weekly?
 
     scope :current, -> { where(budget_interval: Interval.current) }

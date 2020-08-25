@@ -13,12 +13,9 @@ class Account < ActiveRecord::Base
   scope :by_priority, -> { order('priority asc') }
   scope :cash_flow, -> { where(cash_flow: true) }
   scope :non_cash_flow, -> { where(cash_flow: false) }
-  validates :name, uniqueness: true, presence: true
-  validates :priority, uniqueness: true, presence: true
-  validates :slug,
-            uniqueness: true,
-            presence: true,
-            format: { with: /\A[a-z0-9-]+\Z/, message: SLUG_FORMAT_MESSAGE }
+  validates_uniqueness_of :name, :priority, :slug, conditions: -> { active }
+  validates_presence_of :name, :priority, :slug
+  validates :slug, format: { with: /\A[a-z0-9-]+\Z/, message: SLUG_FORMAT_MESSAGE }
 
   PUBLIC_ATTRS = %w[name cash_flow priority slug].freeze
 

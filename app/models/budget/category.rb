@@ -13,7 +13,6 @@ module Budget
              foreign_key: :budget_category_id
     belongs_to :icon
 
-    validates :default_amount, presence: true
     validates :default_amount,
               numericality: {
                 less_than_or_equal_to: 0,
@@ -26,7 +25,9 @@ module Budget
                 message: REVENUE_AMOUNT_VALIDATION_MESSAGE,
               },
               if: :revenue?
-    validates :name, uniqueness: true, presence: true
+
+    validates_uniqueness_of :name, :slug, conditions: -> { active }
+    validates :default_amount, :name, :slug, presence: true
     validate :accrual_on_expense
 
     scope :active, -> { where(archived_at: nil) }
