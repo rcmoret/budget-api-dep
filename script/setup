@@ -1,4 +1,4 @@
-git stash
+git checkout .
 git pull
 
 if [ ! -f ./config/settings.rb ]; then
