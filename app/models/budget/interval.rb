@@ -12,6 +12,26 @@ module Budget
 
     scope :ordered, -> { order(year: :asc).order(month: :asc) }
 
+    # rubocop:disable Metric/BlockLength
+    scope :in_range, lambda { |beginning_month:, beginning_year:, ending_month:, ending_year:|
+      if beginning_year > ending_year || (beginning_year == ending_year && beginning_month > ending_month)
+        raise QueryError
+      end
+
+      if ending_year == beginning_year
+        where('"budget_intervals".year = ? AND "budget_intervals".month >= ? AND "budget_intervals".month <= ?',
+              beginning_year, beginning_month, ending_month)
+      elsif ending_year - beginning_year > 1
+        where('"budget_intervals".year = ? AND "budget_intervals".month >= ?', beginning_year, beginning_month)
+          .or(where('"budget_intervals".year = ? AND "budget_intervals".month <= ?', ending_year, ending_month))
+          .or(Budget::Interval.where(year: ((beginning_year + 1)...ending_year)))
+      else
+        where('"budget_intervals".year = ? AND "budget_intervals".month >= ?', beginning_year, beginning_month)
+          .or(where('"budget_intervals".year = ? AND "budget_intervals".month <= ?', ending_year, ending_month))
+      end
+    }
+    # rubocop:enable Metric/BlockLength
+
     def self.for(**opts)
       month, year =
         if opts[:date].present?
@@ -74,5 +94,7 @@ module Budget
     def today
       @today ||= Date.today
     end
+
+    QueryError = Class.new(StandardError)
   end
 end

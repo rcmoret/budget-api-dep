@@ -20,6 +20,7 @@ module Transaction
     scope :prior_to, ->(date) { joins(:entry).merge(Entry.prior_to(date)) }
     scope :pending, -> { joins(:entry).merge(Entry.pending) }
     scope :budget_inclusions, -> { joins(:entry).merge(Entry.budget_inclusions) }
+    scope :in_range, ->(range) { joins(:budget_item).merge(Budget::Item.in_range(range)) }
 
     delegate :monthly?, to: :budget_item, allow_nil: true, prefix: true
     delegate :transfer?, to: :entry

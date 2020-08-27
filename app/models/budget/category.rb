@@ -5,6 +5,7 @@ module Budget
     include Messages
     include Slugable
     has_many :items, foreign_key: :budget_category_id
+    has_many :item_views, foreign_key: :budget_category_id, class_name: 'ItemView'
     has_many :transactions, through: :items
     has_many :events, through: :items
     has_many :maturity_intervals,

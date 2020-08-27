@@ -24,6 +24,7 @@ module Budget
       scope :in, lambda { |month:, year:|
         where(budget_interval_id: Interval.for(month: month, year: year).id)
       }
+      scope :in_range, ->(range) { joins(:interval).merge(Interval.in_range(range)) }
       scope :active, -> { where(deleted_at: nil) }
       scope :deleted, -> { where.not(deleted_at: nil) }
 

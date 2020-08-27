@@ -30,7 +30,11 @@ module API
         end
 
         get '/events' do
-          render_collection(category.events)
+          render_collection(category.events.includes(:item_view))
+        end
+
+        get '/items' do
+          render_collection(category.item_views)
         end
 
         get '/transactions' do
