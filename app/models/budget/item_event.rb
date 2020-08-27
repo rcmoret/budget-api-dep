@@ -29,7 +29,7 @@ module Budget
       super
         .symbolize_keys
         .merge(
-          budget_item_event_type: type.name,
+          type: type.name,
           month: month,
           year: year
         )
