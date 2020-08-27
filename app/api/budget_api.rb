@@ -29,16 +29,14 @@ module API
           [200, category.to_json]
         end
 
-        get '/events' do
-          render_collection(category.events.includes(:item_view))
-        end
-
-        get '/items' do
-          render_collection(category.item_views)
-        end
-
-        get '/transactions' do
-          render_collection(category.transactions)
+        get '/data' do
+          hash = {
+            catogory: category,
+            events: category.events.in_range(date_range_params).includes(:item_view),
+            item_views: category.item_views.in_range(date_range_params),
+            transactions: category.transactions.in_range(date_range_params),
+          }
+          [200, hash.to_json]
         end
 
         put '' do
@@ -195,6 +193,20 @@ module API
 
     def update_maturity_interval!
       maturity_interval.update(interval: budget_interval)
+    end
+
+    def date_range_params
+      @date_range_params ||= default_date_range.merge(params.fetch(:date_range, {}))
+    end
+
+    def default_date_range
+      today = Time.current
+      {
+        beginning_month: (today.month == 12 ? 1 : today.month - 1),
+        beginning_year: (today.month == 12 ? today.year : today.year - 1),
+        ending_month: today.month,
+        ending_year: today.year,
+      }
     end
   end
 end
