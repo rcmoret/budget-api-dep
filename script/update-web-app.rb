@@ -20,7 +20,7 @@ end
 files.each_pair do |type, file_list|
   `rm ./public/assets/#{type}/*`
   file_list.each do |file_name|
-    `cp ../web-app/#{file_name} ./public/assets/#{type}/`
+    `cp ../web-app-static/#{file_name} ./public/assets/#{type}/`
   end
 end
 
