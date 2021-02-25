@@ -13,6 +13,7 @@ module Budget
     validates :type_id, uniqueness: { scope: :item_id }, if: :item_create?
     validates :type_id, uniqueness: { scope: :item_id }, if: :item_delete?
 
+    scope :prior_to, ->(date_hash) { joins(:item).merge(Item.prior_to(date_hash)) }
     scope :in_range, ->(range) { joins(:item).merge(Item.in_range(range)) }
 
     VALID_ITEM_TYPES.each do |event_type|
@@ -24,17 +25,16 @@ module Budget
     end
 
     delegate :month, :year, to: :item_view
+    delegate :as_json, :to_json, to: :to_hash
 
-    def attributes
-      super
+    def to_hash
+      attributes
         .symbolize_keys
         .merge(
-          type: type.name,
+          name: type.name,
           month: month,
           year: year
         )
     end
-
-    alias to_hash attributes
   end
 end

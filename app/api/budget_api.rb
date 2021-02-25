@@ -31,10 +31,11 @@ module API
 
         get '/data' do
           hash = {
-            catogory: category,
+            category: category,
             events: category.events.in_range(date_range_params).includes(:item_view),
             item_views: category.item_views.in_range(date_range_params),
             transactions: category.transactions.in_range(date_range_params),
+            date_range: date_range_params,
           }
           [200, hash.to_json]
         end
