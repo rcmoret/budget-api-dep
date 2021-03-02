@@ -13,6 +13,16 @@ class Account < ActiveRecord::Base
   scope :by_priority, -> { order('priority asc') }
   scope :cash_flow, -> { where(cash_flow: true) }
   scope :non_cash_flow, -> { where(cash_flow: false) }
+  scope :details_prior_to, lambda { |date, include_pending:|
+    details = Transaction::Detail.all
+
+    if include_pending
+      joins(:details)
+        .merge(details.prior_to(date).or(details.pending))
+    else
+      joins(:details).merge(details.prior_to(date))
+    end
+  }
   validates_uniqueness_of :name, :priority, :slug, conditions: -> { active }
   validates_presence_of :name, :priority, :slug
   validates :slug, format: { with: /\A[a-z0-9-]+\Z/, message: SLUG_FORMAT_MESSAGE }
@@ -34,16 +44,11 @@ class Account < ActiveRecord::Base
   end
 
   def balance_prior_to(date, include_pending:)
-    if include_pending
-      details
-        .prior_to(date)
-        .or(details.pending)
-        .total
-    else
-      details
-        .prior_to(date)
-        .total
-    end
+    self
+      .class
+      .where(id: id)
+      .details_prior_to(date, include_pending: include_pending)
+      .sum(:amount)
   end
 
   def deleted?

@@ -70,7 +70,10 @@ module Budget
     end
 
     def current?
-      [today.month, today.year] == [month, year]
+      return true if [today.month, today.year] == [month, year] && !closed_out?
+      return false if year < today.year || (year == today.year && month < today.month)
+
+      prev.closed_out?
     end
 
     def total_days
@@ -93,6 +96,22 @@ module Budget
 
     def attributes
       super.symbolize_keys.except(:created_at, :updated_at)
+    end
+
+    def prev
+      if month > 1
+        self.class.for(month: (month - 1), year: year)
+      else
+        self.class.for(month: 12, year: (year - 1))
+      end
+    end
+
+    def next
+      if month < 12
+        self.class.for(month: (month + 1), year: year)
+      else
+        self.class.for(month: 1, year: (year + 1))
+      end
     end
 
     private

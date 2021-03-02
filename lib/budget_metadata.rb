@@ -20,7 +20,7 @@ module Budget
         days_remaining: days_remaining,
         total_days: total_days,
         spent: spent,
-        balance: balance
+        balance: balance,
       }
     end
 
@@ -33,7 +33,17 @@ module Budget
     end
 
     def balance
-      @balance ||= current? ? (available_cash + charged).to_i : 0
+      @balance ||=
+        if current?
+          (available_cash + charged).to_i
+        elsif past?
+          Account.details_prior_to(Date.new(year, month, -1), include_pending: false).sum(:amount)
+        else
+          0
+        end
+    end
+
+    def end_of_the_month
     end
 
     def available_cash
