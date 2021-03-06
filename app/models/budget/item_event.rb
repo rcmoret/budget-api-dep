@@ -12,6 +12,7 @@ module Budget
 
     validates :type_id, uniqueness: { scope: :item_id }, if: :item_create?
     validates :type_id, uniqueness: { scope: :item_id }, if: :item_delete?
+    validate :validate_json_data, if: :data_present?
 
     scope :prior_to, ->(date_hash) { joins(:item).merge(Item.prior_to(date_hash)) }
     scope :in_range, ->(range) { joins(:item).merge(Item.in_range(range)) }
@@ -26,6 +27,7 @@ module Budget
 
     delegate :month, :year, to: :item_view
     delegate :as_json, :to_json, to: :to_hash
+    delegate :present?, to: :data, prefix: true
 
     def to_hash
       attributes
@@ -35,6 +37,21 @@ module Budget
           month: month,
           year: year
         )
+    end
+
+    private
+
+    def validate_json_data
+      case data
+      when nil, Hash
+        nil
+      when String
+        self[:data] = JSON.parse(data)
+      when Array
+        self[:data] = { event_data: data }
+      end
+    rescue JSON::ParserError
+      errors.add(:data, 'provided a string that was not valid JSON')
     end
   end
 end
