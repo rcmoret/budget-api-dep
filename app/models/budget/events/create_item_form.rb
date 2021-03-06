@@ -2,6 +2,7 @@
 
 module Budget
   module Events
+    # rubocop:disable Metrics/ClassLength
     class CreateItemForm < FormBase
       include ActiveModel::Model
       include EventTypes
@@ -40,17 +41,19 @@ module Budget
         @month = params[:month].to_i
         @year = params[:year].to_i
         @budget_category_id = params[:budget_category_id]
+        @data = params[:data]
       end
 
       def save
         return false unless valid?
 
         ActiveRecord::Base.transaction do
-          return true if objects.all?(&:save)
+          create_interval!
+          create_item!
+          create_event!
         end
 
-        objects.each { |object| promote_errors(object.errors) }
-        false
+        errors.none?
       end
 
       def attributes
@@ -65,12 +68,32 @@ module Budget
 
       private
 
-      def objects
-        [interval, item, event]
+      def create_interval!
+        return if interval.save
+
+        promote_errors(interval.errors)
+        raise ActiveRecord::Rollback
+      end
+
+      def create_item!
+        return if item.save
+
+        promote_errors(item.errors)
+        raise ActiveRecord::Rollback
+      end
+
+      def create_event!
+        return if event.save
+
+        promote_errors(event.errors)
+        raise ActiveRecord::Rollback
       end
 
       def event
-        @event ||= Budget::ItemEvent.new(item: item, type: budget_item_event_type, amount: amount)
+        @event ||= Budget::ItemEvent.new(item: item,
+                                         type: budget_item_event_type,
+                                         data: data,
+                                         amount: amount)
       end
 
       def item
@@ -128,8 +151,10 @@ module Budget
       attr_reader :event_type
       attr_reader :month
       attr_reader :year
+      attr_reader :data
 
       FormBase.register!(self)
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

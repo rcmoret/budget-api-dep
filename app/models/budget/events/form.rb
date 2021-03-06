@@ -18,11 +18,10 @@ module Budget
         return false unless valid?
 
         ActiveRecord::Base.transaction do
-          return true if forms.all?(&:save)
+          save_all!
         end
 
-        forms.each.with_index { |form, n| promote_errors(form, n) }
-        false
+        errors.none?
       end
 
       def attributes
@@ -30,6 +29,16 @@ module Budget
       end
 
       private
+
+      def save_all!
+        forms.each_with_index do |form, index|
+          next if form.save
+
+          promote_errors(form, index)
+        end
+
+        raise ActiveRecord::Rollback if errors.any?
+      end
 
       def all_valid_event_types
         event_params.each do |event|

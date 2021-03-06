@@ -37,6 +37,7 @@ module Budget
         @amount = params[:amount]
         @budget_item_id = params[:budget_item_id]
         @event_type = params[:event_type]
+        @data = params[:data]
       end
 
       delegate :expense?, :revenue?, to: :budget_item, allow_nil: true
@@ -63,6 +64,7 @@ module Budget
         @event ||= Budget::ItemEvent.new(
           type_id: type_id,
           item_id: budget_item.id,
+          data: data,
           amount: adjustment_amount
         )
       end
@@ -95,6 +97,7 @@ module Budget
       attr_reader :amount
       attr_reader :budget_item_id
       attr_reader :event_type
+      attr_reader :data
 
       FormBase.register!(self)
     end

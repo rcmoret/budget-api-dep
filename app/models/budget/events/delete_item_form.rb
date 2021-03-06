@@ -22,14 +22,18 @@ module Budget
       def initialize(params)
         @event_type = params[:event_type]
         @budget_item_id = params[:budget_item_id]
+        @data = params[:data]
       end
 
       def save
         return false unless valid?
-        return true if budget_item.update(deleted_at: Time.current) && event.save
 
-        [budget_item, event].each { |object| promote_errors(object.errors) }
-        false
+        Budget::ItemEvent.transaction do
+          update_item!
+          save_event!
+        end
+
+        errors.none?
       end
 
       def attributes
@@ -50,8 +54,25 @@ module Budget
         @event ||= Budget::ItemEvent.new(
           type_id: event_type_id,
           item: budget_item,
-          amount: (-1 * budget_item.amount)
+          amount: (-1 * budget_item.amount),
+          data: data
         )
+      end
+
+      def update_item!
+        return if budget_item.update(deleted_at: Time.current)
+
+        promote_errors(budget_item.errors)
+
+        raise ActiveRecord::Rollback
+      end
+
+      def save_event!
+        return if event.save
+
+        promote_errors(event.errors)
+
+        raise ActiveRecord::Rollback
       end
 
       def event_type_id
@@ -85,6 +106,7 @@ module Budget
 
       attr_reader :budget_item_id
       attr_reader :event_type
+      attr_reader :data
 
       FormBase.register!(self)
     end

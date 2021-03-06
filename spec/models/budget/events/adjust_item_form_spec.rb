@@ -188,6 +188,18 @@ RSpec.describe Budget::Events::AdjustItemForm do
           end
         end
 
+        context 'when providing json data' do
+          it 'calls new and passes in the json' do
+            stub_item_view(id: budget_item.id, amount: 22_89, expense: false)
+            data = { 'info' => rand(100) }
+            form = build_form(data: data)
+            expect(Budget::ItemEvent)
+              .to receive(:new)
+              .with(hash_including(data: data))
+            form.save
+          end
+        end
+
         it 'calls save on the new event object' do
           stub_item_view(id: budget_item.id, amount: 22_89, expense: false)
           form = build_form(amount: 15_89)
@@ -222,6 +234,7 @@ RSpec.describe Budget::Events::AdjustItemForm do
       budget_item_id: budget_item.id,
       event_type: described_class::APPLICABLE_EVENT_TYPES.sample,
       amount: 0,
+      data: nil,
     }
   end
 
